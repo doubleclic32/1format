@@ -1,4 +1,4 @@
-// Runs Filee's own copy of the 7-Zip console program (engines/7zip: 7z.exe + 7z.dll, GNU LGPL with the unRAR
+// Runs 1format's own copy of the 7-Zip console program (engines/7zip: 7z.exe + 7z.dll, GNU LGPL with the unRAR
 // restriction, used as a separate process) to list, unpack and create archives, and turns its messages into clear
 // errors. 7-Zip installed on the system is never used.
 
@@ -17,7 +17,7 @@ internal sealed record SevenZipEntry(string Path, bool IsFolder, long Size, bool
     /// <summary>Unix mode or attribute string of the entry, used to spot links that carry no target field.</summary>
     public string? Mode { get; init; }
 
-    /// <summary>True for symbolic links, which Filee never unpacks (they could point anywhere).</summary>
+    /// <summary>True for symbolic links, which 1format never unpacks (they could point anywhere).</summary>
     public bool IsSymbolicLink => !string.IsNullOrEmpty(SymbolicLink)
                                   || Mode is { } mode && mode.Split(' ').Any(part => part.Length == 10 && part[0] == 'l');
 }
@@ -36,7 +36,7 @@ internal sealed class SevenZip(string executable)
 
     public string Executable { get; } = executable;
 
-    /// <summary>Filee's own copy (engines/7zip), never one installed on the system.</summary>
+    /// <summary>1format's own copy (engines/7zip), never one installed on the system.</summary>
     public static SevenZip? Locate() =>
         EngineEnvironment.FindBundled("7zip") is { } folder
         && EngineEnvironment.FirstExisting(Path.Combine(folder, OperatingSystem.IsWindows() ? "7z.exe" : "7zz")) is { } exe

@@ -150,8 +150,8 @@ internal static class NativeMethods
     internal static extern bool AXIsProcessTrusted();
 
     /// <summary>
-    /// Whether Filee may watch input; when not, macOS shows its own alert (Open System Settings / Deny) and lists
-    /// Filee under Accessibility, switched off, so the user only has to switch it on.
+    /// Whether 1format may watch input; when not, macOS shows its own alert (Open System Settings / Deny) and lists
+    /// 1format under Accessibility, switched off, so the user only has to switch it on.
     /// </summary>
     internal static bool RequestAccessibility()
     {

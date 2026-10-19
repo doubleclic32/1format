@@ -17,7 +17,7 @@ internal static class CadBuilder
     /// <summary>ACI 1: everything on hidden layers is red, so a red pixel means a hidden layer was drawn.</summary>
     public static readonly Color Hidden = new(1);
 
-    public const string KoreanText = "도면 제목 Filee";
+    public const string KoreanText = "도면 제목 1format";
 
     /// <summary>
     /// A drawing with lines, a circle, an arc, a polyline with a bulge, TEXT (Korean), MTEXT, a block with an
@@ -88,7 +88,7 @@ internal static class CadBuilder
         {
             FirstPoint = new XYZ(0, 60, 0),
             SecondPoint = new XYZ(100, 60, 0),
-            Style = new DimensionStyle("Filee") { TextHeight = 2.5, ArrowSize = 2.5 },
+            Style = new DimensionStyle("1format") { TextHeight = 2.5, ArrowSize = 2.5 },
         };
         dimension.Offset = 8;
         Add(doc, drawing, dimension);

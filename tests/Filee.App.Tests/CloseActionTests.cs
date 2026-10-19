@@ -1,4 +1,4 @@
-// Closing the main window: keep Filee in the tray, quit, or ask once with "Don't ask again" (Settings → General).
+// Closing the main window: keep 1format in the tray, quit, or ask once with "Don't ask again" (Settings → General).
 
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -136,7 +136,7 @@ public class CloseActionTests
         using var page = new GeneralPageViewModel(store, AppHost.Get<ILocalizer>(), AppHost.Get<Filee.Core.Platform.IPlatformServices>());
         try
         {
-            Assert.Equal(["Ask every time", "Keep Filee running in the tray", "Quit Filee"], page.CloseChoices.Select(c => c.Label));
+            Assert.Equal(["Ask every time", "Keep 1format running in the tray", "Quit 1format"], page.CloseChoices.Select(c => c.Label));
             page.CloseChoice = page.CloseChoices.Single(c => c.Value == CloseAction.Quit);
             Assert.Equal(CloseAction.Quit, store.Settings.CloseAction);
         }

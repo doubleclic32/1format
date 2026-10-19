@@ -33,7 +33,7 @@ public class HwpxReaderTests(EngineFixture fx) : IClassFixture<EngineFixture>
         HwpxWriter.Write(source, first);
         var skipped = new Dictionary<string, int>();
         var read = HwpxReader.Read(first, Path.Combine(dir, "media-1"), skipped);
-        Assert.Empty(skipped); // everything Filee writes has a place in the model
+        Assert.Empty(skipped); // everything 1format writes has a place in the model
         HDocumentAssert.Similar(source, read);
 
         var second = Path.Combine(dir, name + "-again.hwpx");

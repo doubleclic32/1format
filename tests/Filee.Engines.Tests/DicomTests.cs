@@ -1,4 +1,4 @@
-// DICOM: Filee's reader of uncompressed images (Magick/Dicom.cs) and ImageMagick for 8-bit ones. The files are built
+// DICOM: 1format's reader of uncompressed images (Magick/Dicom.cs) and ImageMagick for 8-bit ones. The files are built
 // element by element in the tests (DicomBuilder), as scanners write them.
 
 using System.Buffers.Binary;

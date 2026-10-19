@@ -1,4 +1,4 @@
-// Writes the engine list of the installer's engine page (installer/Filee.iss includes the result): package ids, their
+// Writes the engine list of the installer's engine page (installer/1format.iss includes the result): package ids, their
 // components, sizes and which ones are suggested come from EngineDownloads (engines.json), names and texts from the
 // app's translations. So the installer offers exactly what Settings → Engines offers, in the same words.
 // Run by build/build-installer.ps1:  dotnet run build/tools/make-installer-engines.cs -- <output .iss>
@@ -19,10 +19,10 @@ if (args.Length != 1)
 
 var repo = Environment.CurrentDirectory;
 while (!File.Exists(Path.Combine(repo, "Filee.slnx")))
-    repo = Path.GetDirectoryName(repo) ?? throw new InvalidOperationException("Run this from inside the Filee repository.");
+    repo = Path.GetDirectoryName(repo) ?? throw new InvalidOperationException("Run this from inside the 1format repository.");
 
-// [Languages] names in installer/Filee.iss → the app's translation files.
-(string Inno, string App)[] languages = [("en", "en"), ("ko", "ko"), ("zhcn", "zh-CN")];
+// [Languages] names in installer/1format.iss → the app's translation files.
+(string Inno, string App)[] languages = [("en", "en"), ("ko", "ko"), ("zhcn", "zh-CN"), ("fr", "fr")];
 var texts = languages.ToDictionary(l => l.Inno, l => Load(Path.Combine(repo, "src", "Filee.App", "Assets", "i18n", l.App + ".json")));
 
 // The file is included in the middle of [Code], where a ";" line would be Pascal: open a section first.

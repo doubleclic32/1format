@@ -90,7 +90,7 @@ public static class ProfileSelector
         ?? profiles.FirstOrDefault(p => p.IsFallback)
         ?? profiles.FirstOrDefault();
 
-    /// <summary>Formats of the given files that Filee recognises.</summary>
+    /// <summary>Formats of the given files that 1format recognises.</summary>
     public static IReadOnlyList<FileFormat> DetectFormats(IEnumerable<string> filePaths) =>
         filePaths.Select(FormatRegistry.Detect).OfType<FileFormat>().Distinct().ToList();
 }

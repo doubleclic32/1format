@@ -1,5 +1,5 @@
-// Images → HEIC with FFmpeg's x265 and Filee's HEIF writer. Every file written is read back with ImageMagick's
-// libheif, an independent decoder. The real conversions run only when Filee's FFmpeg is installed
+// Images → HEIC with FFmpeg's x265 and 1format's HEIF writer. Every file written is read back with ImageMagick's
+// libheif, an independent decoder. The real conversions run only when 1format's FFmpeg is installed
 // (`pwsh build/fetch-engines.ps1 -Only ffmpeg`).
 
 using Filee.Core.Conversion;
@@ -147,7 +147,7 @@ public class HeicTests(EngineFixture fx) : IClassFixture<EngineFixture>
             // Stored sideways, shown upright through Exif orientation 6 (turn 90° clockwise), like a phone photo.
             var exif = new ExifProfile();
             exif.SetValue(ExifTag.Orientation, (ushort)6);
-            exif.SetValue(ExifTag.Make, "Filee test");
+            exif.SetValue(ExifTag.Make, "1format test");
             photo.SetProfile(exif);
             photo.Orientation = OrientationType.RightTop; // ImageMagick writes this into the Exif orientation
             photo.SetProfile(ColorProfiles.AdobeRGB1998);
@@ -161,7 +161,7 @@ public class HeicTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.Equal(ColorProfiles.AdobeRGB1998.ToByteArray(), heic.GetColorProfile()?.ToByteArray());
         var exifBack = heic.GetExifProfile();
         Assert.NotNull(exifBack);
-        Assert.Equal("Filee test", exifBack.GetValue(ExifTag.Make)?.Value);
+        Assert.Equal("1format test", exifBack.GetValue(ExifTag.Make)?.Value);
         Assert.Equal((ushort)1, exifBack.GetValue(ExifTag.Orientation)?.Value);
 
         // The gradient runs from top to bottom in the stored pixels, so from right to left once upright. Tiles in

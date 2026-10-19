@@ -1,6 +1,6 @@
 // Hardware video encoding: which encoders are tried where, their options (no GPU or FFmpeg needed), the software retry
 // when a hardware encode fails, and the time limit of FFmpeg's quick queries. Real hardware encodes run only on a
-// computer with a working GPU encoder and Filee's FFmpeg; CI has neither, so those tests skip there.
+// computer with a working GPU encoder and 1format's FFmpeg; CI has neither, so those tests skip there.
 
 using System.Diagnostics;
 using Filee.Core.Conversion;

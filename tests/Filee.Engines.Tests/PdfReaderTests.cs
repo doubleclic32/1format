@@ -18,7 +18,7 @@ namespace Filee.Engines.Tests;
 public class PdfReaderTests(EngineFixture fx) : IClassFixture<EngineFixture>
 {
     private const string First =
-        "Filee converts files on your own computer. This paragraph is long enough to wrap over several lines, so the reader " +
+        "1format converts files on your own computer. This paragraph is long enough to wrap over several lines, so the reader " +
         "has to join the lines again into one paragraph without losing or doubling any of the words in it.";
     private const string Second =
         "The second page continues the report with more details. Headers and footers repeat on every page and are left out.";
@@ -42,7 +42,7 @@ public class PdfReaderTests(EngineFixture fx) : IClassFixture<EngineFixture>
             pdf.NewPage();
             var regular = pdf.Font();
             var bold = pdf.Font(bold: true);
-            pdf.Line("Filee Quarterly Report", 9, regular, 50, 30);
+            pdf.Line("1format Quarterly Report", 9, regular, 50, 30);
             pdf.Line($"Page {page}", 9, regular, 280, 815);
             if (page == 1)
             {

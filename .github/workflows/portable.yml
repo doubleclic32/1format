@@ -186,12 +186,12 @@ jobs:
         shell: bash
         run: python3 build/smoke-launch-app.py
 
-      - name: Collect Filee logs
+      - name: Collect 1format logs
         if: always()
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/filee-screens"
-          for logs in "$HOME/Library/Application Support/Filee/logs" "$HOME/.config/Filee/logs"; do
+          for logs in "$HOME/Library/Application Support/1format/logs" "$HOME/.config/1format/logs"; do
             if [ -d "$logs" ]; then cp -R "$logs" "$RUNNER_TEMP/filee-screens/"; fi
           done
 
@@ -263,12 +263,12 @@ jobs:
         shell: bash
         run: python3 build/smoke-launch-app.py
 
-      - name: Collect Filee logs
+      - name: Collect 1format logs
         if: always()
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/filee-screens"
-          if [ -d "$HOME/.config/Filee/logs" ]; then cp -R "$HOME/.config/Filee/logs" "$RUNNER_TEMP/filee-screens/"; fi
+          if [ -d "$HOME/.config/1format/logs" ]; then cp -R "$HOME/.config/1format/logs" "$RUNNER_TEMP/filee-screens/"; fi
 
       - name: Upload diagnostics
         if: always()

@@ -1,7 +1,7 @@
 // Reads HWPX (한글 / OWPML, KS X 6101) packages into the HDocument model — the inverse of HwpxWriter — so HWP and
 // HWPX can become DOCX, HTML or EPUB without Hancom Office or LibreOffice (HWP is turned into HWPX by rhwp first).
 //
-// Files come from 한글 itself, from rhwp's export-hwpx and from Filee's own writer, which differ in details. The
+// Files come from 한글 itself, from rhwp's export-hwpx and from 1format's own writer, which differ in details. The
 // reader therefore matches elements by local name (any prefix, any namespace version), resolves hp:switch blocks and
 // looks every idRef up in header.xml. Split over partial files:
 //  * HwpxReader.cs         package: container, manifest and spine, pictures (BinData), section setup, XML helpers;

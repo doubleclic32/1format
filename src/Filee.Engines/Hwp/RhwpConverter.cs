@@ -135,7 +135,7 @@ public sealed class RhwpConverter : IConverter
         return new FileInfo(path).Length * 3;
     }
 
-    /// <summary>Filee's own copy (engines/rhwp), never one found elsewhere on the system.</summary>
+    /// <summary>1format's own copy (engines/rhwp), never one found elsewhere on the system.</summary>
     private static string? Locate() =>
         EngineEnvironment.FindBundled("rhwp") is { } bundled
             ? EngineEnvironment.FirstExisting(Path.Combine(bundled, OperatingSystem.IsWindows() ? "rhwp.exe" : "rhwp"))

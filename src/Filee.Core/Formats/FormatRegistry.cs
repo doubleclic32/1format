@@ -3,7 +3,7 @@
 
 namespace Filee.Core.Formats;
 
-/// <summary>Lookup table of every format Filee knows about.</summary>
+/// <summary>Lookup table of every format 1format knows about.</summary>
 public static class FormatRegistry
 {
     /// <summary>Pseudo format of the "Extract" preset: the output is a folder with the archive's files.</summary>
@@ -145,7 +145,7 @@ public static class FormatRegistry
         new("opml", "OPML", FormatCategory.Text, ["opml"]),
 
         // Structured data. CSV stays a spreadsheet (its donut and routes); the data engine adds CSV ↔ JSON / YAML /
-        // TOML / XML edges. ".xml" means a data document here: XML-based formats Filee converts have their own
+        // TOML / XML edges. ".xml" means a data document here: XML-based formats 1format converts have their own
         // extensions (.svg, .fb2, .dbk, ...).
         new("json", "JSON", FormatCategory.Data, ["json"]),
         new("jsonl", "JSON Lines", FormatCategory.Data, ["jsonl", "ndjson"]),

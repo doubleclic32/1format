@@ -1,6 +1,6 @@
 // Update check against GitHub Releases. When a newer version is out the app says so (sidebar, notice, tray). In an
 // installed copy "Update" downloads the new installer, checks it against the release's SHA256SUMS file and runs it;
-// Setup closes Filee, updates it in place (settings are kept) and starts it again. A portable copy, a copy run from
+// Setup closes 1format, updates it in place (settings are kept) and starts it again. A portable copy, a copy run from
 // source, or a failed download opens a download page instead. The check works in every build.
 
 using System.ComponentModel;
@@ -20,7 +20,7 @@ public enum UpdateStep
 {
     Idle,
     Downloading,
-    /// <summary>The installer is running (it shows its own progress window and closes Filee).</summary>
+    /// <summary>The installer is running (it shows its own progress window and closes 1format).</summary>
     Installing,
     /// <summary>The update did not work; the download page was opened instead.</summary>
     Failed,
@@ -30,7 +30,7 @@ public enum UpdateStep
 
 public sealed partial class UpdateService : ObservableObject
 {
-    /// <summary>How often a running Filee (it lives in the tray for days) looks for a new version.</summary>
+    /// <summary>How often a running 1format (it lives in the tray for days) looks for a new version.</summary>
     private static readonly TimeSpan CheckInterval = TimeSpan.FromHours(6);
 
     /// <summary>A download that receives nothing for this long is given up.</summary>
@@ -41,7 +41,7 @@ public sealed partial class UpdateService : ObservableObject
 
     /// <summary>
     /// Setup without the wizard: only its progress window shows. Updates keep the earlier choices anyway, and Setup
-    /// starts Filee again when it is done.
+    /// starts 1format again when it is done.
     /// </summary>
     internal const string InstallerArguments = "/SILENT /NORESTART";
 
@@ -61,14 +61,14 @@ public sealed partial class UpdateService : ObservableObject
         _log = log;
         // Downloads use their own stall timeout (StallTimeout); this one covers the API call and the response headers.
         _http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(20) };
-        _http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Filee", CurrentVersion));
+        _http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("1format", CurrentVersion));
         _http.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
     }
 
     /// <summary>GitHub repository from Directory.Build.props (FileeRepositoryUrl).</summary>
     public static string RepositoryUrl =>
         typeof(UpdateService).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
-            .FirstOrDefault(a => a.Key == "RepositoryUrl")?.Value ?? "https://github.com/KnifeLemon/Filee";
+            .FirstOrDefault(a => a.Key == "RepositoryUrl")?.Value ?? "https://github.com/doubleclic32/1format";
 
     public static string CurrentVersion =>
         typeof(UpdateService).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0]
@@ -81,10 +81,10 @@ public sealed partial class UpdateService : ObservableObject
     public static string LatestReleaseUrl => RepositoryUrl.TrimEnd('/') + "/releases/latest";
 
     /// <summary>The website: one big download button, friendlier than the GitHub release page.</summary>
-    public const string WebsiteUrl = "https://filee.sh/";
+    public const string WebsiteUrl = "https://1format.fr/";
 
     /// <summary>
-    /// True when this copy was installed by Setup (Inno Setup puts its uninstaller next to Filee.exe). Only then can
+    /// True when this copy was installed by Setup (Inno Setup puts its uninstaller next to 1format.exe). Only then can
     /// the new installer update it in place; the portable zip and a copy run from source have no uninstaller.
     /// </summary>
     public static bool IsInstalled { get; } = OperatingSystem.IsWindows()
@@ -175,7 +175,7 @@ public sealed partial class UpdateService : ObservableObject
             });
             return true;
         }
-        // Offline, DNS failure, timeout, a connection dropped while reading, or an unexpected answer: Filee works
+        // Offline, DNS failure, timeout, a connection dropped while reading, or an unexpected answer: 1format works
         // offline, so a failed check is only logged and the next one is tried later.
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException or JsonException
                                        or InvalidOperationException)
@@ -264,7 +264,7 @@ public sealed partial class UpdateService : ObservableObject
         try
         {
             var progress = new Progress<int>(percent => DownloadPercent = percent);
-            installer = await DownloadInstallerAsync(Path.Combine(Path.GetTempPath(), "Filee-update"), progress);
+            installer = await DownloadInstallerAsync(Path.Combine(Path.GetTempPath(), "1format-update"), progress);
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException
                                        or InvalidDataException or UnauthorizedAccessException)
@@ -295,7 +295,7 @@ public sealed partial class UpdateService : ObservableObject
         if (setup is null)
             return;
 
-        // A successful update closes Filee before Setup exits, so getting here means Setup ended without updating:
+        // A successful update closes 1format before Setup exits, so getting here means Setup ended without updating:
         // the administrator prompt was declined (Setup asks for it itself), or the user cancelled.
         using (setup)
             await setup.WaitForExitAsync();

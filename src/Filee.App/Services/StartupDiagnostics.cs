@@ -1,5 +1,5 @@
-// What Filee writes to its log before and around start-up: one line describing this launch, and every exception that
-// would otherwise end the process (or vanish in a task) without a trace. A report of a Filee that ignored every
+// What 1format writes to its log before and around start-up: one line describing this launch, and every exception that
+// would otherwise end the process (or vanish in a task) without a trace. A report of a 1format that ignored every
 // gesture came with an empty log; these lines are what tells such cases apart.
 
 using System.Runtime.InteropServices;
@@ -13,7 +13,7 @@ internal static class StartupDiagnostics
 {
     /// <summary>
     /// A logger for Program, before the service container exists. It writes to the same daily file. A log folder that
-    /// can't be created gives a logger that drops everything: logging must never stop Filee from starting.
+    /// can't be created gives a logger that drops everything: logging must never stop 1format from starting.
     /// </summary>
     public static ILogger CreateEarlyLogger(string logDirectory)
     {
@@ -28,12 +28,12 @@ internal static class StartupDiagnostics
     }
 
     /// <summary>
-    /// The start-up line: "Filee 1.11.0 starting: C:\…\Filee.exe (installed), integrity Medium, Explorer Medium,
+    /// The start-up line: "1format 1.11.0 starting: C:\…\1format.exe (installed), integrity Medium, Explorer Medium,
     /// Microsoft Windows 10.0.26200 X64, 2 argument(s)". Arguments are counted, not written: they are file paths.
     /// </summary>
     public static string Describe(string version, string? executable, string installKind, ElevationState elevation,
         string operatingSystem, int argumentCount) =>
-        $"Filee {version} starting: {executable ?? "(unknown path)"} ({installKind}), {elevation}, {operatingSystem}, " +
+        $"1format {version} starting: {executable ?? "(unknown path)"} ({installKind}), {elevation}, {operatingSystem}, " +
         $"{argumentCount} argument(s)";
 
     /// <summary>How this copy got here: Setup, a release archive, or a build from source.</summary>

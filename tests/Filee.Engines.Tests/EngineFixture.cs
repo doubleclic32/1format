@@ -26,7 +26,7 @@ public sealed class EngineFixture : IDisposable
     public async Task<string> MakeHwpxAsync(string folder)
     {
         var txt = Path.Combine(folder, "sample.txt");
-        await File.WriteAllTextAsync(txt, "Filee 한글 문서 테스트\n\n두 번째 문단입니다. 文件转换 Hello");
+        await File.WriteAllTextAsync(txt, "1format 한글 문서 테스트\n\n두 번째 문단입니다. 文件转换 Hello");
         var job = await ConvertAsync([txt], new Preset { TargetFormat = "hwpx" });
         Assert.True(job.State == JobState.Completed, string.Join("; ", job.Files.Select(f => $"{f.ErrorKey} {f.ErrorDetail}")));
         return job.Outputs.Single();

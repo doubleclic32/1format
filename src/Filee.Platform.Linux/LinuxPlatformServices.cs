@@ -24,12 +24,12 @@ public sealed class LinuxPlatformServices : IPlatformServices
     public bool SupportsGlobalPointerGestures => X11WindowSystem.IsAvailable;
     public bool SupportsSelectionShortcut => false;
     public string SelectionShortcutUnavailableReason =>
-        "Linux file managers do not expose a shared selected-file API. Use the Filee context action or its Thunar shortcut.";
+        "Linux file managers do not expose a shared selected-file API. Use the 1format context action or its Thunar shortcut.";
     public string? GlobalPointerGesturesUnavailableReason => SupportsGlobalPointerGestures ? null : IsWaylandSession
         ? "The cursor-following gesture requires an X11 desktop session. File actions and the drop zone remain available on Wayland."
         : "The cursor-following gesture requires an X11 display.";
     public string ThunarShortcutRestartRequired =>
-        "Close Thunar before changing its shortcut, then reopen it to load the Filee action and shortcut.";
+        "Close Thunar before changing its shortcut, then reopen it to load the 1format action and shortcut.";
 
     public bool IsFileManagerAt(int x, int y) => ProcessNameAt(x, y) is { } name && FileManagers.Contains(name);
     public string? ProcessNameAt(int x, int y) => X11WindowSystem.ProcessNameAt(x, y);

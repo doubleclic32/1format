@@ -1,4 +1,4 @@
-// "Sponsor" opens a window with every way to support Filee, the one that suits the language first: Fairy (Korean cards
+// "Sponsor" opens a window with every way to support 1format, the one that suits the language first: Fairy (Korean cards
 // and easy-pay) in Korean, GitHub Sponsors otherwise.
 
 using Avalonia.Headless.XUnit;

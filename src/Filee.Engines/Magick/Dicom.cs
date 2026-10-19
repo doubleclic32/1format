@@ -1,4 +1,4 @@
-// DICOM images (medical scans) stored without compression, read by Filee itself, written from the DICOM standard
+// DICOM images (medical scans) stored without compression, read by 1format itself, written from the DICOM standard
 // (PS3.5 data encoding, PS3.3 C.7.6.3 image pixel module, C.11.2 VOI LUT). ImageMagick's Q8 build reads only 8-bit
 // DICOM: a 12- or 16-bit grey image, which CT, MR and X-ray scanners write, needs a palette larger than it has.
 // Here every frame becomes an 8-bit picture: stored values → rescale slope / intercept → the file's first window

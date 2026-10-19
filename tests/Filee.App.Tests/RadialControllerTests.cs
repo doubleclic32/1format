@@ -1,6 +1,6 @@
 // The drag-wait donut is an invisible, topmost window that catches clicks so a drag can reach it: it must close when
 // the gesture ends without files, even after a conversion left the ring behind (issue: desktop icons stopped reacting
-// to clicks until Filee quit).
+// to clicks until 1format quit).
 
 using Avalonia.Headless.XUnit;
 using Filee.App.Controls;

@@ -1,4 +1,4 @@
-// Removes per-user integration and downloaded engines after Filee exits. User settings remain for reinstalling.
+// Removes per-user integration and downloaded engines after 1format exits. User settings remain for reinstalling.
 
 using Filee.Core.Platform;
 using Filee.Core.Settings;

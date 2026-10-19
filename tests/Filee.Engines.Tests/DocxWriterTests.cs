@@ -1,5 +1,5 @@
 // Anything → DOCX with the built-in writer (no Word, LibreOffice or Pandoc): every file is validated against the Office
-// Open XML schemas (the element order Word insists on), read back with Filee's DOCX reader and, when LibreOffice is
+// Open XML schemas (the element order Word insists on), read back with 1format's DOCX reader and, when LibreOffice is
 // installed, converted to PDF by it as an independent reader. The round trip DOCX → model → DOCX → model checks that
 // the layout the model carries survives (page setup, sections, headers, tables, objects, notes, formatting).
 

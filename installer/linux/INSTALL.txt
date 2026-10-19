@@ -1,13 +1,13 @@
-Run ./Filee to test the extracted app, or ./filee-cli help for the command line.
+Run ./1format to test the extracted app, or ./1format-cli help for the command line.
 
 Run ./install.sh to install for the current user. It requires Python 3, creates
-an application launcher and ~/.local/bin/filee, and does not require root.
-Run ./uninstall.sh to remove this installation and Filee-downloaded engines.
+an application launcher and ~/.local/bin/1format, and does not require root.
+Run ./uninstall.sh to remove this installation and 1format-downloaded engines.
 Your settings and converted files are kept. If integration cleanup fails, the
 installation is kept so you can fix the error and run the uninstaller again.
 An existing installation is never overwritten; uninstall it before replacing it.
 
-Filee runs on Ubuntu 22.04 or newer and other distributions with glibc 2.35 or
+1format runs on Ubuntu 22.04 or newer and other distributions with glibc 2.35 or
 newer. The .NET runtime is bundled; its native system libraries are still
 required. Install the desktop and runtime dependencies with:
 
@@ -26,7 +26,7 @@ drop window and file-manager actions if needed.
 Packages are built and smoke-tested on Ubuntu 24.04 and started on Ubuntu 22.04
 by the automated builds.
 
-rhwp and 7-Zip are bundled. Other engines are installed from Filee settings or
+rhwp and 7-Zip are bundled. Other engines are installed from 1format settings or
 discovered in the system. Format support depends on available native engines.
 Optional engines can require additional system libraries. In particular, calibre
 may require libxcb-cursor0, libxcb-xinerama0 and other Qt/XCB dependencies.

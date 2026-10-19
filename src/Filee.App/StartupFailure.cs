@@ -1,5 +1,5 @@
 // A start that fails before any window exists (Avalonia could not initialise): written to the log and shown in a
-// system alert, since Filee has no window of its own to show it in.
+// system alert, since 1format has no window of its own to show it in.
 
 using System.Diagnostics;
 using Filee.Core.Settings;
@@ -31,7 +31,7 @@ internal static class StartupFailure
                 ArgumentList =
                 {
                     "-e", "on run argv",
-                    "-e", "display alert \"Filee\" message (item 1 of argv) as critical buttons {\"OK\"}",
+                    "-e", "display alert \"1format\" message (item 1 of argv) as critical buttons {\"OK\"}",
                     "-e", "end run",
                     message,
                 },

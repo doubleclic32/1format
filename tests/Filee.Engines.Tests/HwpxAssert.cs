@@ -1,4 +1,4 @@
-// Shared checks for HWPX files written by Filee: package structure, id references, and a render with rhwp.
+// Shared checks for HWPX files written by 1format: package structure, id references, and a render with rhwp.
 
 using System.IO.Compression;
 using System.Xml.Linq;

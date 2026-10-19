@@ -1,5 +1,5 @@
 // Archive engine: conversions between archive formats (names incl. Korean, folders, contents and times survive),
-// Extract to a folder, "Compress into one archive", Filee's own ALZ / EGG / lzip / bzip2 readers, and the safety
+// Extract to a folder, "Compress into one archive", 1format's own ALZ / EGG / lzip / bzip2 readers, and the safety
 // checks (zip slip, links, passwords). Tests that need the bundled 7-Zip skip when engines/7zip is missing
 // (pwsh build/fetch-engines.ps1 -Only 7zip).
 
@@ -208,7 +208,7 @@ public class ArchiveTests(EngineFixture fx) : IClassFixture<EngineFixture>
         var overwrite = Extract;
         overwrite.Output.Conflict = ConflictPolicy.Overwrite;
         Assert.Equal(target, (await ConvertOkAsync(zip, overwrite)).Outputs.Single());
-        Assert.Equal("Filee archive test\n", await File.ReadAllTextAsync(Path.Combine(target, "readme.txt"), Ct));
+        Assert.Equal("1format archive test\n", await File.ReadAllTextAsync(Path.Combine(target, "readme.txt"), Ct));
         Assert.Equal("keep", await File.ReadAllTextAsync(Path.Combine(target, "mine.txt"), Ct));
         Assert.True(File.Exists(Path.Combine(target, "docs", "보고서", "data.csv")));
 
@@ -379,7 +379,7 @@ public class ArchiveTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.Equal("2", await File.ReadAllTextAsync(Path.Combine(folder, "하나 (2).txt"), Ct));
     }
 
-    // ───────── Filee's own readers ─────────
+    // ───────── 1format's own readers ─────────
 
     [Fact]
     public async Task Alz_with_stored_deflated_and_bzip2_entries_and_korean_names()

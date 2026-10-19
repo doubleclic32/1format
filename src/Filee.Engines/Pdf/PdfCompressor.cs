@@ -221,7 +221,7 @@ internal static class PdfCompressor
     private sealed record DecodedPicture(MagickImage Image, int Components, bool WasJpeg);
 
     /// <summary>
-    /// The pixels of a picture Filee can encode again without changing how it looks: 8 bits per component, gray, RGB or
+    /// The pixels of a picture 1format can encode again without changing how it looks: 8 bits per component, gray, RGB or
     /// CMYK (CMYK not from JPEG: Adobe's inverted CMYK JPEGs are easy to get wrong), stored as JPEG, Flate or
     /// uncompressed. Null for everything else (JBIG2, CCITT, JPEG 2000, 1-bit, indexed, spot colours, colour-key
     /// masks), which stays as it is.
@@ -375,7 +375,7 @@ internal static class PdfCompressor
         _ => null,
     };
 
-    /// <summary>Components of a colour space Filee re-encodes (gray, RGB, CMYK and their calibrated / ICC forms), else 0.</summary>
+    /// <summary>Components of a colour space 1format re-encodes (gray, RGB, CMYK and their calibrated / ICC forms), else 0.</summary>
     private static int Components(PdfItem? colorSpace) => colorSpace switch
     {
         PdfName { Value: "/DeviceGray" } => 1,

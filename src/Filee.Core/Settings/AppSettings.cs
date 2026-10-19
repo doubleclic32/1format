@@ -18,10 +18,10 @@ public enum CloseAction
     /// <summary>Ask, with "Don't ask again" (which saves the answer).</summary>
     Ask,
 
-    /// <summary>Hide the window; Filee keeps running in the tray.</summary>
+    /// <summary>Hide the window; 1format keeps running in the tray.</summary>
     Tray,
 
-    /// <summary>Quit Filee.</summary>
+    /// <summary>Quit 1format.</summary>
     Quit,
 }
 
@@ -73,12 +73,12 @@ public sealed class AppSettings
 
     public bool StartWithSystem { get; set; } = true;
 
-    /// <summary>Show the Explorer "Convert with Filee" context menu entry.</summary>
+    /// <summary>Show the Explorer "Convert with 1format" context menu entry.</summary>
     public bool ContextMenuEnabled { get; set; } = true;
 
     public bool CheckForUpdates { get; set; } = true;
 
-    /// <summary>What closing the main window does. A value from a newer Filee reads as <see cref="CloseAction.Ask"/>.</summary>
+    /// <summary>What closing the main window does. A value from a newer 1format reads as <see cref="CloseAction.Ask"/>.</summary>
     [JsonConverter(typeof(LenientEnumJsonConverter<CloseAction>))]
     public CloseAction CloseAction { get; set; } = CloseAction.Ask;
 
@@ -117,7 +117,7 @@ public sealed class AppSettings
     /// <summary>Conversions that succeeded completely, counted until the feedback card has been shown.</summary>
     public int SuccessfulConversions { get; set; }
 
-    /// <summary>Set once the "Is Filee helping you?" card (GitHub star / feedback) has been shown.</summary>
+    /// <summary>Set once the "Is 1format helping you?" card (GitHub star / feedback) has been shown.</summary>
     public bool FeedbackPromptShown { get; set; }
 
     /// <summary>Folders whose new files are converted automatically (Settings → Watch folders).</summary>
@@ -128,7 +128,7 @@ public sealed class AppSettings
 
     /// <summary>
     /// Optional engines the user already has: package id ("ffmpeg", "calibre", …) → the program they picked. Used
-    /// instead of Filee's download (Settings → Engines).
+    /// instead of 1format's download (Settings → Engines).
     /// </summary>
     public Dictionary<string, string> EngineOwnCopies { get; set; } = [];
 

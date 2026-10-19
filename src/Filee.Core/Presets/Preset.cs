@@ -19,7 +19,7 @@ public enum PresetKind
 }
 
 /// <summary>
-/// Reads an enum by name. A value this version doesn't know (a newer Filee's, or a number outside the enum) becomes
+/// Reads an enum by name. A value this version doesn't know (a newer 1format's, or a number outside the enum) becomes
 /// <see cref="Unknown"/>, the first value unless a subclass says otherwise: the preset still loads, instead of the
 /// whole preset file failing to read (which resets every preset to the defaults).
 /// </summary>
@@ -96,7 +96,7 @@ public sealed class Preset
     /// <summary>Where and how output files are written.</summary>
     public OutputRule Output { get; set; } = new();
 
-    /// <summary>A conversion or a group. A kind this version doesn't know (from a newer Filee) is read as a group.</summary>
+    /// <summary>A conversion or a group. A kind this version doesn't know (from a newer 1format) is read as a group.</summary>
     [JsonConverter(typeof(PresetKindJsonConverter))]
     public PresetKind Kind { get; set; } = PresetKind.Convert;
 
@@ -104,7 +104,7 @@ public sealed class Preset
     public const int MaxSubPresets = 6;
 
     /// <summary>
-    /// <see cref="TargetFormat"/> of a group: no format at all. A Filee from before groups reads a group as a
+    /// <see cref="TargetFormat"/> of a group: no format at all. A 1format from before groups reads a group as a
     /// conversion; with this it finds no route and greys the slice out instead of re-encoding files "as the same format".
     /// </summary>
     public const string GroupTarget = "group";
@@ -339,7 +339,7 @@ public sealed class PdfOptions
     public bool SplitTallImage { get; set; }
 
     /// <summary>
-    /// For PDF → PDF: make the file smaller (also with a page range or one file per page). A level from a newer Filee
+    /// For PDF → PDF: make the file smaller (also with a page range or one file per page). A level from a newer 1format
     /// reads as <see cref="PdfCompression.None"/>.
     /// </summary>
     [JsonConverter(typeof(LenientEnumJsonConverter<PdfCompression>))]

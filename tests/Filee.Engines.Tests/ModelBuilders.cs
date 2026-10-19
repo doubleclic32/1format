@@ -1,5 +1,5 @@
 // Generated 3D test meshes (no sample files): a textured cube with face normals and UVs, a sphere with smooth
-// normals and vertex colours, and a flat fan of coloured triangles. All in Filee's model convention: millimetres,
+// normals and vertex colours, and a flat fan of coloured triangles. All in 1format's model convention: millimetres,
 // Y up, counter-clockwise front faces.
 
 using System.Numerics;

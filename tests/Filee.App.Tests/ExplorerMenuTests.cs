@@ -1,5 +1,5 @@
 // Tests for the Windows 11 File Explorer menu: package manifest, registration scripts, the --convert-list hand-over
-// and (when build/build-explorer-menu.ps1 has run) the native FileeExplorerMenu.dll loaded in-process.
+// and (when build/build-explorer-menu.ps1 has run) the native OneFormatExplorerMenu.dll loaded in-process.
 
 using System.Globalization;
 using System.IO.Compression;
@@ -51,7 +51,7 @@ public class ExplorerMenuTests
         Assert.Equal("10.0.22000.0", (string?)manifest.Descendants(F + "TargetDeviceFamily").Single().Attribute("MinVersion"));
 
         var app = manifest.Descendants(F + "Application").Single();
-        Assert.Equal("Filee.exe", (string?)app.Attribute("Executable"));
+        Assert.Equal("1format.exe", (string?)app.Attribute("Executable"));
         Assert.Equal("mediumIL", (string?)app.Attribute(Uap10 + "TrustLevel"));
         Assert.Equal("win32App", (string?)app.Attribute(Uap10 + "RuntimeBehavior"));
         Assert.Equal("none", (string?)app.Element(Uap + "VisualElements")!.Attribute("AppListEntry"));
@@ -69,7 +69,7 @@ public class ExplorerMenuTests
     [Fact]
     public void Native_source_uses_the_same_class_id_list_prefix_and_title_file()
     {
-        var source = File.ReadAllText(Path.Combine(RepoRoot, "src", "Filee.ExplorerMenu", "FileeExplorerMenu.c"));
+        var source = File.ReadAllText(Path.Combine(RepoRoot, "src", "Filee.ExplorerMenu", "OneFormatExplorerMenu.c"));
         var match = Regex.Match(source, @"kClsidCommand = \{(?<parts>[^;]+)\};");
         Assert.True(match.Success);
         var n = Regex.Matches(match.Groups["parts"].Value, "0x([0-9a-fA-F]+)")
@@ -80,7 +80,7 @@ public class ExplorerMenuTests
         Assert.Equal(ExplorerMenuPackage.ClassId, fromSource);
 
         Assert.Contains($"#define LIST_PREFIX L\"{CommandLine.ListFilePrefix}\"", source);
-        Assert.Contains($"#define TITLE_FILE L\"Filee\\\\{ExplorerMenuPackage.TitleFileName}\"", source);
+        Assert.Contains($"#define TITLE_FILE L\"1format\\\\{ExplorerMenuPackage.TitleFileName}\"", source);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class ExplorerMenuTests
     public void Reading_the_registered_package_never_throws()
     {
         Assert.SkipUnless(OperatingSystem.IsWindowsVersionAtLeast(10), "Package APIs need Windows.");
-        Assert.Null(ExplorerMenuRegistration.ExternalLocationOf("Filee.NotInstalled_1.0.0.0_x64__0000000000000"));
+        Assert.Null(ExplorerMenuRegistration.ExternalLocationOf("1format.NotInstalled_1.0.0.0_x64__0000000000000"));
         // Whatever is registered on this machine (nothing on CI): a registered sparse package has an external location.
         if (ExplorerMenuRegistration.Find() is { } package)
             Assert.False(string.IsNullOrEmpty(package.ExternalLocation), package.FullName);
@@ -124,30 +124,30 @@ public class ExplorerMenuTests
     [Fact]
     public void PowerShell_literals_escape_straight_and_typographic_single_quotes()
     {
-        Assert.Equal(@"'C:\Users\Kim''s PC\Filee'", ExplorerMenuRegistration.Quote(@"C:\Users\Kim's PC\Filee"));
+        Assert.Equal(@"'C:\Users\Kim''s PC\1format'", ExplorerMenuRegistration.Quote(@"C:\Users\Kim's PC\1format"));
         Assert.Equal("'Kim\u2019\u2019s'", ExplorerMenuRegistration.Quote("Kim\u2019s"));
     }
 
     [Fact]
     public void Add_script_registers_the_package_unsigned_with_the_install_folder_as_external_location()
     {
-        var script = ExplorerMenuRegistration.BuildAddScript(@"C:\Apps\Filee\current\FileeExplorerMenu.msix",
-            @"C:\Apps\Filee\current", @"C:\Temp\err.txt");
-        Assert.Contains(@"Add-AppxPackage -Path 'C:\Apps\Filee\current\FileeExplorerMenu.msix' -ExternalLocation 'C:\Apps\Filee\current' -AllowUnsigned", script);
+        var script = ExplorerMenuRegistration.BuildAddScript(@"C:\Apps\1format\current\OneFormatExplorerMenu.msix",
+            @"C:\Apps\1format\current", @"C:\Temp\err.txt");
+        Assert.Contains(@"Add-AppxPackage -Path 'C:\Apps\1format\current\OneFormatExplorerMenu.msix' -ExternalLocation 'C:\Apps\1format\current' -AllowUnsigned", script);
         Assert.Contains(@"[IO.File]::WriteAllText('C:\Temp\err.txt', $_.Exception.Message); exit 1", script);
         Assert.DoesNotContain("\"", script);
 
         var remove = ExplorerMenuRegistration.BuildRemoveScript(@"C:\Temp\err.txt");
-        Assert.Contains("Get-AppxPackage -Name 'Filee.ExplorerMenu' | Remove-AppxPackage", remove);
+        Assert.Contains("Get-AppxPackage -Name 'OneFormat.ExplorerMenu' | Remove-AppxPackage", remove);
     }
 
     [Fact]
     public void Deployment_errors_lose_the_activity_id_note_and_line_breaks()
     {
         const string message = "Deployment failed with HRESULT: 0x80073D2B, The package could not be installed.\r\n\r\n" +
-                               "Windows cannot install package Filee.ExplorerMenu.\r\n\r\n" +
+                               "Windows cannot install package OneFormat.ExplorerMenu.\r\n\r\n" +
                                "NOTE: For additional information, look for [ActivityId] 3a41 in the Event Log";
-        Assert.Equal("Deployment failed with HRESULT: 0x80073D2B, The package could not be installed. Windows cannot install package Filee.ExplorerMenu.",
+        Assert.Equal("Deployment failed with HRESULT: 0x80073D2B, The package could not be installed. Windows cannot install package OneFormat.ExplorerMenu.",
             ExplorerMenuRegistration.ShortenDeploymentError(message));
     }
 
@@ -226,8 +226,8 @@ public class ExplorerMenuTests
         using var command = NativeCommand.Create(dll);
         // The title comes from the file the app writes into its data folder; without it the English default is used.
         var expectedTitle = ExplorerMenuRegistration.ReadTitle();
-        Assert.Equal(expectedTitle ?? "Convert with Filee", command.GetTitle());
-        Assert.Equal(Path.Combine(BuiltFolder, "Filee.exe") + ",0", command.GetIcon(), ignoreCase: true);
+        Assert.Equal(expectedTitle ?? "Convert with 1format", command.GetTitle());
+        Assert.Equal(Path.Combine(BuiltFolder, "1format.exe") + ",0", command.GetIcon(), ignoreCase: true);
         Assert.Equal(ExplorerMenuPackage.ClassId, command.GetCanonicalName());
 
         const int enabled = 0, hidden = 2;
@@ -245,7 +245,7 @@ public class ExplorerMenuTests
         }
     }
 
-    /// <summary>Calls FileeExplorerMenu.dll through its exports and the raw IExplorerCommand vtable.</summary>
+    /// <summary>Calls OneFormatExplorerMenu.dll through its exports and the raw IExplorerCommand vtable.</summary>
     private sealed class NativeCommand : IDisposable
     {
         private static readonly Guid IidClassFactory = new("00000001-0000-0000-C000-000000000046");

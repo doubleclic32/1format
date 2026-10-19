@@ -1,4 +1,4 @@
-// When an elevated Filee counts as cut off from Explorer, and engine statuses checked in the background.
+// When an elevated 1format counts as cut off from Explorer, and engine statuses checked in the background.
 
 using Filee.Core.Conversion;
 using Filee.Core.Platform;
@@ -8,11 +8,11 @@ namespace Filee.Core.Tests;
 public class ElevationStateTests
 {
     [Theory]
-    [InlineData(IntegrityLevel.High, IntegrityLevel.Medium, true)]    // installer run as administrator started Filee
+    [InlineData(IntegrityLevel.High, IntegrityLevel.Medium, true)]    // installer run as administrator started 1format
     [InlineData(IntegrityLevel.System, IntegrityLevel.Medium, true)]
     [InlineData(IntegrityLevel.Medium, IntegrityLevel.Medium, false)] // the normal case
     [InlineData(IntegrityLevel.High, IntegrityLevel.High, false)]     // UAC off: Explorer runs elevated too
-    [InlineData(IntegrityLevel.Medium, IntegrityLevel.High, false)]   // Explorer above Filee: not what this warns about
+    [InlineData(IntegrityLevel.Medium, IntegrityLevel.High, false)]   // Explorer above 1format: not what this warns about
     [InlineData(IntegrityLevel.High, IntegrityLevel.Unknown, false)]  // no Explorer (another shell)
     [InlineData(IntegrityLevel.Unknown, IntegrityLevel.Medium, false)]
     [InlineData(IntegrityLevel.MediumPlus, IntegrityLevel.Medium, false)]

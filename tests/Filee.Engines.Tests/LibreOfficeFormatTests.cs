@@ -144,7 +144,7 @@ public class LibreOfficeFormatTests(EngineFixture fx) : IClassFixture<EngineFixt
         SkipUnlessInstalled();
         var folder = fx.NewFolder();
         var svg = Path.Combine(folder, "badge.svg");
-        await File.WriteAllTextAsync(svg, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"100\"><rect x=\"10\" y=\"10\" width=\"180\" height=\"80\" fill=\"#3a7\"/><text x=\"20\" y=\"60\" font-size=\"20\">Filee</text></svg>", TestContext.Current.CancellationToken);
+        await File.WriteAllTextAsync(svg, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"100\"><rect x=\"10\" y=\"10\" width=\"180\" height=\"80\" fill=\"#3a7\"/><text x=\"20\" y=\"60\" font-size=\"20\">1format</text></svg>", TestContext.Current.CancellationToken);
 
         var emf = await File.ReadAllBytesAsync(await ConvertAsync(svg, "emf"), TestContext.Current.CancellationToken);
         Assert.Equal(" EMF"u8.ToArray(), emf[40..44]); // EMR_HEADER signature
@@ -219,7 +219,7 @@ public class LibreOfficeFormatTests(EngineFixture fx) : IClassFixture<EngineFixt
             Write("content.xml",
                 "<office:document-content xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" xmlns:draw=\"urn:oasis:names:tc:opendocument:xmlns:drawing:1.0\" " +
                 "xmlns:svg=\"urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0\" xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\" office:version=\"1.2\">" +
-                "<office:body><office:drawing><draw:page draw:name=\"page1\"><draw:rect svg:x=\"2cm\" svg:y=\"2cm\" svg:width=\"8cm\" svg:height=\"4cm\"><text:p>Filee drawing</text:p></draw:rect>" +
+                "<office:body><office:drawing><draw:page draw:name=\"page1\"><draw:rect svg:x=\"2cm\" svg:y=\"2cm\" svg:width=\"8cm\" svg:height=\"4cm\"><text:p>1format drawing</text:p></draw:rect>" +
                 "</draw:page></office:drawing></office:body></office:document-content>");
         }
 
@@ -227,7 +227,7 @@ public class LibreOfficeFormatTests(EngineFixture fx) : IClassFixture<EngineFixt
         var png = new MagickImageInfo(await ConvertAsync(odg, "png"));
         Assert.True(png.Width > 100);
         using var pdf = PdfDocument.Open(await ConvertAsync(odg, "pdf"));
-        Assert.Contains("Filee drawing", pdf.GetPage(1).Text);
+        Assert.Contains("1format drawing", pdf.GetPage(1).Text);
     }
 
     private async Task<string> ConvertAsync(string input, string target)

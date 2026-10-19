@@ -65,7 +65,7 @@ internal static class HardwareVideo
     /// </summary>
     public const string VaapiDevice = "/dev/dri/renderD128";
 
-    /// <summary>The system Filee runs on.</summary>
+    /// <summary>The system 1format runs on.</summary>
     public static HostPlatform Current { get; } =
         OperatingSystem.IsWindows() ? HostPlatform.Windows
         : OperatingSystem.IsMacOS() ? HostPlatform.MacOS

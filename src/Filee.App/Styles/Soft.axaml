@@ -1,5 +1,5 @@
 <!--
-  Filee "soft" look: rounded corners, gentle surfaces, springy press feedback.
+  1format "soft" look: rounded corners, gentle surfaces, springy press feedback.
   Colours that depend on light/dark live in ThemeDictionaries below; the accent colour, corner radii and
   the UI font are written at runtime by ThemeService (so users can customise them).
 -->

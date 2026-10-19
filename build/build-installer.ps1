@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Builds the Windows installer Filee-<version>-win-Setup.exe (installer/Filee.iss) and, with -Portable, the portable
+  Builds the Windows installer 1format-<version>-win-Setup.exe (installer/1format.iss) and, with -Portable, the portable
   zip, into -OutputDir.
 
 .DESCRIPTION
@@ -13,7 +13,7 @@
   EngineDownloads by build/tools/make-installer-engines.cs.
 
 .PARAMETER CheckOnly
-  Compiles the script against a stub app without compression, to check installer/Filee.iss quickly (CI).
+  Compiles the script against a stub app without compression, to check installer/1format.iss quickly (CI).
 
 .EXAMPLE
   pwsh build/build-installer.ps1
@@ -24,7 +24,7 @@
 param(
     # Defaults to <Version> in Directory.Build.props.
     [string]$Version,
-    # A finished publish folder (Filee.exe, FileeExplorerMenu.dll/.msix, engines\); skips publishing.
+    # A finished publish folder (1format.exe, OneFormatExplorerMenu.dll/.msix, engines\); skips publishing.
     [string]$PublishDir,
     [string]$OutputDir = (Join-Path $PSScriptRoot '..\Releases'),
     [switch]$Portable,
@@ -87,10 +87,10 @@ New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 $OutputDir = (Resolve-Path $OutputDir).Path
 
 if ($CheckOnly) {
-    # The script only needs a folder with Filee.exe in it.
+    # The script only needs a folder with 1format.exe in it.
     $PublishDir = Join-Path $cache 'installer-check\app'
     New-Item -ItemType Directory -Force -Path $PublishDir | Out-Null
-    Set-Content (Join-Path $PublishDir 'Filee.exe') 'stub' -NoNewline
+    Set-Content (Join-Path $PublishDir '1format.exe') 'stub' -NoNewline
     $OutputDir = Join-Path $cache 'installer-check'
 }
 elseif (-not $PublishDir) {
@@ -100,21 +100,21 @@ elseif (-not $PublishDir) {
         dotnet publish (Join-Path $root 'src\Filee.App\Filee.App.csproj') -c Release -r win-x64 --self-contained `
             "-p:Version=$Version" -p:PublishReadyToRun=true -p:FileeRelease=true -o $PublishDir
     }
-    # The command line, in the same folder so it shares the runtime and the engines (filee-cli.exe). Its name can't
-    # be filee.exe next to Filee.exe, so the "filee" command is cli\filee.cmd, which the installer can put on PATH.
+    # The command line, in the same folder so it shares the runtime and the engines (1format-cli.exe). Its name can't
+    # be filee.exe next to 1format.exe, so the "filee" command is cli\1format.cmd, which the installer can put on PATH.
     Invoke-Checked 'dotnet publish (cli)' {
         dotnet publish (Join-Path $root 'src\Filee.Cli\Filee.Cli.csproj') -c Release -r win-x64 --self-contained `
             "-p:Version=$Version" -p:PublishReadyToRun=true -p:FileeRelease=true -o $PublishDir
     }
     New-Item -ItemType Directory -Force -Path (Join-Path $PublishDir 'cli') | Out-Null
-    Set-Content (Join-Path $PublishDir 'cli\filee.cmd') "@`"%~dp0..\filee-cli.exe`" %*" -Encoding ascii
-    # Next to Filee.exe: the Explorer menu package's external location is the install folder.
+    Set-Content (Join-Path $PublishDir 'cli\1format.cmd') "@`"%~dp0..\1format-cli.exe`" %*" -Encoding ascii
+    # Next to 1format.exe: the Explorer menu package's external location is the install folder.
     & (Join-Path $PSScriptRoot 'build-explorer-menu.ps1') -Destination $PublishDir -Version $Version
     # Only the small rhwp and 7-Zip are bundled; the app downloads the others when the user picks them.
     & (Join-Path $PSScriptRoot 'fetch-engines.ps1') -Only rhwp, 7zip -Destination (Join-Path $PublishDir 'engines')
 }
 $PublishDir = (Resolve-Path $PublishDir).Path
-if (-not (Test-Path (Join-Path $PublishDir 'Filee.exe'))) { throw "Filee.exe is missing in $PublishDir" }
+if (-not (Test-Path (Join-Path $PublishDir '1format.exe'))) { throw "1format.exe is missing in $PublishDir" }
 
 $iscc = Get-Iscc
 Push-Location $root
@@ -128,17 +128,17 @@ finally {
 Write-Host "compile installer $Version"
 $options = @('/Q', "/DAppVersion=$Version", "/DPublishDir=$PublishDir", "/O$OutputDir")
 if ($CheckOnly) { $options += '--no-compression' }
-Invoke-Checked 'ISCC' { & $iscc @options (Join-Path $root 'installer\Filee.iss') }
-$setupExe = Join-Path $OutputDir "Filee-$Version-win-Setup.exe"
+Invoke-Checked 'ISCC' { & $iscc @options (Join-Path $root 'installer\1format.iss') }
+$setupExe = Join-Path $OutputDir "1format-$Version-win-Setup.exe"
 if (-not (Test-Path $setupExe)) { throw "ISCC did not write $setupExe" }
 if ($CheckOnly) {
-    Write-Host "installer/Filee.iss compiles"
+    Write-Host "installer/1format.iss compiles"
     return
 }
 
 $files = @($setupExe)
 if ($Portable) {
-    $zip = Join-Path $OutputDir "Filee-$Version-win-Portable.zip"
+    $zip = Join-Path $OutputDir "1format-$Version-win-Portable.zip"
     Remove-Item $zip -ErrorAction SilentlyContinue
     Write-Host "zip  $zip"
     Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -147,7 +147,7 @@ if ($Portable) {
 }
 
 # Checksums for people who verify their download.
-$sums = Join-Path $OutputDir "Filee-$Version-SHA256SUMS.txt"
+$sums = Join-Path $OutputDir "1format-$Version-SHA256SUMS.txt"
 $files | ForEach-Object { "$((Get-FileHash $_ -Algorithm SHA256).Hash.ToLowerInvariant())  $(Split-Path $_ -Leaf)" } |
     Set-Content $sums -Encoding ascii
 Get-Item ($files + $sums) | Format-Table Name, Length

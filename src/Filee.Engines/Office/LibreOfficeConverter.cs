@@ -3,7 +3,7 @@
 // Word Pro, AbiWord, Apple Pages / Numbers / Keynote, StarOffice, WPS Office, ClarisWorks / AppleWorks, MacWrite, T602,
 // Pocket Word, flat OpenDocument, Publisher, CorelDRAW, Visio, CGM. It also writes the OpenDocument templates, FODT,
 // XLT and EMF / WMF, and turns SVG into EMF / WMF / ODG and a PDF page into SVG.
-// Uses a selected installation, Filee's downloaded copy, or the system installation.
+// Uses a selected installation, 1format's downloaded copy, or the system installation.
 //
 // Gotchas handled here:
 //  * Each concurrent soffice process needs its own user profile (-env:UserInstallation), otherwise
@@ -220,7 +220,7 @@ public sealed class LibreOfficeConverter : IConverter
                 {
                     Directory.CreateDirectory(folder);
                     var input = Path.Combine(folder, "warmup.txt");
-                    await File.WriteAllTextAsync(input, "Filee", cancellationToken);
+                    await File.WriteAllTextAsync(input, "1format", cancellationToken);
                     await RunAsync(soffice, slot, FilterFor("txt", "pdf", pdfA: false), folder, input, cancellationToken);
                     prepared++;
                 }
@@ -380,7 +380,7 @@ public sealed class LibreOfficeConverter : IConverter
     }
 
     /// <summary>
-    /// The user's own LibreOffice when they chose one in Settings → Engines, else Filee's copy (engines/libreoffice),
+    /// The user's own LibreOffice when they chose one in Settings → Engines, else 1format's copy (engines/libreoffice),
     /// else a LibreOffice installed on the PC. Each conversion uses its own profile, so an open LibreOffice is untouched.
     /// </summary>
     private void Locate()

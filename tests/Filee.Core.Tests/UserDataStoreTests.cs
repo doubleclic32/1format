@@ -29,7 +29,7 @@ public class UserDataStoreTests
         var group = reloaded.FindPreset("mine")!;
         Assert.True(group.IsGroup);
         Assert.Equal(["to-png", "to-jpg", "to-webp", "to-bmp", "to-gif", "to-ico"], group.SubPresetIds);
-        // No target format a Filee from before groups (which reads it as a conversion) could run it with.
+        // No target format a 1format from before groups (which reads it as a conversion) could run it with.
         Assert.Equal(Preset.GroupTarget, group.TargetFormat);
         Assert.Null(Filee.Core.Formats.FormatRegistry.FindById(Preset.GroupTarget));
     }
@@ -77,7 +77,7 @@ public class UserDataStoreTests
         store.Presets.Add(new Preset { Id = "old-group", Name = "Rotate", Kind = PresetKind.Group, SubPresetIds = ["to-png"] });
         store.SaveLibrary();
 
-        // An older Filee knows neither "kind" nor "subPresetIds" and leaves them out when it saves.
+        // An older 1format knows neither "kind" nor "subPresetIds" and leaves them out when it saves.
         var path = Path.Combine(dir.Path, "presets.json");
         var presets = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!.AsArray();
         var saved = presets.Single(p => (string?)p!["id"] == "old-group")!.AsObject();
@@ -129,7 +129,7 @@ public class UserDataStoreTests
         store.Presets.Add(new Preset { Id = "old", Name = "Old", TargetFormat = "mp4" });
         store.SaveLibrary();
 
-        // A Filee from before the option saved no "hardwareEncoding".
+        // A 1format from before the option saved no "hardwareEncoding".
         var path = Path.Combine(dir.Path, "presets.json");
         var presets = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!.AsArray();
         Assert.True((bool)presets.Single(p => (string?)p!["id"] == "fast")!["media"]!["hardwareEncoding"]!);
@@ -581,7 +581,7 @@ public class UserDataStoreTests
         Assert.Equal("rotate-left", presets[background + 1].Id);
     }
 
-    /// <summary>Presets and donuts as a Filee before PDF → PPTX wrote them (schema 17).</summary>
+    /// <summary>Presets and donuts as a 1format before PDF → PPTX wrote them (schema 17).</summary>
     private static (List<Preset> Presets, List<ToolbarProfile> Profiles) Version17Library()
     {
         var presets = BuiltInData.CreatePresets();
@@ -694,7 +694,7 @@ public class UserDataStoreTests
     [Fact]
     public void Back_from_an_older_Filee_rotate_and_flip_work_again_and_keep_the_users_changes()
     {
-        // What a Filee before 17 leaves after saving: kind, members and rotation dropped, the rest as it was.
+        // What a 1format before 17 leaves after saving: kind, members and rotation dropped, the rest as it was.
         var presets = BuiltInData.CreatePresets();
         var left = presets.Single(p => p.Id == "rotate-left");
         left.Image.Rotation = ImageRotation.None;
@@ -734,7 +734,7 @@ public class UserDataStoreTests
     [Fact]
     public void Back_from_an_older_Filee_compress_pdf_compresses_again_and_keeps_the_users_changes()
     {
-        // What a Filee before 20 leaves after saving: the compression level dropped, the rest as it was.
+        // What a 1format before 20 leaves after saving: the compression level dropped, the rest as it was.
         var presets = BuiltInData.CreatePresets();
         var compress = presets.Single(p => p.Id == "compress-pdf");
         compress.Pdf.Compression = PdfCompression.None;

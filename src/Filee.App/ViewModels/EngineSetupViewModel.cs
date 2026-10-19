@@ -1,5 +1,5 @@
 // Engine choice: the installer only contains the small engines. The installer's engine page hands its choice over
-// (InstallNow, downloads start at once); otherwise Filee asks on first run which large ones to download.
+// (InstallNow, downloads start at once); otherwise 1format asks on first run which large ones to download.
 
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;

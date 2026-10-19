@@ -1,5 +1,5 @@
 // Subtitle files come in whatever encoding their author's PC used. Korean SAMI and SRT files are usually CP949
-// (EUC-KR plus Microsoft's extra Hangul), Chinese ones GBK, Western ones Windows-1252. Filee reads them all and
+// (EUC-KR plus Microsoft's extra Hangul), Chinese ones GBK, Western ones Windows-1252. 1format reads them all and
 // always writes UTF-8.
 
 using System.Globalization;

@@ -147,7 +147,7 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
         notice.Show();
     }
 
-    /// <summary>Shows the one-time "Is Filee helping you?" card in the bottom-right corner.</summary>
+    /// <summary>Shows the one-time "Is 1format helping you?" card in the bottom-right corner.</summary>
     public void ShowFeedbackNotice()
     {
         if (_feedbackNotice is not null)
@@ -157,7 +157,7 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
         _feedbackNotice.Show();
     }
 
-    /// <summary>Shows the "Filee is running as administrator" card in the bottom-right corner (once per run).</summary>
+    /// <summary>Shows the "1format is running as administrator" card in the bottom-right corner (once per run).</summary>
     public void ShowElevationNotice()
     {
         if (_elevationNoticeShown)
@@ -169,7 +169,7 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
     private bool _elevationNoticeShown;
 
     /// <summary>
-    /// Shows the "Filee can't convert .ncm files yet" card with "Request this format", replacing an earlier one.
+    /// Shows the "1format can't convert .ncm files yet" card with "Request this format", replacing an earlier one.
     /// </summary>
     public void ShowFormatRequestNotice(IReadOnlyList<string> extensions)
     {

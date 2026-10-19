@@ -9,9 +9,9 @@
     <TextBlock Classes="h1" Text="{DynamicResource about.title}" />
     <Border Classes="card">
       <StackPanel Orientation="Horizontal" Spacing="18">
-        <Image Source="avares://Filee/Assets/Icons/filee.png" Width="72" Height="72" />
+        <Image Source="avares://1format/Assets/Icons/1format.png" Width="72" Height="72" />
         <StackPanel VerticalAlignment="Center" Spacing="4">
-          <TextBlock Text="Filee" FontSize="24" FontWeight="Bold" />
+          <TextBlock Text="1format" FontSize="24" FontWeight="Bold" />
           <TextBlock Classes="muted" Text="{Binding Version}" />
           <TextBlock Classes="muted" Text="{DynamicResource about.license}" />
           <Button Classes="ghost" Padding="0" Click="OnOpenRepository" Margin="0,4,0,0">
@@ -23,7 +23,7 @@
         </StackPanel>
       </StackPanel>
     </Border>
-    <!-- The sponsors right below Filee itself, while there are any -->
+    <!-- The sponsors right below 1format itself, while there are any -->
     <Border Classes="card" IsVisible="{Binding #Supporters.IsVisible}">
       <StackPanel Spacing="12">
         <TextBlock Classes="h2" Text="{DynamicResource sponsor.thanks}" />

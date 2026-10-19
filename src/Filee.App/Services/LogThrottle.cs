@@ -1,4 +1,4 @@
-// Keeps diagnostics that can come in bursts to a few log lines: Explorer starts one Filee per selected file, and a
+// Keeps diagnostics that can come in bursts to a few log lines: Explorer starts one 1format per selected file, and a
 // gesture or shortcut can repeat many times a minute. The first event of a kind is logged, then at most one per
 // interval, saying how many were held back in between.
 

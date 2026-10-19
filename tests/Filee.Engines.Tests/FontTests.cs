@@ -89,7 +89,7 @@ public class FontTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.NotNull(typeface);
         Assert.Equal(source.GlyphCount, typeface.GlyphCount);
         using var font = new SKFont(typeface, 48);
-        var text = sample == NameKeyed ? "Aae" : "Filee";
+        var text = sample == NameKeyed ? "Aae" : "Filee";   // des caractères présents dans le sous-ensemble de glyphes, pas la marque
         Assert.All(font.GetGlyphs(text), g => Assert.NotEqual(0, g));
         Assert.True(font.MeasureText(text) > 48);
         using var path = font.GetGlyphPath(font.GetGlyphs(text)[0]);
@@ -139,7 +139,7 @@ public class FontTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.Equal(0, woff2.Length % 4);
         Assert.Equal(woff2.Length, (int)BinaryPrimitives.ReadUInt32BigEndian(woff2.AsSpan(8)));
         Assert.True(woff2.Length < woff.Length * 0.8, $"WOFF2 {woff2.Length} vs WOFF {woff.Length}");
-        Assert.True(woff2.Length < google.Length * 1.05, $"Filee {woff2.Length} vs Google {google.Length}");
+        Assert.True(woff2.Length < google.Length * 1.05, $"1format {woff2.Length} vs Google {google.Length}");
     }
 
     [Fact]
@@ -416,7 +416,7 @@ public class FontTests(EngineFixture fx) : IClassFixture<EngineFixture>
         return result;
     }
 
-    /// <summary>A WOFF2 collection of two fonts with untransformed tables (written by hand: Filee writes no collections).</summary>
+    /// <summary>A WOFF2 collection of two fonts with untransformed tables (written by hand: 1format writes no collections).</summary>
     private static byte[] Woff2Collection(SfntFont first, SfntFont second)
     {
         var tables = new List<(string Tag, byte[] Data)>();

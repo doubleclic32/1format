@@ -1,2 +1,2 @@
-/* Finder's right-click menu: the title of Filee's service (NSServices in Info.plist). */
-"Convert with Filee" = "Filee로 변환";
+/* Finder's right-click menu: the title of 1format's service (NSServices in Info.plist). */
+"Convert with 1format" = "1format로 변환";

@@ -105,7 +105,7 @@ public sealed class TriggerService : IDisposable
         LinuxBackendMissing = false;
         try
         {
-            // Background threads: a hook that fails to stop can never keep Filee running after it quits.
+            // Background threads: a hook that fails to stop can never keep 1format running after it quits.
             _hook = _createHook();
             _hook.HookEnabled += (_, _) => { _log.LogInformation("Global input hook started"); NotifyStatus(); };
             _hook.HookDisabled += (_, _) => { _log.LogInformation("Global input hook stopped"); NotifyStatus(); };
@@ -137,7 +137,7 @@ public sealed class TriggerService : IDisposable
                     NotifyStatus();
                 }
             })
-            { IsBackground = true, Name = "Filee global input" };
+            { IsBackground = true, Name = "1format global input" };
             _hookThread.Start();
         }
         catch (Exception ex)
@@ -218,7 +218,7 @@ public sealed class TriggerService : IDisposable
     }
 
     /// <summary>
-    /// Checks every two seconds whether the user switched Filee on under Accessibility, then starts the gestures;
+    /// Checks every two seconds whether the user switched 1format on under Accessibility, then starts the gestures;
     /// no restart needed.
     /// </summary>
     private void WatchForPermission()

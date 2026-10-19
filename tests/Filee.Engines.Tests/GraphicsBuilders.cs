@@ -24,7 +24,7 @@ internal static class GraphicsBuilders
           <rect x="20" y="20" width="160" height="80" rx="12" fill="url(#g)"/>
           <path d="M 220 150 C 260 40, 320 40, 360 150 Z" fill="#E4572E" stroke="#222" stroke-width="3"/>
           <circle cx="200" cy="100" r="30" fill="#FF0000"/>
-          <text x="20" y="170" font-family="Arial, sans-serif" font-size="28" fill="#222">Filee SVG 한글</text>
+          <text x="20" y="170" font-family="Arial, sans-serif" font-size="28" fill="#222">1format SVG 한글</text>
         </svg>
         """;
 
@@ -34,7 +34,7 @@ internal static class GraphicsBuilders
         %%BoundingBox: 0 0 200 100
         %%EndComments
         newpath 10 10 moveto 190 90 lineto 190 10 lineto closepath 0.2 0.5 0.8 setrgbcolor fill
-        /Helvetica findfont 18 scalefont setfont 0 0 0 setrgbcolor 20 70 moveto (Filee EPS) show
+        /Helvetica findfont 18 scalefont setfont 0 0 0 setrgbcolor 20 70 moveto (1format EPS) show
         showpage
         %%EOF
         """;
@@ -148,7 +148,7 @@ internal static class GraphicsBuilders
             (258, 3, 3, [.. U16(16), .. U16(16), .. U16(16)]),
             (259, 3, 1, U16(1)),
             (262, 3, 1, U16(34892)), // LinearRaw
-            (271, 2, 6, "Filee\0"u8.ToArray()),
+            (271, 2, 6, "1format\0"u8.ToArray()),
             (272, 2, 5, "Test\0"u8.ToArray()),
             (273, 4, 1, U32(0)), // strip offset, patched below
             (274, 3, 1, U16(orientation)),
@@ -275,7 +275,7 @@ internal static class GraphicsBuilders
     public static void Emf(string path, int widthMm, int heightMm)
     {
         var frame = new Rect { Right = widthMm * 100, Bottom = heightMm * 100 }; // .01 mm units
-        var dc = CreateEnhMetaFileW(IntPtr.Zero, path, ref frame, "Filee test\0\0");
+        var dc = CreateEnhMetaFileW(IntPtr.Zero, path, ref frame, "1format test\0\0");
         Assert.NotEqual(IntPtr.Zero, dc);
         DrawSample(dc, widthMm, heightMm);
         DeleteEnhMetaFile(CloseEnhMetaFile(dc));

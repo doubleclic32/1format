@@ -1,4 +1,4 @@
-// A later launch hands its arguments to the running Filee, also while that one is still starting.
+// A later launch hands its arguments to the running 1format, also while that one is still starting.
 
 using Filee.App.Services;
 
@@ -9,9 +9,9 @@ public class SingleInstanceTests
     [Fact]
     public async Task Arguments_reach_a_first_instance_that_starts_listening_late()
     {
-        // The installer's --quit (or a second launch) came 8 s after Filee started, on a computer where Filee took 12 s
+        // The installer's --quit (or a second launch) came 8 s after 1format started, on a computer where 1format took 12 s
         // to start listening: one 3-second try gave up and the request was lost.
-        var name = "Filee-test-" + Guid.NewGuid().ToString("N")[..8];
+        var name = "1format-test-" + Guid.NewGuid().ToString("N")[..8];
         using var first = SingleInstance.Acquire(name);
         Assert.True(first.IsFirst);
         var received = new TaskCompletionSource<string[]>();
@@ -34,7 +34,7 @@ public class SingleInstanceTests
     public void A_copy_with_its_own_data_folder_never_reaches_the_users_filee()
     {
         // The name without a data folder must stay the same: a new version forwards to an older one that runs.
-        var usual = "Filee-" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData("someone"u8.ToArray()))[..12];
+        var usual = "1format-" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData("someone"u8.ToArray()))[..12];
         Assert.Equal(usual, SingleInstance.NameFor("someone", null));
         var test = SingleInstance.NameFor("someone", Path.Combine(Path.GetTempPath(), "filee-a"));
         Assert.NotEqual(usual, test);
@@ -45,7 +45,7 @@ public class SingleInstanceTests
     [Fact]
     public async Task Forwarding_gives_up_when_nobody_listens()
     {
-        var name = "Filee-test-" + Guid.NewGuid().ToString("N")[..8];
+        var name = "1format-test-" + Guid.NewGuid().ToString("N")[..8];
         using var first = SingleInstance.Acquire(name);
 
         var delivered = await Task.Run(() =>
@@ -60,7 +60,7 @@ public class SingleInstanceTests
     [Fact]
     public async Task Forwarding_tells_that_nobody_answered()
     {
-        var name = "Filee-test-" + Guid.NewGuid().ToString("N")[..8];
+        var name = "1format-test-" + Guid.NewGuid().ToString("N")[..8];
         using var first = SingleInstance.Acquire(name);
 
         var result = await Task.Run(() =>
@@ -76,7 +76,7 @@ public class SingleInstanceTests
     public void Releasing_twice_is_harmless()
     {
         // A restart without administrator rights releases the lock early; Program releases it again at exit.
-        var name = "Filee-test-" + Guid.NewGuid().ToString("N")[..8];
+        var name = "1format-test-" + Guid.NewGuid().ToString("N")[..8];
         var first = SingleInstance.Acquire(name);
         first.Dispose();
         first.Dispose();
@@ -86,7 +86,7 @@ public class SingleInstanceTests
     }
 }
 
-/// <summary>Windows: a running Filee with other rights (as administrator) refuses a normal launch.</summary>
+/// <summary>Windows: a running 1format with other rights (as administrator) refuses a normal launch.</summary>
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public class SingleInstanceAccessTests
 {
@@ -94,9 +94,9 @@ public class SingleInstanceAccessTests
     public async Task A_pipe_that_refuses_this_process_is_given_up_on_quickly()
     {
         Assert.SkipUnless(OperatingSystem.IsWindows(), "Windows pipe security.");
-        var name = "Filee-test-" + Guid.NewGuid().ToString("N")[..8];
+        var name = "1format-test-" + Guid.NewGuid().ToString("N")[..8];
         using var first = SingleInstance.Acquire(name);
-        // Only SYSTEM may write: what a pipe of an elevated Filee looks like to a normal process.
+        // Only SYSTEM may write: what a pipe of an elevated 1format looks like to a normal process.
         var security = new System.IO.Pipes.PipeSecurity();
         security.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
             new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.LocalSystemSid, null),

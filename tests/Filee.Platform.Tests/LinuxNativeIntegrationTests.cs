@@ -19,7 +19,7 @@ public sealed class LinuxNativeIntegrationTests
         try
         {
             var capture = Path.Combine(root, "arguments");
-            var target = Path.Combine(root, "Filee's app");
+            var target = Path.Combine(root, "1format's app");
             File.WriteAllText(target, "#!/bin/sh\nprintf '%s\\0' \"$@\" > " + LinuxDesktopIntegration.ShellArgument(capture) + "\n");
             File.SetUnixFileMode(target, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
             var first = Path.Combine(root, "a", "한글 ' $(touch BAD) %F.txt");
@@ -31,7 +31,7 @@ public sealed class LinuxNativeIntegrationTests
             }
             var data = Path.Combine(root, "data");
             new LinuxDesktopIntegration(Path.Combine(root, "config"), data).SetContextMenu(true, target, "Convert");
-            var processInfo = new ProcessStartInfo(Path.Combine(data, "nautilus", "scripts", "Filee"))
+            var processInfo = new ProcessStartInfo(Path.Combine(data, "nautilus", "scripts", "1format"))
             {
                 UseShellExecute = false,
                 WorkingDirectory = root,

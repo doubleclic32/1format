@@ -15,12 +15,12 @@
     <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
 
     <Version>1.12.0</Version>
-    <Product>Filee</Product>
-    <Authors>Filee contributors</Authors>
-    <Copyright>Copyright (c) Filee contributors</Copyright>
+    <Product>1format</Product>
+    <Authors>Double Clic</Authors>
+    <Copyright>Copyright (c) Double Clic. D'après Filee (MIT), Myeonggu Kim et contributeurs.</Copyright>
 
     <!-- Single source of truth for the GitHub repository (used by the updater and the About page). -->
-    <FileeRepositoryUrl>https://github.com/KnifeLemon/Filee</FileeRepositoryUrl>
+    <FileeRepositoryUrl>https://github.com/doubleclic32/1format</FileeRepositoryUrl>
     <RepositoryUrl>$(FileeRepositoryUrl)</RepositoryUrl>
   </PropertyGroup>
 </Project>

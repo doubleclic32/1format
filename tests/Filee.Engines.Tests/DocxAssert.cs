@@ -1,4 +1,4 @@
-// Shared checks for DOCX files written by Filee: the Open XML SDK schema validator (the element order Word enforces),
+// Shared checks for DOCX files written by 1format: the Open XML SDK schema validator (the element order Word enforces),
 // package structure, and an independent reader (LibreOffice) that must convert the file without error.
 
 using System.IO.Compression;
@@ -71,7 +71,7 @@ internal static class DocxAssert
         return XDocument.Load(zip.GetEntry(part)!.Open(), LoadOptions.PreserveWhitespace).Root!;
     }
 
-    /// <summary>The file read back with Filee's own DOCX reader.</summary>
+    /// <summary>The file read back with 1format's own DOCX reader.</summary>
     public static HDocument ReadBack(string docx) => DocxReader.Read(docx, Path.Combine(Path.GetDirectoryName(docx)!, "readback-media"));
 
     /// <summary>Plain text of a paragraph (links included).</summary>

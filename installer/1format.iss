@@ -1,19 +1,21 @@
-﻿; Filee installer (Inno Setup 7). Build it with build/build-installer.ps1, which publishes the app, generates
+﻿; 1format installer (Inno Setup 7). Build it with build/build-installer.ps1, which publishes the app, generates
 ; obj\engines.iss (build/tools/make-installer-engines.cs) and runs
-;   ISCC.exe /DAppVersion=1.2.0 /DPublishDir=<published app> /O<output folder> installer\Filee.iss
+;   ISCC.exe /DAppVersion=1.2.0 /DPublishDir=<published app> /O<output folder> installer\1format.iss
 ;
 ; Besides copying files it
-;  - installs for all users into Program Files (administrator rights, one UAC prompt). Filee itself keeps running as
+;  - installs for all users into Program Files (administrator rights, one UAC prompt). 1format itself keeps running as
 ;    the signed-in user without elevation: Windows blocks drag and drop from Explorer into elevated windows;
-;  - closes a running Filee first ("Filee.exe --quit") and moves FileeExplorerMenu.dll aside when Explorer has it
+;  - closes a running 1format first ("1format.exe --quit") and moves OneFormatExplorerMenu.dll aside when Explorer has it
 ;    loaded, so updates need no restart;
-;  - takes over an installation of Filee 1.1 or earlier (Velopack, per user in %LocalAppData%\Filee): removes it but
+;  - TODO(2): inherited from Filee, this still removes an installation of Filee 1.1 or earlier (Velopack, per user
+;    in %LocalAppData%\Filee) found on the machine. A 1format setup has no business uninstalling another product:
+;    drop VelopackUninstallKey and the migration code, or keep it only when upgrading from a 1format install;
 ;    keeps the settings (%APPDATA%\Filee) and downloaded engines (%LocalAppData%\Filee\engines);
 ;  - on Windows 11 registers the top-level File Explorer menu entry (an unsigned sparse package, which needs the
 ;    administrator rights Setup already has);
-;  - offers the optional conversion engines; Filee downloads the chosen ones (verified) when Setup starts it;
-;  - can put the "filee" command line on PATH ({app}\cli\filee.cmd runs filee-cli.exe).
-; The uninstaller runs "Filee.exe --uninstall-cleanup" for the per-user parts (UninstallCleanup.cs).
+;  - offers the optional conversion engines; 1format downloads the chosen ones (verified) when Setup starts it;
+;  - can put the "1format" command line on PATH ({app}\cli\1format.cmd runs 1format-cli.exe).
+; The uninstaller runs "1format.exe --uninstall-cleanup" for the per-user parts (UninstallCleanup.cs).
 
 #ifndef AppVersion
   #error AppVersion is not defined: build with build/build-installer.ps1
@@ -22,22 +24,22 @@
   #error PublishDir is not defined: build with build/build-installer.ps1
 #endif
 
-#define AppName "Filee"
-#define AppExe "Filee.exe"
-#define RepositoryUrl "https://github.com/KnifeLemon/Filee"
-; Never change: Windows finds the installed Filee by this id (uninstall key "{<id>}_is1").
-#define AppGuid "C8686E06-8327-40A2-B0F7-3DEDD61D9248"
+#define AppName "1format"
+#define AppExe "1format.exe"
+#define RepositoryUrl "https://github.com/doubleclic32/1format"
+; Never change: Windows finds the installed 1format by this id (uninstall key "{<id>}_is1").
+#define AppGuid "918BF608-73DF-4045-9A9A-0A35B82D93B7"
 
 [Setup]
 AppId={{{#AppGuid}}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
-AppPublisher=Filee contributors
+AppPublisher=Double Clic
 AppPublisherURL={#RepositoryUrl}
 AppSupportURL={#RepositoryUrl}/issues
 AppUpdatesURL={#RepositoryUrl}/releases
-AppCopyright=Copyright (c) Filee contributors
+AppCopyright=Copyright (c) Double Clic. D'après Filee (MIT).
 VersionInfoVersion={#AppVersion}
 VersionInfoProductName={#AppName}
 SetupArchitecture=x64
@@ -50,16 +52,16 @@ DisableWelcomePage=no
 DisableProgramGroupPage=yes
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\{#AppExe}
-SetupIconFile=..\src\Filee.App\Assets\Icons\filee.ico
+SetupIconFile=..\src\1format.App\Assets\Icons\1format.ico
 WizardStyle=modern dynamic
 WizardImageFile=wizard-light.png
 WizardImageFileDynamicDark=wizard-dark.png
-WizardSmallImageFile=..\src\Filee.App\Assets\Icons\filee.png
-OutputBaseFilename=Filee-{#AppVersion}-win-Setup
+WizardSmallImageFile=..\src\1format.App\Assets\Icons\1format.png
+OutputBaseFilename=1format-{#AppVersion}-win-Setup
 Compression=lzma2/ultra64
 SolidCompression=yes
-; Filee is closed by PrepareToInstall; Restart Manager is only the fallback, and only for Filee.exe: with DLLs in the
-; filter it would offer to close Explorer, which loads FileeExplorerMenu.dll.
+; 1format is closed by PrepareToInstall; Restart Manager is only the fallback, and only for 1format.exe: with DLLs in the
+; filter it would offer to close Explorer, which loads OneFormatExplorerMenu.dll.
 CloseApplications=yes
 CloseApplicationsFilter=*.exe
 RestartApplications=no
@@ -73,36 +75,46 @@ SetupLogging=yes
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "ko"; MessagesFile: "compiler:Languages\Korean.isl"
 Name: "zhcn"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
 
 ; Texts shared with the app (engine names, the two options of the General page) are generated into obj\engines.iss.
 [CustomMessages]
 en.GroupOptions=Options:
 ko.GroupOptions=옵션:
 zhcn.GroupOptions=选项：
+fr.GroupOptions=Options :
 en.TaskModernMenu=Also show it at the top of the Windows 11 menu, not only under “Show more options”
 ko.TaskModernMenu=Windows 11 기본 메뉴에도 표시 (“추가 옵션 표시”를 누르지 않아도 보여요)
 zhcn.TaskModernMenu=也显示在 Windows 11 主菜单中，而不仅是“显示更多选项”里
+fr.TaskModernMenu=L’afficher aussi en haut du menu de Windows 11, et pas seulement dans « Afficher plus d’options »
 en.StatusRemovingOld=Removing the previous version (settings and engines are kept)...
 ko.StatusRemovingOld=이전 버전을 정리하는 중 (설정과 엔진은 그대로 둬요)...
 zhcn.StatusRemovingOld=正在移除旧版本（保留设置和引擎）...
-en.StatusExplorerMenu=Adding Filee to the File Explorer menu...
-ko.StatusExplorerMenu=탐색기 메뉴에 Filee를 추가하는 중...
-zhcn.StatusExplorerMenu=正在将 Filee 添加到资源管理器菜单...
-en.ExplorerMenuFailed=Windows did not add Filee to the top of the File Explorer menu:%n%n%1%n%nFilee still appears under “Show more options”. You can try again in Filee under Settings → General.
-ko.ExplorerMenuFailed=Windows가 탐색기 기본 메뉴에 Filee를 추가하지 못했어요:%n%n%1%n%nFilee는 “추가 옵션 표시” 안에는 계속 나타나요. Filee의 설정 → 일반에서 다시 시도할 수 있어요.
-zhcn.ExplorerMenuFailed=Windows 未能将 Filee 添加到资源管理器主菜单：%n%n%1%n%nFilee 仍会出现在“显示更多选项”中。你可以在 Filee 的 设置 → 常规 中重试。
-en.ReadyEngines=Conversion engines (Filee downloads them when it starts):
-ko.ReadyEngines=변환 엔진 (Filee가 시작하면서 내려받아요):
-zhcn.ReadyEngines=转换引擎（Filee 启动后下载）：
-en.FinishedRunning=Filee is installed and running in the notification area of the taskbar.%n%nTo convert files, drag them while holding the trigger key, or right-click them in File Explorer.
-ko.FinishedRunning=Filee가 설치되어 작업 표시줄 알림 영역에서 실행 중이에요.%n%n파일을 변환하려면 지정한 키를 누른 채 파일을 끌거나, 탐색기에서 파일을 우클릭하세요.
-zhcn.FinishedRunning=Filee 已安装，正在任务栏通知区域运行。%n%n要转换文件，请按住触发键拖动文件，或在资源管理器中右键单击文件。
+fr.StatusRemovingOld=Suppression de la version précédente (les réglages et les moteurs sont conservés)...
+en.StatusExplorerMenu=Adding 1format to the File Explorer menu...
+ko.StatusExplorerMenu=탐색기 메뉴에 1format를 추가하는 중...
+zhcn.StatusExplorerMenu=正在将 1format 添加到资源管理器菜单...
+fr.StatusExplorerMenu=Ajout de 1format au menu de l’Explorateur de fichiers...
+en.ExplorerMenuFailed=Windows did not add 1format to the top of the File Explorer menu:%n%n%1%n%n1format still appears under “Show more options”. You can try again in 1format under Settings → General.
+ko.ExplorerMenuFailed=Windows가 탐색기 기본 메뉴에 1format를 추가하지 못했어요:%n%n%1%n%n1format는 “추가 옵션 표시” 안에는 계속 나타나요. 1format의 설정 → 일반에서 다시 시도할 수 있어요.
+zhcn.ExplorerMenuFailed=Windows 未能将 1format 添加到资源管理器主菜单：%n%n%1%n%n1format 仍会出现在“显示更多选项”中。你可以在 1format 的 设置 → 常规 中重试。
+fr.ExplorerMenuFailed=Windows n’a pas ajouté 1format en haut du menu de l’Explorateur de fichiers :%n%n%1%n%n1format reste accessible dans « Afficher plus d’options ». Vous pouvez réessayer depuis 1format, dans Réglages → Général.
+en.ReadyEngines=Conversion engines (1format downloads them when it starts):
+ko.ReadyEngines=변환 엔진 (1format가 시작하면서 내려받아요):
+zhcn.ReadyEngines=转换引擎（1format 启动后下载）：
+fr.ReadyEngines=Moteurs de conversion (1format les télécharge à son démarrage) :
+en.FinishedRunning=1format is installed and running in the notification area of the taskbar.%n%nTo convert files, drag them while holding the trigger key, or right-click them in File Explorer.
+ko.FinishedRunning=1format가 설치되어 작업 표시줄 알림 영역에서 실행 중이에요.%n%n파일을 변환하려면 지정한 키를 누른 채 파일을 끌거나, 탐색기에서 파일을 우클릭하세요.
+zhcn.FinishedRunning=1format 已安装，正在任务栏通知区域运行。%n%n要转换文件，请按住触发键拖动文件，或在资源管理器中右键单击文件。
+fr.FinishedRunning=1format est installé et tourne dans la zone de notification de la barre des tâches.%n%nPour convertir des fichiers, faites-les glisser en maintenant la touche choisie, ou faites un clic droit dessus dans l’Explorateur.
 en.TaskCli=Add the "filee" command to PATH (convert from the command line)
 ko.TaskCli="filee" 명령어를 PATH에 추가 (명령줄에서 변환)
 zhcn.TaskCli=将 "filee" 命令添加到 PATH（在命令行中转换）
-en.FinishedEngines=The conversion engines you picked are downloading in the Filee window.
-ko.FinishedEngines=선택한 변환 엔진은 Filee 창에서 내려받고 있어요.
-zhcn.FinishedEngines=你选择的转换引擎正在 Filee 窗口中下载。
+fr.TaskCli=Ajouter la commande « filee » au PATH (convertir en ligne de commande)
+en.FinishedEngines=The conversion engines you picked are downloading in the 1format window.
+ko.FinishedEngines=선택한 변환 엔진은 1format 창에서 내려받고 있어요.
+zhcn.FinishedEngines=你选择的转换引擎正在 1format 窗口中下载。
+fr.FinishedEngines=Les moteurs de conversion que vous avez choisis se téléchargent dans la fenêtre de 1format.
 
 [Tasks]
 Name: "contextmenu"; Description: "{cm:TaskContextMenu}"; GroupDescription: "{cm:GroupOptions}"; Check: IsFreshInstall
@@ -119,16 +131,16 @@ Name: "{autoprograms}\{#AppName}"; Filename: "{app}\{#AppExe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopicon
 
 [UninstallRun]
-; Quits Filee, then removes the Explorer menu entries, the startup entry and downloaded engines. Settings stay.
-Filename: "{app}\{#AppExe}"; Parameters: "--uninstall-cleanup"; Flags: runhidden waituntilterminated; RunOnceId: "FileeCleanup"
+; Quits 1format, then removes the Explorer menu entries, the startup entry and downloaded engines. Settings stay.
+Filename: "{app}\{#AppExe}"; Parameters: "--uninstall-cleanup"; Flags: runhidden waituntilterminated; RunOnceId: "1formatCleanup"
 
 [Code]
 const
-  // ExplorerMenuPackage in src/Filee.Platform.Windows (InstallerScriptTests keeps these in sync).
-  ExplorerMenuName = 'Filee.ExplorerMenu';
-  ExplorerMenuFamily = 'Filee.ExplorerMenu_c73vxh346rtay';
-  ExplorerMenuDll = 'FileeExplorerMenu.dll';
-  ExplorerMenuPackageFile = 'FileeExplorerMenu.msix';
+  // ExplorerMenuPackage in src/1format.Platform.Windows (InstallerScriptTests keeps these in sync).
+  ExplorerMenuName = 'OneFormat.ExplorerMenu';
+  ExplorerMenuFamily = 'OneFormat.ExplorerMenu_3bba4463fh3z4';
+  ExplorerMenuDll = 'OneFormatExplorerMenu.dll';
+  ExplorerMenuPackageFile = 'OneFormatExplorerMenu.msix';
   ExplorerMenuMinimumBuild = 22000;
   // EngineInstaller marks every installed engine folder with this file.
   EngineMarker = '.filee-component';
@@ -137,7 +149,7 @@ const
   ERROR_INSUFFICIENT_BUFFER = 122;
 
 var
-  // Filee 1.2 or later is installed already: this run is an update, which keeps the user's choices.
+  // 1format 1.2 or later is installed already: this run is an update, which keeps the user's choices.
   WasInstalled: Boolean;
   HadVelopackInstall: Boolean;
   ExplorerMenuWasRegistered: Boolean;
@@ -225,7 +237,7 @@ begin
   RunPowerShell('Get-AppxPackage -Name ' + PsQuote(ExplorerMenuName) + ' | Remove-AppxPackage', Error);
 end;
 
-// Registers the package next to Filee.exe with the install folder as its external location. A fresh install first
+// Registers the package next to 1format.exe with the install folder as its external location. A fresh install first
 // removes any older registration, which may point to another folder.
 procedure RegisterExplorerMenu(RemoveFirst: Boolean);
 var
@@ -246,7 +258,7 @@ begin
     Exit;
   if WasInstalled then
   begin
-    // An update keeps what was chosen in Filee (Settings > General) and refreshes the registration.
+    // An update keeps what was chosen in 1format (Settings > General) and refreshes the registration.
     if ExplorerMenuWasRegistered then
       RegisterExplorerMenu(False);
   end
@@ -256,7 +268,7 @@ begin
     UnregisterExplorerMenu;
 end;
 
-// Explorer keeps FileeExplorerMenu.dll loaded after showing the menu. A loaded DLL cannot be replaced or deleted, but
+// Explorer keeps OneFormatExplorerMenu.dll loaded after showing the menu. A loaded DLL cannot be replaced or deleted, but
 // it can be renamed: move it into Folder (same drive) and let Windows delete it at the next restart.
 procedure MoveLoadedDllAside(const Folder: String);
 var
@@ -309,7 +321,7 @@ begin
 end;
 
 // Removes the Velopack installation of Filee 1.1 and earlier without running its uninstaller, which would also
-// delete the downloaded engines. Its registry entries (context menu, startup) are rewritten by the new Filee.
+// delete the downloaded engines. Its registry entries (context menu, startup) are rewritten by the new 1format.
 procedure RemoveVelopackInstall;
 var
   Root: String;
@@ -320,7 +332,7 @@ begin
     UnregisterExplorerMenu;
   Root := ExpandConstant('{localappdata}\Filee');
   DeleteFileOrSchedule(Root + '\Update.exe');
-  DeleteFileOrSchedule(Root + '\Filee.exe');
+  DeleteFileOrSchedule(Root + '\1format.exe');
   DeleteTreeOrSchedule(Root + '\current');
   DeleteTreeOrSchedule(Root + '\packages');
   DeleteFile(ExpandConstant('{userprograms}\Filee.lnk'));
@@ -331,7 +343,7 @@ end;
 const
   EnvironmentKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
 
-// The folder with filee.cmd (the command line), which goes on the system PATH.
+// The folder with 1format.cmd (the command line), which goes on the system PATH.
 function CliFolder: String;
 begin
   Result := ExpandConstant('{app}\cli');
@@ -398,7 +410,7 @@ begin
       Folder := Copy(Rest, 1, Comma - 1);
       Rest := Copy(Rest, Comma + 1, MaxInt);
     end;
-    if not FileExists(ExpandConstant('{localappdata}\Filee\engines\') + Folder + '\' + EngineMarker) then
+    if not FileExists(ExpandConstant('{localappdata}\1format\engines\') + Folder + '\' + EngineMarker) then
     begin
       Result := False;
       Exit;
@@ -453,9 +465,9 @@ begin
     Result := 'off';
 end;
 
-// Starts Filee as the signed-in user (not elevated) with the choices made in the wizard. An update starts it in
+// Starts 1format as the signed-in user (not elevated) with the choices made in the wizard. An update starts it in
 // the tray, as it was running before.
-procedure StartFilee;
+procedure Start1format;
 var
   Parameters: String;
   ResultCode: Integer;
@@ -467,7 +479,7 @@ begin
       ' --start-with-windows=' + OnOff(WizardIsTaskSelected('startup')) +
       ' --context-menu=' + OnOff(WizardIsTaskSelected('contextmenu'));
   if not ExecAsOriginalUser(ExpandConstant('{app}\{#AppExe}'), Parameters, '', SW_SHOWNORMAL, ewNoWait, ResultCode) then
-    Log('Could not start Filee: ' + SysErrorMessage(ResultCode));
+    Log('Could not start 1format: ' + SysErrorMessage(ResultCode));
 end;
 
 function InitializeSetup: Boolean;
@@ -530,7 +542,7 @@ var
   ResultCode: Integer;
 begin
   Result := '';
-  // Filee 1.2 and later exit when asked (after saving); this waits until they have.
+  // 1format 1.2 and later exit when asked (after saving); this waits until they have.
   ResultCode := 0;
   if WasInstalled and FileExists(ExpandConstant('{app}\{#AppExe}')) then
     Exec(ExpandConstant('{app}\{#AppExe}'), '--quit', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
@@ -554,7 +566,7 @@ begin
         UpdateExplorerMenu;
         if WizardIsTaskSelected('cli') then
           AddCliToPath;
-        StartFilee;
+        Start1format;
       end;
   end;
 end;

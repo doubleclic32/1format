@@ -10,7 +10,7 @@ using ImageMagick;
 
 namespace Filee.Engines.Heic;
 
-/// <summary>Writes HEIC files with Filee's copy of FFmpeg (it has the HEVC encoder ImageMagick lacks).</summary>
+/// <summary>Writes HEIC files with 1format's copy of FFmpeg (it has the HEVC encoder ImageMagick lacks).</summary>
 internal static class HeicWriter
 {
     /// <summary>Tile size of larger pictures, as cameras write them: every decoder handles 512 × 512 HEVC pictures.</summary>

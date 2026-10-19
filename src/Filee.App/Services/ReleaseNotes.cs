@@ -8,7 +8,7 @@
 //   zh: Excel 分页符会保留到 PDF 中
 //   -->
 //
-// level is required (wrong results, lost data, security, Filee not starting), recommended (bug fixes) or optional (new
+// level is required (wrong results, lost data, security, 1format not starting), recommended (bug fixes) or optional (new
 // features). A language line may repeat for more than one change. A release without the block counts as recommended.
 
 namespace Filee.App.Services;
@@ -22,7 +22,7 @@ public enum UpdateLevel
     /// <summary>Bug fixes: a card once per version.</summary>
     Recommended,
 
-    /// <summary>Wrong results, lost data, security: a highlighted card every time Filee starts.</summary>
+    /// <summary>Wrong results, lost data, security: a highlighted card every time 1format starts.</summary>
     Required,
 }
 
@@ -77,8 +77,8 @@ public static class ReleaseNotes
     }
 
     /// <summary>
-    /// The UI language a summary line is for: any language Filee ships ("pl"), with "zh" for Chinese. Null for other
-    /// keys, which a newer Filee may know.
+    /// The UI language a summary line is for: any language 1format ships ("pl"), with "zh" for Chinese. Null for other
+    /// keys, which a newer 1format may know.
     /// </summary>
     private static string? LanguageOf(string key) =>
         key is "zh" ? "zh-CN"

@@ -1,4 +1,4 @@
-// Conversion engines: optional downloads, availability and priority order. Filee only uses its own engine copies,
+// Conversion engines: optional downloads, availability and priority order. 1format only uses its own engine copies,
 // so there are no paths to configure.
 
 using System.Collections.ObjectModel;
@@ -126,7 +126,7 @@ public sealed partial class EnginesPageViewModel : ObservableObject, IDisposable
         return true;
     }
 
-    /// <summary>Goes back to Filee's download (or no engine) for <paramref name="package"/>.</summary>
+    /// <summary>Goes back to 1format's download (or no engine) for <paramref name="package"/>.</summary>
     public void StopUsingOwnCopy(EnginePackageState package)
     {
         if (_store.Settings.EngineOwnCopies.Remove(package.Package.Id))

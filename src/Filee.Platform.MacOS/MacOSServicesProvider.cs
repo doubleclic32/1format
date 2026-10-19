@@ -1,6 +1,6 @@
-// "Convert with Filee" in Finder's right-click menu, as a service Filee.app provides itself (NSServices in its
-// Info.plist). macOS hands the selected files straight to the running Filee: no Automator workflow, no shell, no
-// second process. Info.plist names the message (convertFiles) and the port (Filee); this registers the object
+// "Convert with 1format" in Finder's right-click menu, as a service 1format.app provides itself (NSServices in its
+// Info.plist). macOS hands the selected files straight to the running 1format: no Automator workflow, no shell, no
+// second process. Info.plist names the message (convertFiles) and the port (1format); this registers the object
 // that answers it, an NSObject subclass made at run time with one method, convertFiles:userData:error:.
 
 using System.Runtime.InteropServices;
@@ -11,7 +11,7 @@ namespace Filee.Platform.MacOS;
 public static class MacOSServicesProvider
 {
     /// <summary>The service's menu title in Info.plist; ServicesMenu.strings in each .lproj translates it.</summary>
-    public const string MenuItem = "Convert with Filee";
+    public const string MenuItem = "Convert with 1format";
 
     /// <summary>The selector macOS sends, without its argument labels (NSMessage in Info.plist).</summary>
     public const string Message = "convertFiles";
@@ -28,7 +28,7 @@ public static class MacOSServicesProvider
 
     /// <summary>
     /// Answers the service from now on; <paramref name="handler"/> gets the files (on the main thread). Call it on the
-    /// main thread early at start: a service picked while Filee wasn't running is delivered once this is set.
+    /// main thread early at start: a service picked while 1format wasn't running is delivered once this is set.
     /// </summary>
     [SupportedOSPlatform("macos")]
     public static void Register(Action<IReadOnlyList<string>> handler)

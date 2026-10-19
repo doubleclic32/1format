@@ -1,4 +1,4 @@
-// Keeps the installer script (installer/Filee.iss) and the app in step: the options Setup starts Filee with, the
+// Keeps the installer script (installer/1format.iss) and the app in step: the options Setup starts 1format with, the
 // Explorer menu package it registers and the engine folders it looks into.
 
 using System.Reflection;
@@ -21,7 +21,7 @@ public class InstallerTests
             var dir = AppContext.BaseDirectory;
             while (!File.Exists(Path.Combine(dir, "Filee.slnx")))
                 dir = Path.GetDirectoryName(dir) ?? throw new InvalidOperationException("Repository root not found.");
-            return File.ReadAllText(Path.Combine(dir, "installer", "Filee.iss"));
+            return File.ReadAllText(Path.Combine(dir, "installer", "1format.iss"));
         }
     }
 
@@ -88,8 +88,8 @@ public class InstallerTests
         var marker = typeof(EngineInstaller).GetField("MarkerName", BindingFlags.NonPublic | BindingFlags.Static)?.GetRawConstantValue();
         Assert.Contains($"EngineMarker = '{marker}';", Script);
         Assert.Equal(
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Filee", "engines"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "1format", "engines"),
             EngineEnvironment.DownloadRoot);
-        Assert.Contains(@"ExpandConstant('{localappdata}\Filee\engines\')", Script);
+        Assert.Contains(@"ExpandConstant('{localappdata}\1format\engines\')", Script);
     }
 }

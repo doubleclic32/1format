@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:Filee.App"
              x:Class="Filee.App.App"
-             Name="Filee"
+             Name="1format"
              RequestedThemeVariant="Default">
 
   <Application.DataTemplates>
@@ -13,15 +13,15 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="avares://Filee/Styles/Icons.axaml" />
-        <ResourceInclude Source="avares://Filee/Styles/Brands.axaml" />
+        <ResourceInclude Source="avares://1format/Styles/Icons.axaml" />
+        <ResourceInclude Source="avares://1format/Styles/Brands.axaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
 
   <Application.Styles>
     <FluentTheme />
-    <StyleInclude Source="avares://Filee/Styles/Soft.axaml" />
-    <StyleInclude Source="avares://Filee/Styles/TagEditor.axaml" />
+    <StyleInclude Source="avares://1format/Styles/Soft.axaml" />
+    <StyleInclude Source="avares://1format/Styles/TagEditor.axaml" />
   </Application.Styles>
 </Application>

@@ -1,4 +1,4 @@
-// FILEE_DATA_DIR moves the data folder, so a development or test copy never reads or writes the user's own Filee.
+// FILEE_DATA_DIR moves the data folder, so a development or test copy never reads or writes the user's own 1format.
 
 using Filee.Core.Settings;
 
@@ -19,7 +19,7 @@ public class DataDirectoryTests
 
             Environment.SetEnvironmentVariable(UserDataStore.DirectoryVariable, null);
             Assert.Null(UserDataStore.OverrideDirectory);
-            Assert.Equal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Filee"),
+            Assert.Equal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "1format"),
                 UserDataStore.DefaultDirectory);
         }
         finally

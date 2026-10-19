@@ -1,5 +1,5 @@
-// Versions of engine copies Filee didn't download (the user's own, or one found on the PC), compared with the version
-// Filee is tested with (engines.json). An older copy still works for most conversions; the Engines page only says
+// Versions of engine copies 1format didn't download (the user's own, or one found on the PC), compared with the version
+// 1format is tested with (engines.json). An older copy still works for most conversions; the Engines page only says
 // that an update is recommended.
 
 using System.Collections.Concurrent;
@@ -12,8 +12,8 @@ public static partial class CopyVersions
 {
     private static readonly ConcurrentDictionary<string, Version?> Cache = new();
 
-    /// <summary>The version Filee is tested with ("9.0"), from engines.json; null for unknown packages.</summary>
-    // Where Filee offers no download (FFmpeg and Ghostscript on macOS come from Homebrew), the version it is tested
+    /// <summary>The version 1format is tested with ("9.0"), from engines.json; null for unknown packages.</summary>
+    // Where 1format offers no download (FFmpeg and Ghostscript on macOS come from Homebrew), the version it is tested
     // with is the one the Windows list names, so an older copy still gets "update recommended".
     public static Version? Expected(string id) =>
         Parse(EngineVersions.Component(id) ?? ReferenceComponents.Value.GetValueOrDefault(id)?.Version);
@@ -38,7 +38,7 @@ public static partial class CopyVersions
         return Cache.GetOrAdd($"{program}|{File.GetLastWriteTimeUtc(program).Ticks}", _ => ParseVersion(id, Read(id, program)));
     }
 
-    /// <summary>True when the copy is older (major.minor) than the version Filee is tested with.</summary>
+    /// <summary>True when the copy is older (major.minor) than the version 1format is tested with.</summary>
     public static bool IsOutdated(string id, string folder) =>
         Installed(id, folder) is { } installed && Expected(id) is { } expected && installed < expected;
 

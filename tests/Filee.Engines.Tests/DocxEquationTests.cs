@@ -94,7 +94,7 @@ public class DocxEquationTests(EngineFixture fx) : IClassFixture<EngineFixture>
             var math = OmmlReader.Read(XElement.Parse($"<m:oMath {Namespaces}>{omml}</m:oMath>"));
             Assert.Equal(script, EquationScript.Script(math));
             Assert.Equal(linear.Normalize(), EquationScript.Linear(math).Normalize()); // â is a + combining circumflex
-            // Filee's own fixes before rhwp renders (RhwpInput) leave the script alone.
+            // 1format's own fixes before rhwp renders (RhwpInput) leave the script alone.
             Assert.Equal(script, RhwpInput.NormaliseEquation(script));
         }
     }

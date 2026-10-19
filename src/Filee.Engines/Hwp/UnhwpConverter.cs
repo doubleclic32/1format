@@ -1,6 +1,6 @@
 // HWP / HWPX → plain text, Markdown or HTML with Unhwp (MIT, native library shipped in the NuGet package).
 //
-// Unhwp's Markdown links pictures as "assets/<id>" without writing them: Filee takes each picture from the document
+// Unhwp's Markdown links pictures as "assets/<id>" without writing them: 1format takes each picture from the document
 // (GetResourceData) and puts it into a "<name>_files" folder next to the Markdown file (MarkdownPictures), or embeds
 // it in the HTML page as a data: URI, so the page stays one file. Pictures it can't provide are left out instead of
 // becoming broken links; "Leave out pictures" (DocumentOptions.LeaveOutPictures) leaves out all of them.

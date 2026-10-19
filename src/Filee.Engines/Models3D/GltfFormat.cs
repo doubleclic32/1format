@@ -79,9 +79,9 @@ internal static class GltfFormat
 
     private static string Describe(Exception ex) =>
         ex.Message.Contains("KHR_draco_mesh_compression", StringComparison.Ordinal)
-            ? "The glTF model is Draco-compressed (KHR_draco_mesh_compression), which Filee cannot decode."
+            ? "The glTF model is Draco-compressed (KHR_draco_mesh_compression), which 1format cannot decode."
             : ex.Message.Contains("meshopt_compression", StringComparison.Ordinal)
-                ? "The glTF model is meshopt-compressed (EXT_meshopt_compression), which Filee cannot decode."
+                ? "The glTF model is meshopt-compressed (EXT_meshopt_compression), which 1format cannot decode."
                 : $"The file is not a valid glTF model: {ex.Message}";
 
     private static MeshPart? ReadPrimitive(MeshPrimitive primitive, Model3D model, Dictionary<Material, int> materials)
@@ -177,7 +177,7 @@ internal static class GltfFormat
     public static void Write(Model3D model, Stream output, bool binary, CancellationToken cancellationToken)
     {
         var root = ModelRoot.CreateModel();
-        root.Asset.Generator = "Filee";
+        root.Asset.Generator = "1format";
         var scene = root.UseScene("Scene");
 
         var images = new Dictionary<Texture3D, Image>();

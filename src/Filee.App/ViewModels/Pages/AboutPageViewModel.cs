@@ -56,7 +56,7 @@ public sealed partial class AboutPageViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task CheckNow() => ShowUpdateState(await _updates.CheckAsync(), afterCheck: true);
 
-    /// <summary>Downloads and runs the new installer, which updates Filee in place (a portable copy opens the download page).</summary>
+    /// <summary>Downloads and runs the new installer, which updates 1format in place (a portable copy opens the download page).</summary>
     [RelayCommand]
     private Task DownloadUpdate() => _updates.UpdateAsync();
 
@@ -73,7 +73,7 @@ public sealed partial class AboutPageViewModel : ObservableObject, IDisposable
 
     private static string ReadNotices()
     {
-        var uri = new Uri("avares://Filee/Assets/THIRD-PARTY-NOTICES.md");
+        var uri = new Uri("avares://1format/Assets/THIRD-PARTY-NOTICES.md");
         if (!AssetLoader.Exists(uri))
             return "";
         using var reader = new StreamReader(AssetLoader.Open(uri));

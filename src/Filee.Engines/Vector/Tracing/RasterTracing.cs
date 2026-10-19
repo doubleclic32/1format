@@ -56,7 +56,7 @@ internal static class RasterTracing
         var comment = tracedWidth == width && tracedHeight == height
             ? null
             : string.Create(CultureInfo.InvariantCulture,
-                $"Traced by Filee from a {width} x {height} px image reduced to {tracedWidth} x {tracedHeight} px.");
+                $"Traced by 1format from a {width} x {height} px image reduced to {tracedWidth} x {tracedHeight} px.");
         using (var stream = File.Create(output))
             ImageTracer.WriteSvg(result, stream, width, height, comment);
         return [output];

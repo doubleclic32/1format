@@ -1,4 +1,4 @@
-// Unpacks every archive format Filee reads into a folder: the bundled 7-Zip for most of them, Filee's own readers for
+// Unpacks every archive format 1format reads into a folder: the bundled 7-Zip for most of them, 1format's own readers for
 // ALZ, EGG and lzip. Compressed TARs (.tar.gz, .tar.lz …) and RPM payloads are unpacked stage by stage until the
 // files appear. Every stage is checked first (encryption, paths leaving the folder, disk space) and links are removed.
 
@@ -16,7 +16,7 @@ internal sealed class ArchiveExtractor(SevenZip? sevenZip)
         "cab", "cpio", "deb", "rpm", "dmg", "iso", "img", "lha", "arj",
     ];
 
-    /// <summary>Formats read by Filee's own code (lzip still needs 7-Zip's LZMA decoder).</summary>
+    /// <summary>Formats read by 1format's own code (lzip still needs 7-Zip's LZMA decoder).</summary>
     public static readonly IReadOnlyList<string> BuiltInFormats = ["alz", "egg", "lz", "tlz"];
 
     /// <summary>Everything that can be unpacked.</summary>

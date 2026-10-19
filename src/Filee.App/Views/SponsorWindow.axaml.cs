@@ -9,7 +9,7 @@ namespace Filee.App.Views;
 /// <summary>One row of the window: a <see cref="SponsorLink"/> with its note in the current language.</summary>
 public sealed record SponsorWay(string Name, string Note, string Url, Geometry? Icon, IBrush Color);
 
-/// <summary>Modal list of the ways to sponsor Filee. Choosing one opens it in the browser and closes the window.</summary>
+/// <summary>Modal list of the ways to sponsor 1format. Choosing one opens it in the browser and closes the window.</summary>
 public partial class SponsorWindow : Window
 {
     public SponsorWindow()

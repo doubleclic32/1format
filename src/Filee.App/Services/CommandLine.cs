@@ -1,17 +1,17 @@
 // Command line options:
-//   Filee.exe                          open the main window
-//   Filee.exe --background             start in the tray only (used by "start with Windows")
-//   Filee.exe --settings               open the main window
-//   Filee.exe --convert a b ...        open the donut for these files (Explorer context menu / Send To)
-//   Filee.exe --convert-list <file>    same, with one path per line in a UTF-8 file (Windows 11 Explorer menu, for
+//   1format.exe                          open the main window
+//   1format.exe --background             start in the tray only (used by "start with Windows")
+//   1format.exe --settings               open the main window
+//   1format.exe --convert a b ...        open the donut for these files (Explorer context menu / Send To)
+//   1format.exe --convert-list <file>    same, with one path per line in a UTF-8 file (Windows 11 Explorer menu, for
 //                                      selections too long for a command line); the app deletes the file afterwards
-// Used by the installer (installer/Filee.iss):
-//   Filee.exe --install-engines=a,b    download these engine packages (EngineDownloads ids) in the engine window;
+// Used by the installer (installer/1format.iss):
+//   1format.exe --install-engines=a,b    download these engine packages (EngineDownloads ids) in the engine window;
 //                                      an empty list means the user chose none, so the first-run choice is skipped
-//   Filee.exe --start-with-windows=on|off, --context-menu=on|off
+//   1format.exe --start-with-windows=on|off, --context-menu=on|off
 //                                      set the matching options on the General page
-//   Filee.exe --quit                   ask a running Filee to exit, and wait until it has (no window otherwise)
-//   Filee.exe --uninstall-cleanup      quit Filee, then remove what it registered for this user (UninstallCleanup)
+//   1format.exe --quit                   ask a running 1format to exit, and wait until it has (no window otherwise)
+//   1format.exe --uninstall-cleanup      quit 1format, then remove what it registered for this user (UninstallCleanup)
 
 using System.Text;
 
@@ -33,8 +33,8 @@ public sealed record CommandLine(
     bool? StartWithWindows = null,
     bool? ContextMenu = null)
 {
-    /// <summary>File name prefix of list files written by FileeExplorerMenu.dll (LIST_PREFIX there) into %TEMP%.</summary>
-    public const string ListFilePrefix = "Filee-convert-";
+    /// <summary>File name prefix of list files written by OneFormatExplorerMenu.dll (LIST_PREFIX there) into %TEMP%.</summary>
+    public const string ListFilePrefix = "1format-convert-";
 
     public static CommandLine Parse(IReadOnlyList<string> args)
     {
@@ -116,7 +116,7 @@ public sealed record CommandLine(
 
     /// <summary>
     /// Deletes the list file once its paths were taken over. Only files the Explorer menu wrote (prefix, temp
-    /// folder) are deleted, so a crafted command line cannot make Filee delete anything else.
+    /// folder) are deleted, so a crafted command line cannot make 1format delete anything else.
     /// </summary>
     public void DeleteListFile()
     {
@@ -130,7 +130,7 @@ public sealed record CommandLine(
         catch (UnauthorizedAccessException) { }
     }
 
-    /// <summary>True for <c>%TEMP%\Filee-convert-*.txt</c>.</summary>
+    /// <summary>True for <c>%TEMP%\1format-convert-*.txt</c>.</summary>
     internal static bool IsOwnListFile(string path)
     {
         try

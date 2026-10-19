@@ -1,0 +1,5 @@
+; Exports of the Explorer context-menu COM server (see OneFormatExplorerMenu.c).
+LIBRARY OneFormatExplorerMenu
+EXPORTS
+    DllGetClassObject PRIVATE
+    DllCanUnloadNow PRIVATE

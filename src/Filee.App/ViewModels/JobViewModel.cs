@@ -45,7 +45,7 @@ public sealed partial class JobViewModel : ObservableObject
     /// <summary>Notes on files that converted (e.g. a PDF that couldn't be made smaller and was copied), one per line.</summary>
     [ObservableProperty] private string? _notices;
     [ObservableProperty] private bool _hasNotices;
-    /// <summary>Extensions of failed files Filee can't read (".ncm"), for "Request this format".</summary>
+    /// <summary>Extensions of failed files 1format can't read (".ncm"), for "Request this format".</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanRequestFormat))]
     private IReadOnlyList<string> _unknownExtensions = [];

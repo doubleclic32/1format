@@ -1,5 +1,5 @@
 // A copy of an optional engine the user already has (Settings → Engines → "Use my copy…") is found from the program
-// they picked, wins over Filee's download, and is refused when its folder lacks a program the engine needs.
+// they picked, wins over 1format's download, and is refused when its folder lacks a program the engine needs.
 
 using Filee.Engines.Ebooks;
 using Filee.Engines.Infrastructure;

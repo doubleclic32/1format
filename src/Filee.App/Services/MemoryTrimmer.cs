@@ -1,6 +1,6 @@
-// Gives memory back while Filee waits in the tray (issue #119): a while after the last conversion finished, and after
+// Gives memory back while 1format waits in the tray (issue #119): a while after the last conversion finished, and after
 // the main window was released. Large images grow the managed heap and the engines' caches, and the garbage collector
-// keeps that memory committed for the next allocation, so Filee stayed hundreds of MB above its idle size.
+// keeps that memory committed for the next allocation, so 1format stayed hundreds of MB above its idle size.
 
 using System.Diagnostics;
 using Filee.Core.Conversion;

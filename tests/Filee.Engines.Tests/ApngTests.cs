@@ -1,4 +1,4 @@
-// APNG: Filee's own reader and writer (Magick/Apng.cs). Animations are generated in the tests: GIFs with ImageMagick,
+// APNG: 1format's own reader and writer (Magick/Apng.cs). Animations are generated in the tests: GIFs with ImageMagick,
 // and APNGs chunk by chunk (ApngBuilder) to cover the dispose and blend operations of the specification.
 
 using System.Buffers.Binary;
@@ -187,7 +187,7 @@ public class ApngTests(EngineFixture fx) : IClassFixture<EngineFixture>
     }
 }
 
-/// <summary>Writes APNG files chunk by chunk, independent of Filee's writer.</summary>
+/// <summary>Writes APNG files chunk by chunk, independent of 1format's writer.</summary>
 internal static class ApngBuilder
 {
     public const byte DisposeNone = 0, DisposeBackground = 1, DisposePrevious = 2;

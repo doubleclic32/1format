@@ -43,7 +43,7 @@ internal static class ArchiveSafety
     public static void CheckListing(IReadOnlyList<SevenZipEntry> entries, string archiveName, string targetDirectory)
     {
         if (entries.Count > MaxEntries)
-            throw new InvalidDataException($"{archiveName} has more than {MaxEntries:N0} entries; Filee does not unpack it.");
+            throw new InvalidDataException($"{archiveName} has more than {MaxEntries:N0} entries; 1format does not unpack it.");
         foreach (var entry in entries)
         {
             if (entry.IsEncrypted)
@@ -74,7 +74,7 @@ internal static class ArchiveSafety
     }
 
     /// <summary>
-    /// Turns an entry name read by Filee's own readers into a path inside <paramref name="root"/>: separators are
+    /// Turns an entry name read by 1format's own readers into a path inside <paramref name="root"/>: separators are
     /// normalized, characters Windows does not allow are replaced, and anything escaping the root is refused.
     /// </summary>
     public static string ResolveEntryPath(string root, string entryName, string archiveName)
@@ -118,7 +118,7 @@ internal static class ArchiveSafety
     }
 
     public static Exception Encrypted(string archiveName) =>
-        new InvalidDataException($"{archiveName} is password-protected. Filee cannot unpack encrypted archives.");
+        new InvalidDataException($"{archiveName} is password-protected. 1format cannot unpack encrypted archives.");
 
     public static Exception Unsafe(string archiveName, string entry) =>
         new InvalidDataException($"{archiveName} was not unpacked: the entry \"{entry}\" points outside the target folder.");

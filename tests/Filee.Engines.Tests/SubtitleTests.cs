@@ -1,5 +1,5 @@
 // Text subtitles with the built-in subtitle engine: every reader and writer, Korean CP949 / EUC-KR detection, and
-// subtitle extraction from videos with FFmpeg (only when Filee's FFmpeg is installed). Inputs are written by the tests.
+// subtitle extraction from videos with FFmpeg (only when 1format's FFmpeg is installed). Inputs are written by the tests.
 
 using System.Text;
 using Filee.Core.Conversion;

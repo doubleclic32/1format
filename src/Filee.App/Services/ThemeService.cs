@@ -17,9 +17,9 @@ public sealed class ThemeService(IPlatformServices platform)
         ["#7F77DD", "#1D9E75", "#D85A30", "#378ADD", "#D4537E", "#BA7517", "#639922", "#5F5E5A"];
 
     /// <summary>Embedded Noto fonts (see build/fetch-fonts.ps1). Missing files fall back to system fonts.</summary>
-    private const string Latin = "fonts:Filee#Noto Sans";
-    private const string Korean = "fonts:Filee#Noto Sans KR";
-    private const string Chinese = "fonts:Filee#Noto Sans SC";
+    private const string Latin = "fonts:1format#Noto Sans";
+    private const string Korean = "fonts:1format#Noto Sans KR";
+    private const string Chinese = "fonts:1format#Noto Sans SC";
     private const string SystemFallbacks = "Segoe UI, Malgun Gothic, Microsoft YaHei, PingFang SC, Apple SD Gothic Neo, sans-serif";
 
     public void Apply(ThemeSettings theme, string language)

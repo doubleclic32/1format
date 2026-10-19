@@ -63,7 +63,7 @@ internal sealed class PdfPictureUses
             uses.WalkAnnotations(page);
         }
 
-        // Not drawn anywhere Filee could follow: as large as the largest page holds it (either way round).
+        // Not drawn anywhere 1format could follow: as large as the largest page holds it (either way round).
         var pageWidthInches = Math.Max(pageWidth, 1) / PointsPerInch;
         var pageHeightInches = Math.Max(pageHeight, 1) / PointsPerInch;
         var result = new List<(PdfDictionary, PictureUse)>();

@@ -26,9 +26,9 @@ BEGIN
             VALUE "CompanyName", "Filee contributors"
             VALUE "FileDescription", "Filee File Explorer context menu"
             VALUE "FileVersion", FILEE_VERSION_TEXT
-            VALUE "InternalName", "FileeExplorerMenu"
+            VALUE "InternalName", "OneFormatExplorerMenu"
             VALUE "LegalCopyright", "Copyright (c) Filee contributors. MIT License."
-            VALUE "OriginalFilename", "FileeExplorerMenu.dll"
+            VALUE "OriginalFilename", "OneFormatExplorerMenu.dll"
             VALUE "ProductName", "Filee"
             VALUE "ProductVersion", FILEE_VERSION_TEXT
         END

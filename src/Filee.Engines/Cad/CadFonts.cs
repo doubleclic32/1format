@@ -1,4 +1,4 @@
-// Fonts for CAD text. Drawings name SHX fonts (txt.shx, romans.shx, Korean big fonts) that Filee does not ship, so
+// Fonts for CAD text. Drawings name SHX fonts (txt.shx, romans.shx, Korean big fonts) that 1format does not ship, so
 // text is drawn with a sans-serif typeface; a TrueType style font (arial.ttf, malgun.ttf ...) is used when available.
 // Characters the chosen typeface lacks (Hangul, Hanzi ...) fall back per character to a CJK font.
 
@@ -22,7 +22,7 @@ internal static class CadFonts
         ["Noto Sans", "Arial", "Helvetica", "Liberation Sans", "DejaVu Sans", "Segoe UI"];
 
     /// <summary>
-    /// Families tried for characters the main typeface lacks: Korean first (Filee's main audience), then Chinese and
+    /// Families tried for characters the main typeface lacks: Korean first (1format's main audience), then Chinese and
     /// Japanese. Only fonts Skia can find are used; without any, SkiaSharp's own fallback decides.
     /// </summary>
     private static readonly string[] CjkFamilies =

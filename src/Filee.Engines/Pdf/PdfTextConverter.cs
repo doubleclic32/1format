@@ -2,7 +2,7 @@
 // two-column pages), without running headers, footers and page numbers.
 //
 // TXT has one paragraph per line and an empty line between paragraphs. The invisible text layer of OCR-processed
-// scans is included; scans without one have no text to extract (Filee does no OCR).
+// scans is included; scans without one have no text to extract (1format does no OCR).
 //
 // Markdown keeps headings, bold / italic and links (MarkdownWriter, as for e-books). The pictures go into a
 // "<name>_files" folder next to the Markdown file and are linked relatively (MarkdownPictures); a page without text
@@ -98,5 +98,5 @@ public sealed class PdfTextConverter : IConverter
     }
 
     private static InvalidOperationException NoText() =>
-        new("The PDF contains no text (it may be scanned; Filee does not recognise text in images).");
+        new("The PDF contains no text (it may be scanned; 1format does not recognise text in images).");
 }

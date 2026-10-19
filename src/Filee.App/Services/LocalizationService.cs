@@ -15,11 +15,12 @@ namespace Filee.App.Services;
 /// <summary>JSON based localization with live language switching.</summary>
 public sealed class LocalizationService : ILocalizer
 {
-    /// <summary>Languages shipped with Filee: code → native name (shown in the language picker).</summary>
+    /// <summary>Languages shipped with 1format: code → native name (shown in the language picker).</summary>
     public static readonly IReadOnlyList<(string Code, string NativeName)> Languages =
     [
         ("en", "English"),
         ("es", "Español"),
+        ("fr", "Français"),
         ("ko", "한국어"),
         ("zh-CN", "简体中文"),
         ("pl", "Polski"),
@@ -103,6 +104,8 @@ public sealed class LocalizationService : ILocalizer
             return "pl";
         if (ui.StartsWith("es", StringComparison.OrdinalIgnoreCase))
             return "es";
+        if (ui.StartsWith("fr", StringComparison.OrdinalIgnoreCase))
+            return "fr";
         return "en";
     }
 
@@ -112,7 +115,7 @@ public sealed class LocalizationService : ILocalizer
     /// </summary>
     internal static Dictionary<string, string> LoadStrings(string code, IAssetLoader? loader = null)
     {
-        var uri = new Uri($"avares://Filee/Assets/i18n/{code}.json");
+        var uri = new Uri($"avares://1format/Assets/i18n/{code}.json");
         if (!(loader?.Exists(uri) ?? AssetLoader.Exists(uri)))
             return [];
         using var stream = loader?.Open(uri) ?? AssetLoader.Open(uri);
@@ -121,7 +124,7 @@ public sealed class LocalizationService : ILocalizer
 
     /// <summary>
     /// One string in the system's language, before Avalonia (and the settings) are loaded: for the messages a launch
-    /// shows when it can't reach the running Filee. Falls back to English, then to the key.
+    /// shows when it can't reach the running 1format. Falls back to English, then to the key.
     /// </summary>
     internal static string EarlyText(string key)
     {

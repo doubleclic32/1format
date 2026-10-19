@@ -1,4 +1,4 @@
-// System.Text.Json source generation for everything Filee persists. Reflection-free and trim-safe.
+// System.Text.Json source generation for everything 1format persists. Reflection-free and trim-safe.
 
 using System.Text.Json.Serialization;
 using Filee.Core.History;

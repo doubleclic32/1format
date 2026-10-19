@@ -1,7 +1,7 @@
 // Fonts for rhwp, chosen from the fonts installed on the computer (RhwpInput writes them into a copy of the HWPX).
 // Nothing is downloaded or shipped.
 //
-// - Language: documents Filee writes (Markdown, text, HTML → HWPX) name Korean fonts in every slot. In a Chinese or
+// - Language: documents 1format writes (Markdown, text, HTML → HWPX) name Korean fonts in every slot. In a Chinese or
 //   Japanese document those drew Korean-style Hanja and, for characters they lack, a different fallback font per
 //   character (issue #64). Without Hangul in the text, Korean fonts are swapped for an installed Chinese (Simplified
 //   or Traditional) or Japanese font of the same style.

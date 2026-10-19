@@ -1,4 +1,4 @@
-// Engines the user downloaded that are older than what this Filee pins: an Update button and a one-time notice.
+// Engines the user downloaded that are older than what this 1format pins: an Update button and a one-time notice.
 
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;

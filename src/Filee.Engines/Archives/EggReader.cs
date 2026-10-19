@@ -1,5 +1,5 @@
 // Reads EGG archives, ALZip's newer format, which 7-Zip does not support. Layout as documented by EggDotNet (MIT)
-// and unegg (MIT); Filee's reader is its own. All numbers are little endian.
+// and unegg (MIT); 1format's reader is its own. All numbers are little endian.
 //
 //   "EGGA" version u16, header id u32, reserved u32, extra fields…, END      archive header
 //   FILE (0x0A8590E3) file id u32, size u64, extra fields…, END              one per entry, followed by
@@ -108,7 +108,7 @@ internal static class EggReader
                 Bzip2Decoder.Decompress(packed, output, alzFraming: false, block.Size, cancellationToken);
                 break;
             case 3:
-                throw new NotSupportedException($"{archiveName} is compressed with ALZip's own AZO method, which Filee cannot unpack. Save it again in ALZip as ZIP or 7Z, or as EGG with another method.");
+                throw new NotSupportedException($"{archiveName} is compressed with ALZip's own AZO method, which 1format cannot unpack. Save it again in ALZip as ZIP or 7Z, or as EGG with another method.");
             case 4:
                 await DecodeLzmaAsync(packed, block, output, sevenZip, workDirectory, archiveName, cancellationToken);
                 break;
@@ -175,7 +175,7 @@ internal static class EggReader
                 {
                     case FileMagic:
                         if (entries.Count >= ArchiveSafety.MaxEntries)
-                            throw new InvalidDataException($"{archiveName} has more than {ArchiveSafety.MaxEntries:N0} entries; Filee does not unpack it.");
+                            throw new InvalidDataException($"{archiveName} has more than {ArchiveSafety.MaxEntries:N0} entries; 1format does not unpack it.");
                         current = new Entry();
                         reader.ReadUInt32(); // file id
                         current.Size = reader.ReadInt64();
@@ -237,9 +237,9 @@ internal static class EggReader
             switch (magic)
             {
                 case SplitMagic:
-                    throw new InvalidDataException($"{archiveName} is part of a split EGG archive; Filee cannot unpack split archives.");
+                    throw new InvalidDataException($"{archiveName} is part of a split EGG archive; 1format cannot unpack split archives.");
                 case SolidMagic:
-                    throw new NotSupportedException($"{archiveName} is a solid EGG archive, which Filee cannot unpack.");
+                    throw new NotSupportedException($"{archiveName} is a solid EGG archive, which 1format cannot unpack.");
                 case EncryptMagic:
                     throw ArchiveSafety.Encrypted(archiveName);
                 case FileNameMagic when entry is not null:

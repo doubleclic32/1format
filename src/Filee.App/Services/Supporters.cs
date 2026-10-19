@@ -1,4 +1,4 @@
-// The people and companies who sponsor Filee, shown in the Sponsor window and on the About page, and listed in the
+// The people and companies who sponsor 1format, shown in the Sponsor window and on the About page, and listed in the
 // README's Sponsor section. They ship with each release (Assets/Sponsors/sponsors.json); nothing is downloaded.
 //
 //   "sponsors": the logo tier, { "name", "url", "logo", "logoDark" }. The logos are transparent PNGs next to the
@@ -28,7 +28,7 @@ public sealed record SupporterList(IReadOnlyList<Supporter> Sponsors, IReadOnlyL
 
 public static class Supporters
 {
-    public const string Folder = "avares://Filee/Assets/Sponsors/";
+    public const string Folder = "avares://1format/Assets/Sponsors/";
 
     private static SupporterList? _bundled;
 

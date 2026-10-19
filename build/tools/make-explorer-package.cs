@@ -1,4 +1,4 @@
-// Packs FileeExplorerMenu.msix, the unsigned sparse package behind the Windows 11 "Convert with Filee" menu entry.
+// Packs OneFormatExplorerMenu.msix, the unsigned sparse package behind the Windows 11 "Convert with 1format" menu entry.
 // Run by build/build-explorer-menu.ps1:  dotnet run build/tools/make-explorer-package.cs -- <output folder>
 // Uses the Windows packaging API (AppxPackaging.dll, part of Windows 10/11): it validates the manifest and writes the
 // block map and content types exactly like MakeAppx, so no Windows SDK is needed. The manifest comes from
@@ -21,7 +21,7 @@ var output = Path.GetFullPath(args[0]);
 Directory.CreateDirectory(output);
 var repo = Environment.CurrentDirectory;
 while (!File.Exists(Path.Combine(repo, "Filee.slnx")))
-    repo = Path.GetDirectoryName(repo) ?? throw new InvalidOperationException("Run this from inside the Filee repository.");
+    repo = Path.GetDirectoryName(repo) ?? throw new InvalidOperationException("Run this from inside the 1format repository.");
 
 var work = Directory.CreateTempSubdirectory("filee-msix-");
 try

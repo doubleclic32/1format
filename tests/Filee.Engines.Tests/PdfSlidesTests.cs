@@ -1,5 +1,5 @@
 // PDF → PPTX with a picture of each page on its own slide: slide count and size, pictures fitted and centred, the page
-// range, the speaker notes, the Open XML SDK validator, Filee's own PPTX reader as a second reader, clear failures, and
+// range, the speaker notes, the Open XML SDK validator, 1format's own PPTX reader as a second reader, clear failures, and
 // routes: the picture deck is reached from a PDF only and is never a step towards another format.
 // The test PDFs are generated (PdfPig's writer, PDFsharp for rotation and passwords) and use the standard 14 fonts.
 

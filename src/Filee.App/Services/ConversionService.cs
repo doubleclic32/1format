@@ -19,7 +19,7 @@ public sealed class ConversionService
     private static readonly TimeSpan KeepSuccess = TimeSpan.FromSeconds(5);
     private static readonly TimeSpan KeepErrors = TimeSpan.FromSeconds(15);
 
-    /// <summary>After this many fully successful conversions Filee asks once for a star or feedback.</summary>
+    /// <summary>After this many fully successful conversions 1format asks once for a star or feedback.</summary>
     public const int FeedbackAfterConversions = 3;
 
     private readonly JobQueue _queue;

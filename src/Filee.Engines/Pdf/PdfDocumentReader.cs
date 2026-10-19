@@ -28,7 +28,7 @@ using UglyToad.PdfPig.Exceptions;
 using UglyToad.PdfPig.Graphics.Colors;
 using UglyToad.PdfPig.Tokens;
 
-// PDFtoImage marks its API for the platforms PDFium ships for; Filee only targets desktop platforms, all covered.
+// PDFtoImage marks its API for the platforms PDFium ships for; 1format only targets desktop platforms, all covered.
 #pragma warning disable CA1416
 
 namespace Filee.Engines.Pdf;

@@ -3,7 +3,7 @@
 
 namespace Filee.App.Services;
 
-/// <summary>One way to support Filee.</summary>
+/// <summary>One way to support 1format.</summary>
 /// <param name="Id">Also the suffix of its description string, <c>sponsor.note.{Id}</c>.</param>
 /// <param name="Icon">Key of the logo geometry (Styles/Brands.axaml, or Icon.Heart).</param>
 /// <param name="Color">Brand colour behind the white logo.</param>

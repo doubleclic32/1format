@@ -1,4 +1,4 @@
-// "Request this format" (issue #117): files of a type Filee can't read lead to the GitHub "Format request" form with
+// "Request this format" (issue #117): files of a type 1format can't read lead to the GitHub "Format request" form with
 // the extension filled in, from the toast of a failed conversion and when the donut closes on such files.
 
 using Avalonia.Headless;
@@ -20,7 +20,7 @@ public sealed class FormatRequestTests : IDisposable
         try { Directory.Delete(_folder, true); } catch (IOException) { }
     }
 
-    /// <summary>An extension no test has offered yet: the donut offers each one once while Filee runs.</summary>
+    /// <summary>An extension no test has offered yet: the donut offers each one once while 1format runs.</summary>
     private static string NewExtension() => "q" + Guid.NewGuid().ToString("N")[..6];
 
     private string File(string name)
@@ -111,13 +111,13 @@ public sealed class FormatRequestTests : IDisposable
             notice.Close();
             Pump();
 
-            // Once per extension while Filee runs.
+            // Once per extension while 1format runs.
             radial.ShowForFiles(400, 400, [song]);
             radial.Close(animate: false);
             Pump();
             Assert.Null(windows.FormatRequestNotice);
 
-            // Files Filee reads: nothing to request, even mixed with an unknown type (the toast covers that one).
+            // Files 1format reads: nothing to request, even mixed with an unknown type (the toast covers that one).
             radial.ShowForFiles(400, 400, [File("notes.txt"), File("song." + NewExtension())]);
             radial.Close(animate: false);
             Pump();

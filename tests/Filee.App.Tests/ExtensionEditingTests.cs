@@ -38,7 +38,7 @@ public class ExtensionInputTests
     [InlineData("a/b")]
     [InlineData(@"C:\x")]
     [InlineData("a..b")]
-    [InlineData("photo.jpg")] // two-part extensions only when Filee knows them
+    [InlineData("photo.jpg")] // two-part extensions only when 1format knows them
     [InlineData("averyveryverylongextension")]
     public void Rejects_what_cannot_be_an_extension(string input) => Assert.Null(ExtensionInput.Normalize(input));
 

@@ -17,7 +17,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     public bool HasAccessibilityPermission => NativeMethods.AXIsProcessTrusted();
 
-    /// <summary>Asks for Accessibility with macOS's own alert (nothing happens when Filee already has it).</summary>
+    /// <summary>Asks for Accessibility with macOS's own alert (nothing happens when 1format already has it).</summary>
     public bool RequestAccessibilityPermission() => NativeMethods.RequestAccessibility();
 
     public bool SupportsGlobalPointerGestures => HasAccessibilityPermission;
@@ -48,7 +48,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
         {
             LastSelectionError = ex.Message;
             Trace.TraceWarning($"Reading Finder selection failed: {ex.Message}");
-            throw new InvalidOperationException($"Could not read Finder selection. Allow Filee to control Finder in System Settings > Privacy & Security > Automation. {ex.Message}", ex);
+            throw new InvalidOperationException($"Could not read Finder selection. Allow 1format to control Finder in System Settings > Privacy & Security > Automation. {ex.Message}", ex);
         }
     }
 
@@ -72,7 +72,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
     }
 
     /// <summary>
-    /// Shows or hides Filee's own service in Finder's right-click menu (the same switch as System Settings >
+    /// Shows or hides 1format's own service in Finder's right-click menu (the same switch as System Settings >
     /// Keyboard > Keyboard Shortcuts > Services), and removes the Automator Quick Action earlier builds installed.
     /// </summary>
     public void SetContextMenu(bool enabled, string executablePath, string label)
@@ -85,7 +85,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     private static void RemoveLegacyWorkflow()
     {
-        var workflow = Path.Combine(UserLibrary, "Services", "Filee.workflow");
+        var workflow = Path.Combine(UserLibrary, "Services", "1format.workflow");
         if (Directory.Exists(workflow))
             Directory.Delete(workflow, recursive: true);
     }
@@ -118,7 +118,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
     private static void RequireExecutable(string path)
     {
         if (!Path.IsPathFullyQualified(path) || !File.Exists(path))
-            throw new FileNotFoundException("Filee's executable must have an existing absolute path.", path);
+            throw new FileNotFoundException("1format's executable must have an existing absolute path.", path);
     }
 
     private static string Run(string executable, IReadOnlyList<string> arguments, int timeoutMs)

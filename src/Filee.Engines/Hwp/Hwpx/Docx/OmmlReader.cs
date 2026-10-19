@@ -176,7 +176,7 @@ internal static class OmmlReader
     };
 
     /// <summary>
-    /// Beginnings that rhwp (and Filee's equation fixes before rhwp, RhwpInput) split off a longer word as a command
+    /// Beginnings that rhwp (and 1format's equation fixes before rhwp, RhwpInput) split off a longer word as a command
     /// ("overa" → over a, "sinx" → sin x, "lek" → le k, "INPUT" → IN PUT).
     /// </summary>
     private static readonly string[] ReservedPrefixes =

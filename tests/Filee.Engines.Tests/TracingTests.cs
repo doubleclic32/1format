@@ -357,7 +357,7 @@ public class TracingTests(EngineFixture fx) : IClassFixture<EngineFixture>
             }
             using var text = Fill(SKColors.Black);
             using var font = new SKFont(SKTypeface.Default, 120);
-            canvas.DrawText("Filee 2000", 200, 1000, font, text);
+            canvas.DrawText("1format 2000", 200, 1000, font, text);
         });
 
         foreach (var preset in new[] { Colors(16), LineArt() })

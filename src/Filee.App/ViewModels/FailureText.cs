@@ -14,7 +14,7 @@ internal static class FailureText
         loc[key ?? "error.conversion_failed"] + (string.IsNullOrWhiteSpace(detail) ? "" : $" ({detail})");
 
     /// <summary>
-    /// Reads a "file: error.key detail" line as Filee 1.7 and earlier saved it in the history.
+    /// Reads a "file: error.key detail" line as 1format 1.7 and earlier saved it in the history.
     /// </summary>
     public static FailureItem FromLegacy(ILocalizer loc, string line)
     {

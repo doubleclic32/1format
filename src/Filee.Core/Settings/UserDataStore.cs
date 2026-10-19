@@ -27,9 +27,9 @@ public sealed class UserDataStore
     }
 
     /// <summary>
-    /// Environment variable that moves all of Filee's per-user data (settings, logs, downloaded engines) to another
+    /// Environment variable that moves all of 1format's per-user data (settings, logs, downloaded engines) to another
     /// folder and gives that copy its own single instance: a development or test copy then never touches, or talks
-    /// to, the Filee the user runs. A copy started with it also leaves the system integration alone.
+    /// to, the 1format the user runs. A copy started with it also leaves the system integration alone.
     /// </summary>
     public const string DirectoryVariable = "FILEE_DATA_DIR";
 
@@ -37,11 +37,11 @@ public sealed class UserDataStore
     public static string? OverrideDirectory => DirectoryFrom(Environment.GetEnvironmentVariable(DirectoryVariable));
 
     /// <summary>
-    /// Default data directory: %APPDATA%\Filee on Windows, ~/Library/Application Support/Filee on macOS, or the
+    /// Default data directory: %APPDATA%\1format on Windows, ~/Library/Application Support/1format on macOS, or the
     /// folder in <see cref="DirectoryVariable"/>.
     /// </summary>
     public static string DefaultDirectory =>
-        OverrideDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Filee");
+        OverrideDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "1format");
 
     internal static string? DirectoryFrom(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : Path.TrimEndingDirectorySeparator(Path.GetFullPath(value.Trim()));
@@ -179,12 +179,12 @@ public sealed class UserDataStore
         {
             profile.PresetIds = profile.PresetIds.Where(ids.Contains).Distinct().Take(ToolbarProfile.MaxSlices).ToList();
         }
-        // A Filee from before groups drops "kind" (and the presets) when it saves a group, which comes back as a
+        // A 1format from before groups drops "kind" (and the presets) when it saves a group, which comes back as a
         // conversion to "group": still a group, now an empty one, rather than a conversion that can never run.
         foreach (var preset in Presets.Where(p => !p.IsGroup && p.TargetFormat == Preset.GroupTarget))
             preset.Kind = PresetKind.Group;
         // A group fans out conversions only (no group in a group), each once, at most MaxSubPresets, and has no
-        // target format an older Filee could run it with.
+        // target format an older 1format could run it with.
         var conversions = Presets.Where(p => !p.IsGroup).Select(p => p.Id).ToHashSet();
         foreach (var group in Presets.Where(p => p.IsGroup))
         {
@@ -264,7 +264,7 @@ internal static class SettingsMigrations
         if (settings.SchemaVersion < 4)
             InsertBefore(settings.EnginePriority, "markdown", "hwpx-writer");
 
-        // v5: Microsoft Word automation was removed (Filee no longer uses software installed on the system) and the
+        // v5: Microsoft Word automation was removed (1format no longer uses software installed on the system) and the
         //     built-in "spreadsheet" engine (XLSX <-> CSV) was added; profiles are split by ApplyToLibrary.
         if (settings.SchemaVersion < 5)
         {
@@ -475,7 +475,7 @@ internal static class SettingsMigrations
         }
 
         // v17: rotate / flip presets and the "Rotate" / "Flip" groups that fan them out, on no donut, after "Remove
-        // background" as in a new library. Present already but saved since by a Filee before 17 (it reads and writes
+        // background" as in a new library. Present already but saved since by a 1format before 17 (it reads and writes
         // an older schema, so back and forth between versions comes here again): that one dropped what it didn't
         // know, the rotation and the group, and left a preset that re-encodes unturned. Those parts are put back, the
         // user's own changes (name, quality, file names) stay.
@@ -529,7 +529,7 @@ internal static class SettingsMigrations
             }
         }
         // v20: "Compress PDF" (PDF → a smaller PDF), after "Split PDF" as in a new library, on no donut: the PDF donut
-        //      is full. Present already but saved since by a Filee before 20 (back and forth between versions): that
+        //      is full. Present already but saved since by a 1format before 20 (back and forth between versions): that
         //      one dropped the compression level and left a preset that copies the pages, so the level is put back.
         if (from < 20)
         {

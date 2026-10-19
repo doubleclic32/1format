@@ -43,12 +43,12 @@ public class ReleaseNotesTests
             <!-- update
             en: Polish translation
             pl: Język polski
-            xx: from a newer Filee
+            xx: from a newer 1format
             -->
             """);
 
         Assert.Equal(["Język polski"], note.In("pl"));
-        Assert.Equal(["Polish translation"], note.In("xx")); // not a Filee language: English
+        Assert.Equal(["Polish translation"], note.In("xx")); // not a 1format language: English
     }
 
     [Fact]

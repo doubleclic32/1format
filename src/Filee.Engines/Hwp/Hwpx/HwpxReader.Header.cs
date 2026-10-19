@@ -246,7 +246,7 @@ internal sealed partial class HwpxReader
             foreach (var head in Children(element, "paraHead").OrderBy(h => Int(h, "level", 1)))
             {
                 var text = head.Value;
-                // A level without a counter (^n) is a symbol: Filee writes bullets that way.
+                // A level without a counter (^n) is a symbol: 1format writes bullets that way.
                 var bullet = text.Length > 0 && !HasCounter(text);
                 numbering.Levels.Add(new HNumberingLevel(Attr(head, "numFormat") ?? "DIGIT", text, Int(head, "start", Math.Max(start, 1)), bullet));
             }
@@ -332,7 +332,7 @@ internal sealed partial class HwpxReader
 
     // ───────────────────────── Styles ─────────────────────────
 
-    /// <summary>Heading level 1..9 of a style named "Heading n" (as Filee writes them), else 0.</summary>
+    /// <summary>Heading level 1..9 of a style named "Heading n" (as 1format writes them), else 0.</summary>
     private int StyleHeadingLevel(string? styleId)
     {
         if (styleId is null || !_styles.TryGetValue(styleId, out var style))

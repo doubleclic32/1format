@@ -1,4 +1,4 @@
-// 3D models in managed code only (SharpGLTF for glTF, Filee's own readers and writers for the rest): GLB, glTF, STL,
+// 3D models in managed code only (SharpGLTF for glTF, 1format's own readers and writers for the rest): GLB, glTF, STL,
 // OBJ, 3MF and PLY into each other through one in-memory model (Model3D), and an isometric preview picture.
 // See docs/ENGINES.md, "3D models", for units, axes and what each format keeps.
 

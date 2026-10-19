@@ -1,11 +1,11 @@
-<!-- "Sponsor": the ways to support Filee, each with its logo and what it is good for. Opened from the sidebar button
+<!-- "Sponsor": the ways to support 1format, each with its logo and what it is good for. Opened from the sidebar button
      and the About page; choosing one opens it in the browser. -->
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:v="using:Filee.App.Views"
         x:Class="Filee.App.Views.SponsorWindow"
         Title="{DynamicResource sponsor.title}"
-        Icon="avares://Filee/Assets/Icons/filee.ico"
+        Icon="avares://1format/Assets/Icons/1format.ico"
         Width="420"
         SizeToContent="Height"
         CanResize="False"

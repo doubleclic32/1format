@@ -28,7 +28,7 @@ public sealed class HistoryEntry
     /// </summary>
     public Preset? Preset { get; set; }
 
-    /// <summary>"file: error" lines written by Filee 1.7 and earlier; read for entries without <see cref="Failures"/>.</summary>
+    /// <summary>"file: error" lines written by 1format 1.7 and earlier; read for entries without <see cref="Failures"/>.</summary>
     public List<string> Errors { get; set; } = [];
 
     public static HistoryEntry From(ConversionJob job)

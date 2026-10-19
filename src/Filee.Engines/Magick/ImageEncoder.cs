@@ -13,7 +13,7 @@ internal static class ImageEncoder
     /// Image formats ImageMagick can read (see <see cref="ImageReader"/> for RAW, layered and metafile sources).
     /// Camera RAW is decoded by LibRaw; XCF, HEIC, DICOM, Photo CD, OpenEXR and Radiance HDR are read only. EMF/WMF
     /// are Windows metafiles, which ImageMagick renders through GDI+ on Windows only (<see cref="Metafiles"/>). APNG is
-    /// read and written by Filee's own <see cref="Apng"/> (its frames decoded and encoded by ImageMagick).
+    /// read and written by 1format's own <see cref="Apng"/> (its frames decoded and encoded by ImageMagick).
     /// </summary>
     public static readonly string[] Readable =
     [
@@ -61,7 +61,7 @@ internal static class ImageEncoder
 
     /// <summary>
     /// Formats written without an alpha channel: transparent pixels are flattened onto the background colour. HEIC
-    /// could carry alpha as an auxiliary picture; Filee's writer (Heic/HeicWriter) does not. XBM and WBMP are 1-bit, PFM
+    /// could carry alpha as an auxiliary picture; 1format's writer (Heic/HeicWriter) does not. XBM and WBMP are 1-bit, PFM
     /// has no alpha, and the alpha planes of PCX and Sun Raster are an ImageMagick extension other programs ignore (its
     /// palette writers drop them altogether).
     /// </summary>
@@ -164,7 +164,7 @@ internal static class ImageEncoder
 
     /// <summary>
     /// The longest side a format stores: JPEG 65,535 px (65,500 keeps clear of encoder rounding), WebP 16,383 px,
-    /// AVIF 16,384 px. Other formats take more than any image Filee makes.
+    /// AVIF 16,384 px. Other formats take more than any image 1format makes.
     /// </summary>
     public static double MaxSide(string targetFormat) => targetFormat switch
     {

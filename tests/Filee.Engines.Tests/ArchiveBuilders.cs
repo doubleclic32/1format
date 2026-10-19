@@ -23,7 +23,7 @@ internal static class ArchiveBuilders
         var root = Path.Combine(parent, name);
         Directory.CreateDirectory(Path.Combine(root, "docs", "보고서"));
         Directory.CreateDirectory(Path.Combine(root, "empty"));
-        File.WriteAllText(Path.Combine(root, "readme.txt"), "Filee archive test\n");
+        File.WriteAllText(Path.Combine(root, "readme.txt"), "1format archive test\n");
         File.WriteAllText(Path.Combine(root, "한글 문서.txt"), "안녕하세요, archive 文件");
         File.WriteAllText(Path.Combine(root, "docs", "보고서", "data.csv"), "a,b\n1,2\n");
         File.WriteAllBytes(Path.Combine(root, "docs", "noise.bin"), Noise(200_000, 7));
@@ -58,7 +58,7 @@ internal static class ArchiveBuilders
     {
         var sb = new StringBuilder();
         var random = new Random(42);
-        string[] words = ["파일", "변환", "archive", "Filee", "압축", "folder", "데이터", "zip", "문서", "7-Zip", "\n"];
+        string[] words = ["파일", "변환", "archive", "1format", "압축", "folder", "데이터", "zip", "문서", "7-Zip", "\n"];
         while (sb.Length < length)
             sb.Append(words[random.Next(words.Length)]).Append(' ');
         return Encoding.UTF8.GetBytes(sb.ToString())[..length];

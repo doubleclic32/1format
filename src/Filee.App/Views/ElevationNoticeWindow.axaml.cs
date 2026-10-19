@@ -1,4 +1,4 @@
-// Bottom-right card saying Filee runs as administrator, with the restart that fixes it (ElevationService).
+// Bottom-right card saying 1format runs as administrator, with the restart that fixes it (ElevationService).
 
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +7,7 @@ using Filee.App.Services;
 
 namespace Filee.App.Views;
 
-/// <summary>One-time notice for an elevated Filee. "Restart" starts it again through Explorer and quits this one.</summary>
+/// <summary>One-time notice for an elevated 1format. "Restart" starts it again through Explorer and quits this one.</summary>
 public partial class ElevationNoticeWindow : Window
 {
     private const int ScreenMargin = 12;

@@ -1,4 +1,4 @@
-// The log lines that explain a Filee which seems to ignore everything: UI thread stalls, bursts kept short, the
+// The log lines that explain a 1format which seems to ignore everything: UI thread stalls, bursts kept short, the
 // start-up line, and the restart without administrator rights.
 
 using Avalonia.Headless.XUnit;
@@ -155,9 +155,9 @@ public class StartupDiagnosticsTests
     [Fact]
     public void The_startup_line_names_version_path_kind_rights_os_and_argument_count()
     {
-        var line = StartupDiagnostics.Describe("1.11.0", "/opt/filee/Filee", "portable",
+        var line = StartupDiagnostics.Describe("1.11.0", "/opt/filee/1format", "portable",
             new ElevationState(IntegrityLevel.High, IntegrityLevel.Medium, true), "Microsoft Windows 10.0.26200 X64", 3);
-        Assert.Equal("Filee 1.11.0 starting: /opt/filee/Filee (portable), integrity High (elevated), Explorer Medium, " +
+        Assert.Equal("1format 1.11.0 starting: /opt/filee/1format (portable), integrity High (elevated), Explorer Medium, " +
                      "Microsoft Windows 10.0.26200 X64, 3 argument(s)", line);
     }
 
@@ -165,7 +165,7 @@ public class StartupDiagnosticsTests
     public void An_unknown_path_and_state_still_give_a_line()
     {
         var line = StartupDiagnostics.Describe("1.0.0", null, "development build", ElevationState.Unknown, "Linux", 0);
-        Assert.Equal("Filee 1.0.0 starting: (unknown path) (development build), integrity unknown, Linux, 0 argument(s)", line);
+        Assert.Equal("1format 1.0.0 starting: (unknown path) (development build), integrity unknown, Linux, 0 argument(s)", line);
     }
 
     [Theory]
@@ -187,9 +187,9 @@ public class StartupDiagnosticsTests
         try
         {
             var log = StartupDiagnostics.CreateEarlyLogger(folder);
-            log.LogInformation("{Startup}", "Filee test starting");
+            log.LogInformation("{Startup}", "1format test starting");
             var file = Assert.Single(Directory.GetFiles(folder, "filee-*.log"));
-            Assert.Contains("Program: Filee test starting", File.ReadAllText(file));
+            Assert.Contains("Program: 1format test starting", File.ReadAllText(file));
         }
         finally
         {
@@ -229,9 +229,9 @@ public class ElevationServiceTests
         var elevation = Create(relaunchError: null);
         Assert.True(elevation.ShellCannotReachFilee);
 
-        Assert.True(elevation.RestartWithoutAdministratorRights("/apps/Filee"));
+        Assert.True(elevation.RestartWithoutAdministratorRights("/apps/1format"));
 
-        Assert.Equal(["release", "relaunch /apps/Filee", "shutdown"], _calls);
+        Assert.Equal(["release", "relaunch /apps/1format", "shutdown"], _calls);
         Assert.False(elevation.RestartFailed);
     }
 
@@ -242,9 +242,9 @@ public class ElevationServiceTests
         var changed = new List<string?>();
         elevation.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
-        Assert.False(elevation.RestartWithoutAdministratorRights("/apps/Filee"));
+        Assert.False(elevation.RestartWithoutAdministratorRights("/apps/1format"));
 
-        Assert.Equal(["release", "relaunch /apps/Filee", "reacquire"], _calls);
+        Assert.Equal(["release", "relaunch /apps/1format", "reacquire"], _calls);
         Assert.True(elevation.RestartFailed);
         Assert.Contains(nameof(ElevationService.RestartFailed), changed);
     }

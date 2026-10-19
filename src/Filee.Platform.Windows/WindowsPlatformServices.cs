@@ -13,8 +13,8 @@ namespace Filee.Platform.Windows;
 public sealed class WindowsPlatformServices : IPlatformServices
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    private const string ContextMenuKey = @"Software\Classes\*\shell\Filee";
-    private const string AppName = "Filee";
+    private const string ContextMenuKey = @"Software\Classes\*\shell\1format";
+    private const string AppName = "1format";
 
     /// <summary>Window classes that belong to Explorer windows and the desktop.</summary>
     private static readonly HashSet<string> FileManagerClasses = new(StringComparer.Ordinal)
@@ -152,7 +152,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
     }
 
     /// <summary>
-    /// Registers a per-user "Convert with Filee" verb for all files (no admin rights needed) and a Send To shortcut.
+    /// Registers a per-user "Convert with 1format" verb for all files (no admin rights needed) and a Send To shortcut.
     /// On Windows 11 the classic verb appears under "Show more options"; the top-level entry is the packaged
     /// IExplorerCommand (<see cref="ExplorerMenuRegistration"/>), which this switches on and off through its title file.
     /// When that package is registered the classic verb is removed, because Windows also lists the packaged command
@@ -245,7 +245,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
     }
 
     private static string SendToShortcutPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "Filee.lnk");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "1format.lnk");
 
     private static nint RootWindowAt(int x, int y)
     {

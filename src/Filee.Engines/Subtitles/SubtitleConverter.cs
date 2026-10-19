@@ -16,7 +16,7 @@ public sealed class SubtitleConverter : IConverter
     public int MaxParallelism => 0;
 
     /// <summary>
-    /// Every subtitle format to every one Filee writes, also to itself: an SRT or SAMI file in CP949 comes out as UTF-8.
+    /// Every subtitle format to every one 1format writes, also to itself: an SRT or SAMI file in CP949 comes out as UTF-8.
     /// </summary>
     public IReadOnlyList<ConversionEdge> Edges { get; } =
         [.. from source in SubtitleReader.Formats from target in SubtitleWriter.Formats select new ConversionEdge(source, target)];

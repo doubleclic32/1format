@@ -33,7 +33,7 @@ public sealed partial class HistoryItemViewModel : ObservableObject
         HasErrors = Failures.Count > 0 || entry.State == JobState.Failed;
         FailureSummary = loc.Format("home.failed_files", Failures.Count);
         HasOutputs = entry.Outputs.Any(ConversionService.Exists);
-        // Only entries that remember their preset (Filee 1.8 and later) and still have a failed file to convert.
+        // Only entries that remember their preset (1format 1.8 and later) and still have a failed file to convert.
         CanRetry = conversions is not null && entry.Preset is not null && entry.Failures.Any(f => ConversionService.Exists(f.Source));
     }
 
@@ -121,7 +121,7 @@ public sealed partial class HomePageViewModel : ObservableObject, IDisposable
         OnPropertyChanged(nameof(ElevationRestartFailed));
 
     /// <summary>
-    /// Windows: Filee runs as administrator while Explorer doesn't, so drops, the Explorer menu and the shortcut can't
+    /// Windows: 1format runs as administrator while Explorer doesn't, so drops, the Explorer menu and the shortcut can't
     /// reach it (the warning above the drop zone).
     /// </summary>
     public bool IsElevated => _elevation?.ShellCannotReachFilee == true;

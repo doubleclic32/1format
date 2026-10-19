@@ -1,4 +1,4 @@
-// What Filee changes in an HWPX before rhwp renders it to PDF, in a copy (the user's file is never touched):
+// What 1format changes in an HWPX before rhwp renders it to PDF, in a copy (the user's file is never touched):
 //
 // - Fonts (RhwpFonts): installed fonts for the text's language and characters, no CFF2 variable fonts (#61, #64).
 // - Shape sizes: a box inside a text box stores its size relative to the column (hp:sz widthRelTo="COLUMN", 9920 =
@@ -14,7 +14,7 @@
 //   text, its line is moved up to the paragraph's top (the line minus the table's offset, margins and height):
 //   nothing is drawn on it, and rhwp then puts the table where 한글 does.
 //
-// - Equation lines (#143): in paragraphs without stored lines (Word equations written by Filee) rhwp draws a fraction,
+// - Equation lines (#143): in paragraphs without stored lines (Word equations written by 1format) rhwp draws a fraction,
 //   matrix or sum partly below its line, over the next line. Those paragraphs get the overhang as space after them.
 //
 // rhwp's equation fonts are Latin Modern Math, STIX Two and Times New Roman; without the first two or Arial Unicode MS
@@ -59,7 +59,7 @@ internal static partial class RhwpInput
 
     /// <summary>
     /// A copy of the HWPX in <paramref name="workDirectory"/> with the changes above, or null when nothing needs
-    /// changing (or the file is not an HWPX package Filee can read).
+    /// changing (or the file is not an HWPX package 1format can read).
     /// </summary>
     /// <param name="lookup">Installed fonts by name (tests pass a fake computer).</param>
     public static string? Prepare(string hwpx, string workDirectory, Func<string, InstalledFont?>? lookup = null)
@@ -114,7 +114,7 @@ internal static partial class RhwpInput
         }
         catch (Exception ex) when (ex is InvalidDataException or System.Xml.XmlException)
         {
-            return null; // not a package Filee can read: rhwp reports the problem itself
+            return null; // not a package 1format can read: rhwp reports the problem itself
         }
     }
 
@@ -211,7 +211,7 @@ internal static partial class RhwpInput
     }
 
     /// <summary>
-    /// Paragraphs without stored lines (written by Filee) that hold equations: room above and below for what rhwp
+    /// Paragraphs without stored lines (written by 1format) that hold equations: room above and below for what rhwp
     /// draws outside the line. rhwp makes a line as tall as its tallest equation, puts the line's baseline at 85 % of
     /// that height and the equation's own baseline on it, so an equation whose baseline is higher (a fraction, a matrix,
     /// a sum with limits) reaches below the line into the next one. The paragraph gets that much more space after it

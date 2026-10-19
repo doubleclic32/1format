@@ -1,4 +1,4 @@
-// Keeps one Filee per Windows session, or per user across Unix launcher/terminal sessions.
+// Keeps one 1format per Windows session, or per user across Unix launcher/terminal sessions.
 // Later launches forward arguments through a named pipe.
 
 using System.IO.Pipes;
@@ -32,15 +32,15 @@ public sealed class SingleInstance : IDisposable
 
     /// <summary>
     /// The mutex and pipe name for a user. A copy started with FILEE_DATA_DIR (<paramref name="dataDirectoryOverride"/>)
-    /// gets a name of its own, so it neither forwards to nor receives from the Filee the user runs.
+    /// gets a name of its own, so it neither forwards to nor receives from the 1format the user runs.
     /// </summary>
     internal static string NameFor(string userName, string? dataDirectoryOverride)
     {
         var key = dataDirectoryOverride is null ? userName : userName + "|" + dataDirectoryOverride.ToUpperInvariant();
-        return "Filee-" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(key)))[..12];
+        return "1format-" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(key)))[..12];
     }
 
-    /// <summary>The instance under another name (tests, which must not reach a Filee that is running).</summary>
+    /// <summary>The instance under another name (tests, which must not reach a 1format that is running).</summary>
     internal static SingleInstance Acquire(string name)
     {
         bool createdNew;
@@ -79,7 +79,7 @@ public sealed class SingleInstance : IDisposable
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    // The pipe name is still held by a Filee with other rights (one that just restarted this one
+                    // The pipe name is still held by a 1format with other rights (one that just restarted this one
                     // without administrator rights and is closing): try again once it is gone.
                     try
                     {
@@ -103,7 +103,7 @@ public sealed class SingleInstance : IDisposable
     public bool ForwardToFirst(string[] args, TimeSpan wait) => Forward(args, wait) == ForwardResult.Delivered;
 
     /// <summary>
-    /// Like <see cref="ForwardToFirst"/>, telling why it failed. A pipe that keeps refusing access belongs to a Filee
+    /// Like <see cref="ForwardToFirst"/>, telling why it failed. A pipe that keeps refusing access belongs to a 1format
     /// running with other rights (as administrator, while this one isn't): that never changes, so it gives up after a
     /// few tries instead of waiting the whole time.
     /// </summary>
@@ -188,12 +188,12 @@ public sealed class SingleInstance : IDisposable
 /// <summary>Outcome of <see cref="SingleInstance.Forward"/>.</summary>
 public enum ForwardResult
 {
-    /// <summary>The running Filee has the arguments.</summary>
+    /// <summary>The running 1format has the arguments.</summary>
     Delivered,
 
-    /// <summary>Nobody took them in time: the running Filee is starting, shutting down or hung.</summary>
+    /// <summary>Nobody took them in time: the running 1format is starting, shutting down or hung.</summary>
     NoAnswer,
 
-    /// <summary>The running Filee's pipe refuses this process: it runs with other rights (as administrator).</summary>
+    /// <summary>The running 1format's pipe refuses this process: it runs with other rights (as administrator).</summary>
     AccessDenied,
 }

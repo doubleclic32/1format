@@ -19,7 +19,7 @@ public sealed class LinuxDesktopIntegrationTests : IDisposable
         File.WriteAllText(path, "<actions>" + existing + "</actions>");
         var integration = new LinuxDesktopIntegration(configuration, data);
 
-        integration.SetContextMenu(true, "/opt/Filee's app/Filee.App", "Filee로 변환 & test");
+        integration.SetContextMenu(true, "/opt/1format's app/Filee.App", "1format로 변환 & test");
         integration.SetContextMenu(true, "/opt/new/Filee.App", "Updated");
 
         var document = XDocument.Load(path);
@@ -28,7 +28,7 @@ public sealed class LinuxDesktopIntegrationTests : IDisposable
             .Single(action => (string?)action.Element("unique-id") == "other").Element("command")!.Value);
         Assert.Equal("'/opt/new/Filee.App' --convert %F", document.Root.Elements("action")
             .Single(action => (string?)action.Element("unique-id") == LinuxDesktopIntegration.ThunarActionId).Element("command")!.Value);
-        Assert.Contains("exec '/opt/new/Filee.App' --convert \"$@\"", File.ReadAllText(Path.Combine(data, "nautilus", "scripts", "Filee")));
+        Assert.Contains("exec '/opt/new/Filee.App' --convert \"$@\"", File.ReadAllText(Path.Combine(data, "nautilus", "scripts", "1format")));
 
         integration.SetContextMenu(false, "", "");
 
@@ -57,11 +57,11 @@ public sealed class LinuxDesktopIntegrationTests : IDisposable
     public void AutostartEscapesLineBreaksAndKeepsTheExecutableAsOneArgument()
     {
         var integration = new LinuxDesktopIntegration(_root, Path.Combine(_root, "data"));
-        integration.SetAutostart(true, "/opt/Filee test/Filee.App");
+        integration.SetAutostart(true, "/opt/1format test/Filee.App");
         var path = Path.Combine(_root, "autostart", "filee.desktop");
-        Assert.Contains("Exec=\"/opt/Filee test/Filee.App\" --background\n", File.ReadAllText(path));
-        Assert.Throws<ArgumentException>(() => integration.SetAutostart(true, "/opt/Filee\nExec=bad"));
-        Assert.Contains("Exec=\"/opt/Filee test/Filee.App\" --background\n", File.ReadAllText(path));
+        Assert.Contains("Exec=\"/opt/1format test/Filee.App\" --background\n", File.ReadAllText(path));
+        Assert.Throws<ArgumentException>(() => integration.SetAutostart(true, "/opt/1format\nExec=bad"));
+        Assert.Contains("Exec=\"/opt/1format test/Filee.App\" --background\n", File.ReadAllText(path));
         integration.SetAutostart(false, "");
         Assert.False(File.Exists(path));
     }

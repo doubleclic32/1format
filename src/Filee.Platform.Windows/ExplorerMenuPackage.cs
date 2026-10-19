@@ -1,6 +1,6 @@
-// The sparse ("packaged with external location") MSIX that puts "Convert with Filee" into the top-level Windows 11
+// The sparse ("packaged with external location") MSIX that puts "Convert with 1format" into the top-level Windows 11
 // File Explorer context menu. The package holds only AppxManifest.xml and a logo; the COM server it declares is the
-// native FileeExplorerMenu.dll in the Filee install folder (src/Filee.ExplorerMenu).
+// native OneFormatExplorerMenu.dll in the 1format install folder (src/Filee.ExplorerMenu).
 
 using System.Globalization;
 using System.Xml.Linq;
@@ -14,19 +14,19 @@ namespace Filee.Platform.Windows;
 public static class ExplorerMenuPackage
 {
     /// <summary>Package name (the <c>Identity/@Name</c>); also used to find and remove the registration.</summary>
-    public const string PackageName = "Filee.ExplorerMenu";
+    public const string PackageName = "OneFormat.ExplorerMenu";
 
     /// <summary>
     /// Publisher of the unsigned package. Windows 11 only registers unsigned packages whose publisher contains this
     /// special OID, so they can never collide with (or spoof) a signed package.
     /// </summary>
-    public const string Publisher = "CN=Filee, OID.2.25.311729368913984317654407730594956997722=1";
+    public const string Publisher = "CN=Double Clic, OID.2.25.311729368913984317654407730594956997722=1";
 
     /// <summary>
     /// Package family name = name + "_" + a hash of <see cref="Publisher"/> (checked by a test against
     /// <c>PackageFamilyNameFromId</c>). Used to look the registration up without PowerShell.
     /// </summary>
-    public const string FamilyName = "Filee.ExplorerMenu_c73vxh346rtay";
+    public const string FamilyName = "OneFormat.ExplorerMenu_3bba4463fh3z4";
 
     /// <summary>
     /// Version of the manifest, deliberately independent of the app version: registering an unsigned package with a
@@ -36,17 +36,17 @@ public static class ExplorerMenuPackage
     /// </summary>
     public static readonly Version ManifestVersion = new(1, 0, 0, 0);
 
-    /// <summary>CLSID of the IExplorerCommand in FileeExplorerMenu.dll (kClsidCommand in FileeExplorerMenu.c).</summary>
+    /// <summary>CLSID of the IExplorerCommand in OneFormatExplorerMenu.dll (kClsidCommand in OneFormatExplorerMenu.c).</summary>
     public static readonly Guid ClassId = new("6DB0E670-807F-4D22-BE3F-20492D0F4AB1");
 
-    /// <summary>The native COM server next to Filee.exe.</summary>
-    public const string DllFileName = "FileeExplorerMenu.dll";
+    /// <summary>The native COM server next to 1format.exe.</summary>
+    public const string DllFileName = "OneFormatExplorerMenu.dll";
 
-    /// <summary>The package file next to Filee.exe.</summary>
-    public const string PackageFileName = "FileeExplorerMenu.msix";
+    /// <summary>The package file next to 1format.exe.</summary>
+    public const string PackageFileName = "OneFormatExplorerMenu.msix";
 
     /// <summary>
-    /// File in the data folder (%APPDATA%\Filee, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
+    /// File in the data folder (%APPDATA%\1format, TITLE_FILE in OneFormatExplorerMenu.c) whose first line is the menu title
     /// in the UI language. It exists while the Explorer menu setting is on; without it the DLL hides the entry.
     /// </summary>
     public const string TitleFileName = "explorer-menu.txt";
@@ -57,7 +57,7 @@ public static class ExplorerMenuPackage
     /// <summary>Windows 11 (build 22000) is the first version with the new context menu and unsigned packages.</summary>
     public const int MinimumBuild = 22000;
 
-    /// <summary>Path of the logo inside the package (shown in package lists only; the menu uses Filee.exe's icon).</summary>
+    /// <summary>Path of the logo inside the package (shown in package lists only; the menu uses 1format.exe's icon).</summary>
     public const string LogoPath = @"Assets\Logo.png";
 
     private static readonly XNamespace Foundation = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
@@ -69,7 +69,7 @@ public static class ExplorerMenuPackage
     private static readonly XNamespace Rescap = "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities";
 
     /// <summary>
-    /// Builds AppxManifest.xml. Paths in it (Filee.exe, the DLL) are relative to the external location, i.e. the
+    /// Builds AppxManifest.xml. Paths in it (1format.exe, the DLL) are relative to the external location, i.e. the
     /// install folder given at registration.
     /// </summary>
     public static string CreateManifest()
@@ -90,8 +90,8 @@ public static class ExplorerMenuPackage
                 new XAttribute("Version", ManifestVersion.ToString(4)),
                 new XAttribute("ProcessorArchitecture", Architecture)),
             new XElement(Foundation + "Properties",
-                new XElement(Foundation + "DisplayName", "Filee"),
-                new XElement(Foundation + "PublisherDisplayName", "Filee contributors"),
+                new XElement(Foundation + "DisplayName", "1format"),
+                new XElement(Foundation + "PublisherDisplayName", "1format contributors"),
                 new XElement(Foundation + "Logo", LogoPath),
                 new XElement(Uap10 + "AllowExternalContent", "true")),
             new XElement(Foundation + "Resources",
@@ -106,15 +106,15 @@ public static class ExplorerMenuPackage
                 new XElement(Rescap + "Capability", new XAttribute("Name", "unvirtualizedResources"))),
             new XElement(Foundation + "Applications",
                 new XElement(Foundation + "Application",
-                    new XAttribute("Id", "Filee"),
-                    new XAttribute("Executable", "Filee.exe"),
+                    new XAttribute("Id", "1format"),
+                    new XAttribute("Executable", "1format.exe"),
                     new XAttribute(Uap10 + "TrustLevel", "mediumIL"),
                     new XAttribute(Uap10 + "RuntimeBehavior", "win32App"),
                     // AppListEntry="none": the package only carries the shell extension, it adds no Start menu entry.
                     new XElement(Uap + "VisualElements",
                         new XAttribute("AppListEntry", "none"),
-                        new XAttribute("DisplayName", "Filee"),
-                        new XAttribute("Description", "Filee File Explorer integration"),
+                        new XAttribute("DisplayName", "1format"),
+                        new XAttribute("Description", "1format File Explorer integration"),
                         new XAttribute("BackgroundColor", "transparent"),
                         new XAttribute("Square150x150Logo", LogoPath),
                         new XAttribute("Square44x44Logo", LogoPath)),
@@ -133,7 +133,7 @@ public static class ExplorerMenuPackage
                             new XAttribute("Category", "windows.comServer"),
                             new XElement(Com + "ComServer",
                                 new XElement(Com + "SurrogateServer",
-                                    new XAttribute("DisplayName", "Filee context menu"),
+                                    new XAttribute("DisplayName", "1format context menu"),
                                     new XElement(Com + "Class",
                                         new XAttribute("Id", clsid),
                                         new XAttribute("Path", DllFileName),

@@ -1,10 +1,10 @@
-<!-- Asked when the main window closes while AppSettings.CloseAction is Ask: keep Filee in the tray or quit, with
+<!-- Asked when the main window closes while AppSettings.CloseAction is Ask: keep 1format in the tray or quit, with
      "Don't ask again" (Settings → General changes it later). -->
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="Filee.App.Views.CloseAskWindow"
-        Title="Filee"
-        Icon="avares://Filee/Assets/Icons/filee.ico"
+        Title="1format"
+        Icon="avares://1format/Assets/Icons/1format.ico"
         Width="440"
         SizeToContent="Height"
         CanResize="False"

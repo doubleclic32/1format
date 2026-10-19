@@ -16,7 +16,7 @@ public sealed class TrayService(UserDataStore store, ILocalizer loc, WindowServi
 
     public void Create(Application app)
     {
-        using var iconStream = AssetLoader.Open(new Uri("avares://Filee/Assets/Icons/filee.ico"));
+        using var iconStream = AssetLoader.Open(new Uri("avares://1format/Assets/Icons/1format.ico"));
         _open = new NativeMenuItem();
         _open.Click += (_, _) => windows.ShowMain();
         _pause = new NativeMenuItem();
@@ -34,7 +34,7 @@ public sealed class TrayService(UserDataStore store, ILocalizer loc, WindowServi
         {
             Icon = new WindowIcon(iconStream),
             // Set before the icon is attached: on macOS Avalonia passes the tooltip to native code, which can't take null.
-            ToolTipText = "Filee",
+            ToolTipText = "1format",
             Menu = new NativeMenu { Items = { _open, _pause, new NativeMenuItemSeparator(), _quit } },
             IsVisible = true,
         };

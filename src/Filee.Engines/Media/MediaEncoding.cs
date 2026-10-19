@@ -1,4 +1,4 @@
-// Which container and codecs Filee writes for every video and audio format, and the FFmpeg command lines for them.
+// Which container and codecs 1format writes for every video and audio format, and the FFmpeg command lines for them.
 // Pure (no processes), so the choices are unit tested without FFmpeg. Every encoder and muxer used here was checked
 // against the pinned FFmpeg build (engines.json: `ffmpeg -encoders` / `ffmpeg -muxers`).
 
@@ -22,7 +22,7 @@ internal sealed record FfmpegPass(IReadOnlyList<string> Arguments, double Weight
 internal static class MediaEncoding
 {
     /// <summary>
-    /// Video formats Filee writes. H.264 + AAC wherever the container allows it: it plays on every browser, phone,
+    /// Video formats 1format writes. H.264 + AAC wherever the container allows it: it plays on every browser, phone,
     /// TV and editor. The other containers get the codecs their players expect.
     /// </summary>
     public static IReadOnlyDictionary<string, MediaTarget> VideoTargets { get; } = new Dictionary<string, MediaTarget>
@@ -53,7 +53,7 @@ internal static class MediaEncoding
         ["mxf"] = new("mxf", "mpeg2video", "pcm_s16le"),
     };
 
-    /// <summary>Audio formats Filee writes (also the targets of audio extraction from video).</summary>
+    /// <summary>Audio formats 1format writes (also the targets of audio extraction from video).</summary>
     public static IReadOnlyDictionary<string, MediaTarget> AudioTargets { get; } = new Dictionary<string, MediaTarget>
     {
         ["mp3"] = new("mp3", null, "libmp3lame"),
@@ -319,13 +319,13 @@ internal static class MediaEncoding
             case VideoCodec.Hevc when Has("libx265"):
                 return "libx265";
             case VideoCodec.Hevc:
-                throw new InvalidOperationException("This FFmpeg has no HEVC encoder (libx265). Filee's FFmpeg download has one.");
+                throw new InvalidOperationException("This FFmpeg has no HEVC encoder (libx265). 1format's FFmpeg download has one.");
             case VideoCodec.Av1 when Has("libsvtav1"):
                 return "libsvtav1";
             case VideoCodec.Av1 when Has("libaom-av1"):
                 return "libaom-av1";
             case VideoCodec.Av1:
-                throw new InvalidOperationException("This FFmpeg has no AV1 encoder (libsvtav1 or libaom-av1). Filee's FFmpeg download has one.");
+                throw new InvalidOperationException("This FFmpeg has no AV1 encoder (libsvtav1 or libaom-av1). 1format's FFmpeg download has one.");
             default:
                 return defaultEncoder;
         }

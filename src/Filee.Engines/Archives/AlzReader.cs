@@ -1,5 +1,5 @@
 // Reads ALZ archives, the format of the Korean ALZip (ESTsoft), which 7-Zip does not support. Layout as documented by
-// unalz (zlib licence) and the "unalz" Rust crate (MIT); Filee's reader is its own:
+// unalz (zlib licence) and the "unalz" Rust crate (MIT); 1format's reader is its own:
 //
 //   "ALZ\x01" + 4 bytes                         archive header
 //   "BLZ\x01" + local file header + name + data  one per entry
@@ -102,7 +102,7 @@ internal static class AlzReader
                 {
                     case EntrySignature:
                         if (entries.Count >= ArchiveSafety.MaxEntries)
-                            throw new InvalidDataException($"{archiveName} has more than {ArchiveSafety.MaxEntries:N0} entries; Filee does not unpack it.");
+                            throw new InvalidDataException($"{archiveName} has more than {ArchiveSafety.MaxEntries:N0} entries; 1format does not unpack it.");
                         entries.Add(ReadEntry(reader, archiveName));
                         break;
                     case DirectorySignature:
@@ -116,7 +116,7 @@ internal static class AlzReader
                     case EndSignature:
                         return entries;
                     case SplitSignature:
-                        throw new InvalidDataException($"{archiveName} is part of a split ALZ archive (.alz + .a00 …); Filee cannot unpack split archives.");
+                        throw new InvalidDataException($"{archiveName} is part of a split ALZ archive (.alz + .a00 …); 1format cannot unpack split archives.");
                     default:
                         throw ArchiveSafety.Damaged(archiveName, "unknown ALZ header");
                 }

@@ -1,4 +1,4 @@
-// CRC-32 (IEEE 802.3, as in ZIP, gzip, ALZ, EGG and lzip) for checking what Filee's own archive readers unpack.
+// CRC-32 (IEEE 802.3, as in ZIP, gzip, ALZ, EGG and lzip) for checking what 1format's own archive readers unpack.
 
 namespace Filee.Engines.Archives;
 

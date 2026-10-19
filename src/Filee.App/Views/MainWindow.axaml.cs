@@ -32,7 +32,7 @@ public partial class MainWindow : Window
         await SponsorWindow.Create(AppHost.Get<ILocalizer>()).ShowDialog(this);
 
     /// <summary>
-    /// Closing the window keeps Filee running in the tray, quits, or asks which (<see cref="AppSettings.CloseAction"/>).
+    /// Closing the window keeps 1format running in the tray, quits, or asks which (<see cref="AppSettings.CloseAction"/>).
     /// </summary>
     protected override void OnClosing(WindowClosingEventArgs e)
     {
@@ -96,7 +96,7 @@ public partial class MainWindow : Window
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown());
 
     /// <summary>
-    /// Leaves Filee in the tray: hides the window at once, then closes it for real, so its pages, visuals and images
+    /// Leaves 1format in the tray: hides the window at once, then closes it for real, so its pages, visuals and images
     /// don't stay in memory until the next time (issue #119). <see cref="WindowService.ShowMain"/> opens a new one.
     /// </summary>
     internal void HideToTray()

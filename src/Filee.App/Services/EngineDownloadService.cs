@@ -47,8 +47,8 @@ public sealed partial class EnginePackageState : ObservableObject
         : _loc["engines.package.system_required"];
 
     /// <summary>
-    /// How to get an engine Filee doesn't download on this system (FFmpeg and Ghostscript from Homebrew on macOS,
-    /// the distribution's packages on Linux), in the app's language; null when Filee can download it.
+    /// How to get an engine 1format doesn't download on this system (FFmpeg and Ghostscript from Homebrew on macOS,
+    /// the distribution's packages on Linux), in the app's language; null when 1format can download it.
     /// </summary>
     public string? InstallGuidance
     {
@@ -69,17 +69,17 @@ public sealed partial class EnginePackageState : ObservableObject
     private EnginePackageStatus _status;
 
     /// <summary>
-    /// Filee's download is installed but older than the version this Filee pins (engines.json changed with an app
+    /// 1format's download is installed but older than the version this 1format pins (engines.json changed with an app
     /// update): <see cref="CanUpdate"/> offers the new one.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText), nameof(CanUpdate))]
     private bool _isOutdated;
 
-    /// <summary>The version Filee downloads now, e.g. "8.0" for FFmpeg (the package's main component).</summary>
+    /// <summary>The version 1format downloads now, e.g. "8.0" for FFmpeg (the package's main component).</summary>
     public string? Version => EngineDownloads.Components.TryGetValue(Package.Components[0], out var component) ? component.Version : null;
 
-    /// <summary>Filee's download is installed in an older version than the one Filee downloads now.</summary>
+    /// <summary>1format's download is installed in an older version than the one 1format downloads now.</summary>
     public bool CanUpdate => Status == EnginePackageStatus.Installed && IsOutdated && EngineDownloads.CanDownload(Package);
 
     /// <summary>Folder of the copy in use while the status is <see cref="EnginePackageStatus.OwnCopy"/>.</summary>
@@ -91,7 +91,7 @@ public sealed partial class EnginePackageState : ObservableObject
     [NotifyPropertyChangedFor(nameof(StatusText), nameof(CanInstall), nameof(UsesOwnCopy), nameof(CanUseOwnCopy))]
     private bool _fromSystem;
 
-    /// <summary>"Update recommended: 7.1 here, Filee is tested with 9.0" for an older copy, else null.</summary>
+    /// <summary>"Update recommended: 7.1 here, 1format is tested with 9.0" for an older copy, else null.</summary>
     [ObservableProperty]
     private string? _updateNote;
 
@@ -112,7 +112,7 @@ public sealed partial class EnginePackageState : ObservableObject
     [ObservableProperty]
     private bool _selected;
 
-    /// <summary>The engine is there: Filee's download or the user's own copy.</summary>
+    /// <summary>The engine is there: 1format's download or the user's own copy.</summary>
     public bool IsInstalled => Status is EnginePackageStatus.Installed or EnginePackageStatus.OwnCopy;
     public bool CanRemove => Status == EnginePackageStatus.Installed;
     /// <summary>The user chose this copy ("Stop using it" applies).</summary>
@@ -121,7 +121,7 @@ public sealed partial class EnginePackageState : ObservableObject
     public bool CanUseOwnCopy => Status is EnginePackageStatus.NotInstalled or EnginePackageStatus.Failed or EnginePackageStatus.Installed
                                  || (Status == EnginePackageStatus.OwnCopy && FromSystem);
     public bool IsBusy => Status is EnginePackageStatus.Queued or EnginePackageStatus.Downloading or EnginePackageStatus.Unpacking;
-    /// <summary>Also when a copy on the PC is used: Filee's download is the tested version and wins once installed.</summary>
+    /// <summary>Also when a copy on the PC is used: 1format's download is the tested version and wins once installed.</summary>
     public bool CanInstall => EngineDownloads.CanDownload(Package) && (Status is EnginePackageStatus.NotInstalled or EnginePackageStatus.Failed
                               || (Status == EnginePackageStatus.OwnCopy && FromSystem));
 
@@ -186,7 +186,7 @@ public sealed class EngineDownloadService
         _loc = loc;
         // Redirects are followed by the installer (mirrors may use plain HTTP; files are verified by SHA-256).
         var http = new HttpClient(new SocketsHttpHandler { AllowAutoRedirect = false }) { Timeout = Timeout.InfiniteTimeSpan };
-        http.DefaultRequestHeaders.UserAgent.ParseAdd($"Filee/{typeof(EngineDownloadService).Assembly.GetName().Version}");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd($"1format/{typeof(EngineDownloadService).Assembly.GetName().Version}");
         _installer = new EngineInstaller(http, logger: logger);
         Packages = EngineDownloads.Packages.Select(p => new EnginePackageState(p, loc)).ToList();
         if (loc is LocalizationService localization)
@@ -207,7 +207,7 @@ public sealed class EngineDownloadService
     }
 
     /// <summary>
-    /// In the order the engines look: the user's own copy, Filee's download, a copy on the PC. A copy Filee didn't
+    /// In the order the engines look: the user's own copy, 1format's download, a copy on the PC. A copy 1format didn't
     /// download gets its version checked in the background (<see cref="EnginePackageState.UpdateNote"/>).
     /// </summary>
     private EnginePackageStatus StatusOf(EnginePackageState state)
@@ -237,7 +237,7 @@ public sealed class EngineDownloadService
             state.UpdateNote = _loc.Format("engines.update_recommended", installed.ToString(2), expected.ToString(2)));
     }
 
-    /// <summary>Filee's downloads that have a newer version now (only engines the user installed).</summary>
+    /// <summary>1format's downloads that have a newer version now (only engines the user installed).</summary>
     public IReadOnlyList<EnginePackageState> Outdated => Packages.Where(p => p.CanUpdate).ToList();
 
     /// <summary>

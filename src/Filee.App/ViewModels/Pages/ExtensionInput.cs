@@ -16,7 +16,7 @@ public static class ExtensionInput
     /// (" *.JPG " → "jpg", ".tar.gz" → "tar.gz"). Returns null for text that can't be an extension.
     /// </summary>
     /// <remarks>
-    /// Two-part extensions are only accepted when Filee knows them (tar.gz, tar.xz ...): files are matched with
+    /// Two-part extensions are only accepted when 1format knows them (tar.gz, tar.xz ...): files are matched with
     /// <see cref="FormatRegistry.ExtensionOf"/>, which only sees the last part of any other name ("x.foo.bar" → "bar").
     /// </remarks>
     public static string? Normalize(string? text)

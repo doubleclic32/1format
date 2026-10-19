@@ -14,13 +14,13 @@ public interface IPlatformServices
 
     /// <summary>
     /// Names of the apps that have a window open now, as <see cref="ProcessNameAt"/> reports them, sorted, without
-    /// Filee. Windows reports a main window per process; macOS and Linux list the windows on screen.
+    /// 1format. Windows reports a main window per process; macOS and Linux list the windows on screen.
     /// </summary>
     IReadOnlyList<string> RunningAppNames() => AppNames(System.Diagnostics.Process.GetProcesses()
         .Where(p => { try { return p.MainWindowHandle != 0; } catch (InvalidOperationException) { return false; } })
         .Select(p => { using (p) return p.ProcessName; }));
 
-    /// <summary>Distinct, sorted, Filee itself left out.</summary>
+    /// <summary>Distinct, sorted, 1format itself left out.</summary>
     static IReadOnlyList<string> AppNames(IEnumerable<string?> names)
     {
         var own = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
@@ -46,7 +46,7 @@ public interface IPlatformServices
     /// <summary>Adds or removes "start with the system".</summary>
     void SetStartWithSystem(bool enabled, string executablePath);
 
-    /// <summary>Adds or removes the file manager context-menu entry ("Convert with Filee") and Send To shortcut.</summary>
+    /// <summary>Adds or removes the file manager context-menu entry ("Convert with 1format") and Send To shortcut.</summary>
     void SetContextMenu(bool enabled, string executablePath, string label);
 
     /// <summary>State of the Windows 11 top-level File Explorer menu entry for the app at <paramref name="executablePath"/>.</summary>
@@ -68,7 +68,7 @@ public interface IPlatformServices
     void RaiseTopmost(nint windowHandle);
 }
 
-/// <summary>Whether "Convert with Filee" is in the top-level Windows 11 File Explorer menu (not just "Show more options").</summary>
+/// <summary>Whether "Convert with 1format" is in the top-level Windows 11 File Explorer menu (not just "Show more options").</summary>
 public enum ModernContextMenuState
 {
     /// <summary>Not possible here: another OS, Windows 10, ARM64, or a build without the Explorer extension files.</summary>

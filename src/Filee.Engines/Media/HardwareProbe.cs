@@ -1,6 +1,6 @@
 // Finds out which hardware video encoder works on this computer. FFmpeg lists every encoder it was built with, also
 // NVENC without an NVIDIA card or Quick Sync without an Intel GPU, so each candidate gets a tiny test encode first. The
-// result is kept per FFmpeg executable, encoder and bit depth for as long as Filee runs.
+// result is kept per FFmpeg executable, encoder and bit depth for as long as 1format runs.
 
 using System.Collections.Concurrent;
 using Filee.Engines.Infrastructure;

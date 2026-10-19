@@ -1,4 +1,4 @@
-// Entry point of filee-cli.exe (run as "filee" through cli\filee.cmd). Ctrl+C cancels the running conversion or
+// Entry point of 1format-cli.exe (run as "filee" through cli\1format.cmd). Ctrl+C cancels the running conversion or
 // stops watching; a second Ctrl+C ends the process at once.
 
 using System.Text;

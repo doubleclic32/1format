@@ -20,7 +20,7 @@ internal static class DocumentReaders
     private static readonly TimeSpan PandocTimeout = TimeSpan.FromMinutes(2);
 
     /// <summary>
-    /// Readers built into Filee: (input file, folder for extracted pictures) → document. Office Open XML variants
+    /// Readers built into 1format: (input file, folder for extracted pictures) → document. Office Open XML variants
     /// (macro-enabled files, templates, slide shows) share the reader of their family.
     /// </summary>
     private static readonly Dictionary<string, Func<string, string, HDocument>> BuiltIn = new(StringComparer.OrdinalIgnoreCase)

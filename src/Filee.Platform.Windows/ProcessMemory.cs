@@ -1,4 +1,4 @@
-// Hands the pages of this process back to Windows once it is idle in the tray, so Task Manager shows what Filee
+// Hands the pages of this process back to Windows once it is idle in the tray, so Task Manager shows what 1format
 // really needs instead of what the last conversion touched.
 
 namespace Filee.Platform.Windows;

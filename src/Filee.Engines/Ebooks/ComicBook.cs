@@ -12,7 +12,7 @@ using PDFtoImage;
 using SharpCompress.Archives;
 using SkiaSharp;
 
-// PDFtoImage marks its API for the platforms PDFium ships for (Windows, macOS, Linux, mobile); Filee only targets
+// PDFtoImage marks its API for the platforms PDFium ships for (Windows, macOS, Linux, mobile); 1format only targets
 // desktop platforms that are all covered.
 #pragma warning disable CA1416
 

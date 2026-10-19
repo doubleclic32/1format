@@ -42,18 +42,18 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    /// <summary>Ends Filee as the tray's Quit does.</summary>
+    /// <summary>Ends 1format as the tray's Quit does.</summary>
     public static void Quit() => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
 
     private void Start(IClassicDesktopStyleApplicationLifetime desktop)
     {
-        // macOS: "Convert with Filee" in Finder's right-click menu. Registered first, so a service picked while
-        // Filee wasn't running is delivered as soon as it starts.
+        // macOS: "Convert with 1format" in Finder's right-click menu. Registered first, so a service picked while
+        // 1format wasn't running is delivered as soon as it starts.
         if (OperatingSystem.IsMacOS())
             Filee.Platform.MacOS.MacOSServicesProvider.Register(files =>
                 Dispatcher.UIThread.Post(() => HandleCommandLine(CommandLine.Parse(["--convert", .. files]))));
         var log = AppHost.Get<ILogger<App>>();
-        // Exceptions in UI event handlers end Filee; write them down first (they are not marked handled).
+        // Exceptions in UI event handlers end 1format; write them down first (they are not marked handled).
         Dispatcher.UIThread.UnhandledException += (_, e) =>
             log.LogCritical(e.Exception, "Unhandled exception on the UI thread");
         var watchdog = new UiWatchdog(action => Dispatcher.UIThread.Post(action), AppHost.Get<ILogger<UiWatchdog>>());
@@ -88,7 +88,7 @@ public partial class App : Application
                 else if (files.Count == 0 && Throttle.TryEnter("empty-selection", out var held))
                     log.LogInformation("The selection shortcut found no selected files in {Window}{Elevation}{Held}",
                         platform.DescribeForegroundWindow() is { Length: > 0 } window ? window : "the foreground window",
-                        Program.Elevation.ShellCannotReachFilee ? " (Filee runs as administrator and can't read Explorer)" : "",
+                        Program.Elevation.ShellCannotReachFilee ? " (1format runs as administrator and can't read Explorer)" : "",
                         LogThrottle.HeldText(held));
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
@@ -104,8 +104,8 @@ public partial class App : Application
             }
         };
         triggers.Start();
-        log.LogInformation("Filee {Version} started", UpdateService.CurrentVersion);
-        // macOS: ask for Accessibility with the system's own alert when the user opened Filee (not at sign-in) and
+        log.LogInformation("1format {Version} started", UpdateService.CurrentVersion);
+        // macOS: ask for Accessibility with the system's own alert when the user opened 1format (not at sign-in) and
         // a drag gesture is on. The home page keeps a reminder until it is given. Asked once the main window is up:
         // asked earlier, the alert ends up behind it.
         if (OperatingSystem.IsMacOS() && triggers.NeedsPermission && !Program.Options.Background
@@ -142,7 +142,7 @@ public partial class App : Application
 
         HandleCommandLine(Program.Options, firstLaunch: true);
         WatchForUpdates(store);
-        // Filee runs as administrator while Explorer doesn't (an installer started "as administrator" started it):
+        // 1format runs as administrator while Explorer doesn't (an installer started "as administrator" started it):
         // say so once, next to the tray, and on the Home page for as long as it lasts.
         if (AppHost.Get<ElevationService>().ShellCannotReachFilee)
             DispatcherTimer.RunOnce(() => AppHost.Get<WindowService>().ShowElevationNotice(), TimeSpan.FromSeconds(2));
@@ -166,7 +166,7 @@ public partial class App : Application
     private static void WatchForUpdates(UserDataStore store)
     {
         var updates = AppHost.Get<UpdateService>();
-        // Required: the card every time Filee starts (UpdateFound fires once per run). Recommended: once per version.
+        // Required: the card every time 1format starts (UpdateFound fires once per run). Recommended: once per version.
         // Optional: no card, the sidebar button only. Frequent releases no longer ask every day.
         updates.UpdateFound += (_, version) =>
         {
@@ -183,7 +183,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// Engines the user downloaded that are older than the versions this Filee pins (it was updated since): one
+    /// Engines the user downloaded that are older than the versions this 1format pins (it was updated since): one
     /// notice per new version, only to people who installed that engine, and only while update checks are on.
     /// </summary>
     private static void NotifyEngineUpdates(UserDataStore store)
@@ -237,11 +237,11 @@ public partial class App : Application
         // Pairs with "A later launch handed over …": the request reached the UI thread too.
         if (forwarded && Throttle.TryEnter("forwarded-handled", out var held))
             AppHost.Get<ILogger<App>>().LogInformation("Handling a later launch: {Request}{Held}",
-                options.Quit ? "quit" : options.ConvertFiles.Count > 0 ? $"convert {options.ConvertFiles.Count} file(s)" : "show Filee",
+                options.Quit ? "quit" : options.ConvertFiles.Count > 0 ? $"convert {options.ConvertFiles.Count} file(s)" : "show 1format",
                 LogThrottle.HeldText(held));
         if (options.Quit)
         {
-            // The installer is about to replace or remove Filee's files (Program.RunInstallerCommand waits for this).
+            // The installer is about to replace or remove 1format's files (Program.RunInstallerCommand waits for this).
             (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
             return;
         }

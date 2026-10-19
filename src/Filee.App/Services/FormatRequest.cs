@@ -1,4 +1,4 @@
-// "Request this format": a file type Filee can't read becomes a GitHub issue (the "Format request" form) with its
+// "Request this format": a file type 1format can't read becomes a GitHub issue (the "Format request" form) with its
 // extension filled in. Only the extension goes in the link, never a file name; the user reads it and submits it.
 
 using Filee.Core.Formats;
@@ -11,7 +11,7 @@ public static class FormatRequest
     private const int MaxExtensions = 3;
 
     /// <summary>
-    /// The extensions (".ncm") of <paramref name="paths"/> that Filee doesn't know, lower-case and each once. Folders
+    /// The extensions (".ncm") of <paramref name="paths"/> that 1format doesn't know, lower-case and each once. Folders
     /// and files without an extension have nothing to request.
     /// </summary>
     public static IReadOnlyList<string> UnknownExtensions(IEnumerable<string> paths) =>

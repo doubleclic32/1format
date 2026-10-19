@@ -1,4 +1,4 @@
-// Runs the watch folders of the settings (Settings → Watch folders) while Filee is in the tray: one FolderWatcher
+// Runs the watch folders of the settings (Settings → Watch folders) while 1format is in the tray: one FolderWatcher
 // per enabled rule, rebuilt shortly after the rules change. Conversions go through ConversionService, so they show in
 // the toast and the history like any other.
 

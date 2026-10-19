@@ -1,7 +1,7 @@
 // Video and audio conversion with FFmpeg (GPL-3.0 build, an optional download run as a separate program in
 // engines/ffmpeg): video ↔ video (H.264, HEVC, AV1, …), video → animated GIF / APNG, a still frame or every frame
 // (FrameSequenceWriter), audio extraction, subtitle extraction (the first text track as SRT / ASS / WebVTT), audio ↔
-// audio and GIF, APNG or a still picture → video, and images → HEIC (FFmpeg's HEVC encoder, Filee's own container
+// audio and GIF, APNG or a still picture → video, and images → HEIC (FFmpeg's HEVC encoder, 1format's own container
 // writer). Container and codec choices live in MediaEncoding, the process handling in FfmpegRunner, hardware encoders
 // in HardwareVideo (options) and HardwareProbe (which one works here).
 
@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Filee.Engines.Media;
 
-/// <summary>Converts video and audio files with Filee's own copy of FFmpeg.</summary>
+/// <summary>Converts video and audio files with 1format's own copy of FFmpeg.</summary>
 /// <param name="logger">Receives which hardware encoders work and why a hardware encode was redone in software.</param>
 public sealed partial class FfmpegConverter(ILogger? logger = null) : IConverter, IImageTransformer
 {
@@ -83,7 +83,7 @@ public sealed partial class FfmpegConverter(ILogger? logger = null) : IConverter
             .. MediaEncoding.PictureToVideoTargets.Select(target => new ConversionEdge("gif", target)),
             .. MediaEncoding.PictureToVideoTargets.Select(target => new ConversionEdge("apng", target, 11)),
             .. MediaEncoding.PictureToVideoTargets.Select(target => new ConversionEdge("png", target, 11)),
-            // HEIC: ImageMagick reads, x265 encodes, Filee writes the container (see Heic/HeicWriter).
+            // HEIC: ImageMagick reads, x265 encodes, 1format writes the container (see Heic/HeicWriter).
             .. ImageEncoder.Sources.Select(source => new ConversionEdge(source, "heic")),
         ];
     }
@@ -264,7 +264,7 @@ public sealed partial class FfmpegConverter(ILogger? logger = null) : IConverter
 
     /// <summary>
     /// The encoders of <paramref name="ffmpeg"/> (<c>ffmpeg -encoders</c>), cached per executable: a copy the user
-    /// picked may lack x265 or SVT-AV1. Null (assume Filee's build) when the list can't be read.
+    /// picked may lack x265 or SVT-AV1. Null (assume 1format's build) when the list can't be read.
     /// </summary>
     internal static IReadOnlySet<string>? EncodersOf(string ffmpeg, TimeSpan? timeout = null) =>
         Encoders.GetOrAdd($"{ffmpeg}|{File.GetLastWriteTimeUtc(ffmpeg).Ticks}", _ =>

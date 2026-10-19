@@ -1,4 +1,4 @@
-// Raster → vector tracing, written for Filee from the published descriptions of the steps (see PixelOutlines,
+// Raster → vector tracing, written for 1format from the published descriptions of the steps (see PixelOutlines,
 // CurveFitter and ColorRegions); no code of Potrace, AutoTrace or VTracer is used.
 //
 // Black and white: pixels darker than Otsu's threshold (or, on a transparent background, the opaque pixels) are

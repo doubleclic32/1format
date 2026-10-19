@@ -1,6 +1,6 @@
-// Whether Filee runs with more rights than the desktop shell. Windows keeps a lower process (Explorer) from sending
-// input to a higher one (User Interface Privilege Isolation): drops from Explorer are refused, the second Filee its
-// menu starts can't open the running Filee's mutex or pipe, and the running Filee can't read Explorer's selection.
+// Whether 1format runs with more rights than the desktop shell. Windows keeps a lower process (Explorer) from sending
+// input to a higher one (User Interface Privilege Isolation): drops from Explorer are refused, the second 1format its
+// menu starts can't open the running 1format's mutex or pipe, and the running 1format can't read Explorer's selection.
 // The decision is plain logic over integrity levels, so it is tested everywhere; reading the levels is Windows code.
 
 namespace Filee.Core.Platform;
@@ -28,7 +28,7 @@ public sealed record ElevationState(IntegrityLevel Process, IntegrityLevel Shell
     public static ElevationState Unknown { get; } = new(IntegrityLevel.Unknown, IntegrityLevel.Unknown, false);
 
     /// <summary>
-    /// True when Filee runs as administrator while Explorer doesn't: Explorer can't drop files on Filee or hand files
+    /// True when 1format runs as administrator while Explorer doesn't: Explorer can't drop files on 1format or hand files
     /// over through its menu. Unknown levels never count, and neither does a PC where Explorer runs elevated too
     /// (UAC switched off).
     /// </summary>

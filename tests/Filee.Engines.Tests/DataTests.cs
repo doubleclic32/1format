@@ -46,7 +46,7 @@ public class DataTests(EngineFixture fx) : IClassFixture<EngineFixture>
 
     private const string Sample = """
         {
-          "name": "Filee 변환기",
+          "name": "1format 변환기",
           "version": 3,
           "ratio": 3.0,
           "big": 12345678901234567890,
@@ -69,7 +69,7 @@ public class DataTests(EngineFixture fx) : IClassFixture<EngineFixture>
         var yaml = await ConvertTextAsync("sample.json", Sample, "yaml");
 
         Assert.Equal("""
-            name: Filee 변환기
+            name: 1format 변환기
             version: 3
             ratio: 3.0
             big: 12345678901234567890
@@ -100,7 +100,7 @@ public class DataTests(EngineFixture fx) : IClassFixture<EngineFixture>
     {
         var yaml = await ConvertAsync(Write("sample.json", Sample), "yaml");
         var back = await File.ReadAllTextAsync(await ConvertAsync(yaml, "json"), TestContext.Current.CancellationToken);
-        Assert.Contains("\"name\": \"Filee 변환기\"", back);
+        Assert.Contains("\"name\": \"1format 변환기\"", back);
         Assert.Contains("\"ratio\": 3.0,", back);
         Assert.Contains("\"big\": 12345678901234567890,", back);
         Assert.Contains("\"missing\": null,", back);
@@ -115,11 +115,11 @@ public class DataTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.Contains("\n[owner]\nid = 1\n", toml);
         Assert.Contains("\n[[rows]]\nx = 1\n\n[[rows]]\nx = 2\n", toml);
         var table = TomlSerializer.Deserialize<TomlTable>(toml)!; // valid TOML
-        Assert.Equal("Filee 변환기", table["name"]);
+        Assert.Equal("1format 변환기", table["name"]);
         Assert.Equal(3L, table["version"]);
 
         var xml = await ConvertTextAsync("sample.json", Sample, "xml");
-        Assert.StartsWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<root>\n  <name>Filee 변환기</name>\n", xml);
+        Assert.StartsWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<root>\n  <name>1format 변환기</name>\n", xml);
         Assert.Contains("  <missing />\n", xml);
         Assert.Contains("  <empty></empty>\n", xml);
         Assert.Contains("  <tags>a</tags>\n  <tags>b</tags>\n", xml);

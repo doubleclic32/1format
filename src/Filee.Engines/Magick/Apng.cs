@@ -1,6 +1,6 @@
 // Animated PNG (APNG) reader and writer, written from the APNG specification (PNG 3rd edition, W3C, and Mozilla's
 // original APNG 1.0 description). ImageMagick reads only the default image of an APNG and writes APNG through an
-// external FFmpeg, so Filee assembles the chunks itself: every frame is an ordinary PNG encoded or decoded by
+// external FFmpeg, so 1format assembles the chunks itself: every frame is an ordinary PNG encoded or decoded by
 // ImageMagick, the animation is acTL (frame count, loops) plus one fcTL (region, delay, dispose and blend operations)
 // per frame, the first frame's data in IDAT and the others' in fdAT chunks with a shared sequence number.
 
