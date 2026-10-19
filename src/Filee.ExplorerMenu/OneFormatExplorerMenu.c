@@ -1,6 +1,6 @@
 // "Convert with 1format" in the top-level Windows 11 File Explorer context menu: a tiny in-process COM server
 // (IClassFactory + IExplorerCommand) that Explorer loads through the 1format sparse package. Built with
-// build/build-explorer-menu.ps1; the package side lives in src/1format.Platform.Windows/ExplorerMenu*.cs.
+// build/build-explorer-menu.ps1; the package side lives in src/Filee.Platform.Windows/ExplorerMenu*.cs.
 //
 // This code runs inside explorer.exe, so it is deliberately small and defensive:
 //  - no C runtime (linked with -nostdlib): only kernel32/user32/ole32/shell32/shlwapi are used;

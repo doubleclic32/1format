@@ -52,11 +52,11 @@ DisableWelcomePage=no
 DisableProgramGroupPage=yes
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\{#AppExe}
-SetupIconFile=..\src\1format.App\Assets\Icons\1format.ico
+SetupIconFile=..\src\Filee.App\Assets\Icons\1format.ico
 WizardStyle=modern dynamic
 WizardImageFile=wizard-light.png
 WizardImageFileDynamicDark=wizard-dark.png
-WizardSmallImageFile=..\src\1format.App\Assets\Icons\1format.png
+WizardSmallImageFile=..\src\Filee.App\Assets\Icons\1format.png
 OutputBaseFilename=1format-{#AppVersion}-win-Setup
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -136,7 +136,7 @@ Filename: "{app}\{#AppExe}"; Parameters: "--uninstall-cleanup"; Flags: runhidden
 
 [Code]
 const
-  // ExplorerMenuPackage in src/1format.Platform.Windows (InstallerScriptTests keeps these in sync).
+  // ExplorerMenuPackage in src/Filee.Platform.Windows (InstallerScriptTests keeps these in sync).
   ExplorerMenuName = 'OneFormat.ExplorerMenu';
   ExplorerMenuFamily = 'OneFormat.ExplorerMenu_3bba4463fh3z4';
   ExplorerMenuDll = 'OneFormatExplorerMenu.dll';
