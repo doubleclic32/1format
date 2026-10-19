@@ -35,7 +35,7 @@ public sealed class LinuxDesktopIntegrationTests : IDisposable
         document = XDocument.Load(path);
         Assert.Single(document.Root!.Elements("action"));
         Assert.Equal("other", document.Root.Element("action")!.Element("unique-id")!.Value);
-        Assert.False(File.Exists(Path.Combine(data, "kio", "servicemenus", "filee.desktop")));
+        Assert.False(File.Exists(Path.Combine(data, "kio", "servicemenus", "1format.desktop")));
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public sealed class LinuxDesktopIntegrationTests : IDisposable
     {
         var integration = new LinuxDesktopIntegration(_root, Path.Combine(_root, "data"));
         integration.SetAutostart(true, "/opt/1format test/Filee.App");
-        var path = Path.Combine(_root, "autostart", "filee.desktop");
+        var path = Path.Combine(_root, "autostart", "1format.desktop");
         Assert.Contains("Exec=\"/opt/1format test/Filee.App\" --background\n", File.ReadAllText(path));
         Assert.Throws<ArgumentException>(() => integration.SetAutostart(true, "/opt/1format\nExec=bad"));
         Assert.Contains("Exec=\"/opt/1format test/Filee.App\" --background\n", File.ReadAllText(path));

@@ -109,7 +109,7 @@ if ($Runtime.StartsWith('osx-')) {
             Invoke-Checked 'Render app icon' { sips -z $pixels $pixels $sourceIcon --out $target | Out-Null }
         }
     }
-    Invoke-Checked 'Create app icon' { iconutil -c icns $iconset -o (Join-Path $resources 'filee.icns') }
+    Invoke-Checked 'Create app icon' { iconutil -c icns $iconset -o (Join-Path $resources '1format.icns') }
     # Translations of the service title ("Convert with 1format") in Finder's right-click menu.
     foreach ($localization in Get-ChildItem -LiteralPath (Join-Path $root 'installer/macos') -Directory -Filter '*.lproj') {
         Copy-Item -LiteralPath $localization.FullName -Destination $resources -Recurse

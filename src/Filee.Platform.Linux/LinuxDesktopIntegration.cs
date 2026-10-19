@@ -90,7 +90,7 @@ internal sealed class LinuxDesktopIntegration(string configHome, string dataHome
 
     public void SetAutostart(bool enabled, string executablePath)
     {
-        var path = Path.Combine(configHome, "autostart", "filee.desktop");
+        var path = Path.Combine(configHome, "autostart", "1format.desktop");
         if (!enabled)
         {
             File.Delete(path);
@@ -104,10 +104,10 @@ internal sealed class LinuxDesktopIntegration(string configHome, string dataHome
         var thunarPath = Path.Combine(configHome, "Thunar", "uca.xml");
         var menuPaths = new[]
         {
-            Path.Combine(dataHome, "Thunar", "sendto", "filee.desktop"),
+            Path.Combine(dataHome, "Thunar", "sendto", "1format.desktop"),
             Path.Combine(dataHome, "nautilus", "scripts", "1format"),
-            Path.Combine(dataHome, "nemo", "actions", "filee.nemo_action"),
-            Path.Combine(dataHome, "kio", "servicemenus", "filee.desktop"),
+            Path.Combine(dataHome, "nemo", "actions", "1format.nemo_action"),
+            Path.Combine(dataHome, "kio", "servicemenus", "1format.desktop"),
         };
         var thunar = LoadThunarActions(thunarPath);
         UpdateThunarAction(thunar, enabled, executablePath, label);
