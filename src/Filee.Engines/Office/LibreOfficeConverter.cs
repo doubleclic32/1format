@@ -2,7 +2,8 @@
 // don't handle (DOC, XLS, PPT, OpenDocument, ...) and the only reader of rarer ones: Works / WPS, WordPerfect, Lotus
 // Word Pro, AbiWord, Apple Pages / Numbers / Keynote, StarOffice, WPS Office, ClarisWorks / AppleWorks, MacWrite, T602,
 // Pocket Word, flat OpenDocument, Publisher, CorelDRAW, Visio, CGM. It also writes the OpenDocument templates, FODT,
-// XLT and EMF / WMF, and turns SVG into EMF / WMF / ODG and a PDF page into SVG.
+// XLT and EMF / WMF, and turns SVG into EMF / WMF / ODG and a PDF page into SVG. It is also the route from a PDF back
+// to an editable document (Writer's PDF import, see InFilterFor).
 // Uses a selected installation, 1format's downloaded copy, or the system installation.
 //
 // Gotchas handled here:
@@ -33,8 +34,17 @@ public sealed class LibreOfficeConverter : IConverter
     private const int Workers = 2;
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(3);
 
+    /// <summary>
+    /// Rebuilding a PDF's drawing operations into a Writer document is far slower than any other conversion here:
+    /// a 110-page file takes about six minutes, and every page costs the same again.
+    /// </summary>
+    private static readonly TimeSpan PdfImportTimeout = TimeSpan.FromMinutes(30);
+
     /// <summary>Usual time of one conversion with a prepared profile (drives the progress estimate).</summary>
     private static readonly TimeSpan TypicalDuration = TimeSpan.FromSeconds(4);
+
+    /// <summary>Usual time of a PDF import into Writer (see <see cref="PdfImportTimeout"/>).</summary>
+    private static readonly TimeSpan TypicalPdfImportDuration = TimeSpan.FromMinutes(3);
 
     // Read and written: FODT (flat XML) and the OpenDocument templates (OTT, OTS, OTP), XLT (Excel 97 template).
     private static readonly string[] Writer = ["docx", "doc", "odt", "rtf", "fodt", "ott"];
@@ -110,11 +120,12 @@ public sealed class LibreOfficeConverter : IConverter
             progress?.Report(0.1);
             var input = step.From == "pdf" && step.To == "svg" ? FirstPage(step) : step.InputPath;
             var filter = FilterFor(step.From, step.To, step.Preset.Document.PdfA, FormatRegistry.ExtensionOf(step.InputPath));
-            var (produced, result) = await ConvertOnceAsync(soffice, slot, filter, step.WorkDirectory, input, progress, cancellationToken);
+            var inFilter = InFilterFor(step.From, step.To);
+            var (produced, result) = await ConvertOnceAsync(soffice, slot, filter, inFilter, step.WorkDirectory, input, progress, cancellationToken);
             if (produced is null && Repack(step.InputPath, step.WorkDirectory) is { } repacked)
             {
                 _logger.LogInformation("{File}: LibreOffice could not load it, trying again with the ZIP container repacked", step.InputPath);
-                (produced, _) = await ConvertOnceAsync(soffice, slot, filter, step.WorkDirectory, repacked, progress, cancellationToken);
+                (produced, _) = await ConvertOnceAsync(soffice, slot, filter, inFilter, step.WorkDirectory, repacked, progress, cancellationToken);
                 _logger.LogInformation("{File}: the repacked copy {Result}", step.InputPath, produced is null ? "failed too" : "converted");
             }
             // The first attempt's error, which is about the user's own file.
@@ -136,14 +147,14 @@ public sealed class LibreOfficeConverter : IConverter
     }
 
     /// <summary>Runs LibreOffice into a fresh folder; returns the file it wrote (null if none) and how it ended.</summary>
-    private async Task<(string? Produced, ProcessResult Result)> ConvertOnceAsync(string soffice, int slot, string filter, string workDirectory,
-        string input, IProgress<double>? progress, CancellationToken cancellationToken)
+    private async Task<(string? Produced, ProcessResult Result)> ConvertOnceAsync(string soffice, int slot, string filter, string? inFilter,
+        string workDirectory, string input, IProgress<double>? progress, CancellationToken cancellationToken)
     {
         var outDir = Path.Combine(workDirectory, "lo-" + Guid.NewGuid().ToString("N")[..8]);
         Directory.CreateDirectory(outDir);
         ProcessResult result;
-        using (ProgressEstimate.Start(progress, TypicalDuration))
-            result = await RunAsync(soffice, slot, filter, outDir, input, cancellationToken);
+        using (ProgressEstimate.Start(progress, inFilter is null ? TypicalDuration : TypicalPdfImportDuration))
+            result = await RunAsync(soffice, slot, filter, outDir, input, cancellationToken, inFilter);
         return (Directory.EnumerateFiles(outDir).FirstOrDefault(f => new FileInfo(f).Length > 0), result);
     }
 
@@ -257,7 +268,9 @@ public sealed class LibreOfficeConverter : IConverter
         _capacity.Release();
     }
 
-    private async Task<ProcessResult> RunAsync(string soffice, int slot, string filter, string outDir, string input, CancellationToken cancellationToken)
+    /// <param name="inFilter">Import filter forced with <c>--infilter</c>, null to let LibreOffice choose.</param>
+    private async Task<ProcessResult> RunAsync(string soffice, int slot, string filter, string outDir, string input,
+        CancellationToken cancellationToken, string? inFilter = null)
     {
         var profileDir = ProfileDirectory(slot);
         Directory.CreateDirectory(profileDir);
@@ -273,8 +286,10 @@ public sealed class LibreOfficeConverter : IConverter
                 jre = Path.Combine(jre, "Contents", "Home");
             args.Add("-env:UNO_JAVA_JFW_JREHOME=" + new Uri(jre + Path.DirectorySeparatorChar).AbsoluteUri);
         }
+        if (inFilter is not null)
+            args.Add("--infilter=" + inFilter);
         args.AddRange(["--convert-to", filter, "--outdir", outDir, input]);
-        return await ProcessRunner.RunAsync(soffice, args, Timeout, cancellationToken);
+        return await ProcessRunner.RunAsync(soffice, args, inFilter is null ? Timeout : PdfImportTimeout, cancellationToken);
     }
 
     /// <summary>Maps a target format to a LibreOffice <c>--convert-to</c> filter specification.</summary>
@@ -315,6 +330,14 @@ public sealed class LibreOfficeConverter : IConverter
             _ => to,
         };
     }
+
+    /// <summary>
+    /// The import filter to force, or null when LibreOffice's own choice is right. A PDF opens in Draw by default,
+    /// which exports pictures and drawings but no Writer document: a PDF asked for as a Word or OpenDocument file is
+    /// imported into Writer instead, where the page's text stays text.
+    /// </summary>
+    internal static string? InFilterFor(string from, string to) =>
+        from == "pdf" && Writer.Contains(to) ? "writer_pdf_import" : null;
 
     /// <summary>The LibreOffice application that opens a format: writer, calc, impress or draw.</summary>
     private static string FamilyOf(string from, string? extension)
@@ -357,6 +380,8 @@ public sealed class LibreOfficeConverter : IConverter
         // against about 31 through the HWPX writer and rhwp), not as a hop for other formats, which the DOCX writer can
         // turn into DOCX (Excel → DOCX → LibreOffice would cost 17 + 19).
         const int Chosen = 10;
+        // Beats the built-in DOCX writer's PDF edge (8 + PdfPenalty 6) even with LibreOffice last in the engine order.
+        const int PdfToWriter = 4;
         Add(Writer, [.. Writer, "txt", "html"], Fallback);
         Add(Writer, ["pdf"], documents ? Chosen : Fallback);
         Add(Calc, [.. Calc, "html"], Fallback);
@@ -371,6 +396,12 @@ public sealed class LibreOfficeConverter : IConverter
         Add([.. ImpressGraphics, .. Draw], DrawTargets, Fallback);
         Add(["svg"], ["odg", "emf", "wmf"], Fallback);
         Add(["pdf"], ["svg", "odg"], Fallback);
+        // A PDF asked for as a Word or OpenDocument file: LibreOffice rebuilds the page (text, drawings, tables) where
+        // the built-in reader keeps the text and drops what it cannot model, so this wins whatever the engine order
+        // (4 + 9 against the built-in writer's 14). Only as a route of its own: a document that became a PDF must not
+        // take the detour back through Writer on its way to another format.
+        foreach (var t in Writer)
+            edges.Add(new ConversionEdge("pdf", t, PdfToWriter, DirectOnly: true));
         if (hwp)
         {
             Add(["hwp", "hwpx"], ["docx", "odt", "rtf"], Fallback + 6);

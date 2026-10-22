@@ -31,12 +31,16 @@ public class DocxWriterTests(EngineFixture fx) : IClassFixture<EngineFixture>
     public void Built_in_writer_is_preferred_for_docx()
     {
         var planner = fx.Catalog.CreatePlanner(["pandoc", "libreoffice"]);
-        foreach (var from in new[] { "md", "txt", "xlsx", "csv", "pptx", "pdf" })
+        foreach (var from in new[] { "md", "txt", "xlsx", "csv", "pptx" })
             Assert.Equal("docx-writer", Assert.Single(planner.Plan(from, "docx")!.Steps).Converter.Id);
         Assert.Equal("ooxml", Assert.Single(planner.Plan("docm", "docx")!.Steps).Converter.Id);
         Assert.DoesNotContain(fx.Converters.Single(c => c.Id == "docx-writer").Edges, e => e.From == "docx");
-        // No optional engine needed.
+        // A PDF is the exception: the built-in reader rebuilds its text but drops the drawings and the layout they
+        // carry, so LibreOffice's Writer import takes it over wherever LibreOffice is there.
+        Assert.Equal("libreoffice", Assert.Single(planner.Plan("pdf", "docx")!.Steps).Converter.Id);
+        // No optional engine needed; a PDF then falls back to the built-in writer.
         Assert.Equal("docx-writer", Assert.Single(BuiltInPlanner().Plan("md", "docx")!.Steps).Converter.Id);
+        Assert.Equal("docx-writer", Assert.Single(BuiltInPlanner().Plan("pdf", "docx")!.Steps).Converter.Id);
     }
 
     [Fact]

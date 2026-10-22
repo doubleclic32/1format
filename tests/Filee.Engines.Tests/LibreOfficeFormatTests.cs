@@ -73,8 +73,20 @@ public class LibreOfficeFormatTests(EngineFixture fx) : IClassFixture<EngineFixt
                 Assert.Contains(':', filter);
         }
         // Built-in engines stay first: LibreOffice's edges cost more than a normal direct conversion, except
-        // presentations → PDF, which it lays out like PowerPoint (Settings → Engines, on by default).
-        Assert.All(LibreOffice.Edges.Where(e => !(impress.Contains(e.From) && e.To == "pdf")), e => Assert.True(e.Cost >= 25));
+        // presentations → PDF, which it lays out like PowerPoint (Settings → Engines, on by default), and a PDF back
+        // to an editable document, which the built-in reader can only approximate.
+        var preferred = LibreOffice.Edges.Where(e => (impress.Contains(e.From) && e.To == "pdf")
+                                                  || (e.From == "pdf" && e.To is not ("svg" or "odg"))).ToList();
+        Assert.All(LibreOffice.Edges.Except(preferred), e => Assert.True(e.Cost >= 25));
+        // The PDF → Writer edges are routes of their own: a document that became a PDF must not come back through
+        // Writer on its way somewhere else.
+        Assert.All(preferred.Where(e => e.From == "pdf"), e =>
+        {
+            Assert.True(e.DirectOnly, e.To);
+            Assert.Equal("writer_pdf_import", LibreOfficeConverter.InFilterFor(e.From, e.To));
+        });
+        Assert.Null(LibreOfficeConverter.InFilterFor("pdf", "svg"));
+        Assert.Null(LibreOfficeConverter.InFilterFor("docx", "pdf"));
         foreach (var from in new[] { "dot", "wps", "wpd", "lwp", "abw", "pages", "sdw", "cwk", "mcw", "602", "psw", "fodt", "ott", "et", "numbers", "sdc", "fods", "ots", "xlt", "key", "dps", "sda", "fodp", "otp", "pub", "cdr", "cgm", "vsd", "odg", "fodg" })
             Assert.Contains(LibreOffice.Edges, e => e.From == from && e.To == "pdf");
         // Read-only formats are never targets.
