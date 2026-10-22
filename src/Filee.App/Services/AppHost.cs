@@ -68,6 +68,7 @@ public static class AppHost
         services.AddSingleton<UpdateService>();
         services.AddSingleton<MemoryTrimmer>();
         services.AddSingleton<WindowService>();
+        services.AddSingleton<ScreenCaptureService>();
 
         _services = services.BuildServiceProvider();
         return _services;

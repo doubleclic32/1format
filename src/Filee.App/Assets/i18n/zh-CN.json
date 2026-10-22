@@ -1,7 +1,6 @@
 {
   "app.name": "1format",
   "app.tagline": "拖一拖，放一放，转换完成。",
-
   "nav.home": "首页",
   "nav.general": "常规",
   "nav.triggers": "快捷操作",
@@ -11,7 +10,6 @@
   "nav.theme": "主题",
   "nav.engines": "转换引擎",
   "nav.about": "关于",
-
   "tray.open": "打开 1format",
   "tray.pause": "暂停快捷操作",
   "tray.resume": "恢复快捷操作",
@@ -23,7 +21,6 @@
   "close.tray": "保留在托盘",
   "close.quit": "退出",
   "close.dont_ask": "不再询问",
-
   "home.title": "首页",
   "home.drop_title": "将文件拖放到这里",
   "home.drop_hint": "或在资源管理器中按住 {0} 拖动文件，环形工具栏会在光标处打开。",
@@ -43,7 +40,6 @@
   "home.clear_history": "清除",
   "home.files": "{0} 个文件",
   "home.failed_files": "{0} 个失败",
-
   "donut.center_drag": "把文件拖到这里",
   "donut.files_same": "{0} 个 {1}",
   "donut.files_mixed": "{0} 个文件",
@@ -57,7 +53,6 @@
   "donut.empty": "把预设拖到这里",
   "donut.same_format": "同格式",
   "donut.group_caption": "组 · {0} 项",
-
   "toast.converting": "{0} → {1}",
   "toast.done": "完成",
   "toast.done_errors": "{1} 个中有 {0} 个失败",
@@ -66,7 +61,6 @@
   "toast.skipped": "已跳过（文件已存在）",
   "toast.open_folder": "查看",
   "toast.cancel": "取消",
-
   "error.unsupported_source": "不支持此文件类型",
   "format_request.request": "请求支持此格式",
   "format_request.notice_title": "1format 暂时无法转换 {0} 文件",
@@ -79,7 +73,6 @@
   "error.rhwp_timeout_calibre": "文档太长，rhwp 未能在时限内完成。如果是电子书，请在“设置 → 转换引擎”中把 Calibre 移到 HWPX writer 之上，Calibre 生成 PDF 要快得多",
   "error.conversion_failed": "转换引擎出错",
   "notice.pdf_not_smaller": "无法再缩小，已原样复制",
-
   "engine.reason.not_installed": "未安装",
   "engine.reason.error": "检查时出错",
   "engine.reason.unsupported_platform": "此平台不可用",
@@ -111,7 +104,6 @@
   "engine.ghostscript.description": "EPS、PostScript 和旧版 Illustrator 文件转为 PDF 和图片；PDF 转为 EPS 和 PS。",
   "engine.calibre.description": "少见的电子书格式（LIT、LRF、CHM、PDB、RB…）以及 Kindle 输出（MOBI、AZW3）。\n排在 HWPX writer 之上时，也由它把电子书转为 PDF（长书快得多）。",
   "engine.libreoffice.description": "读取较旧或少见的格式，如 DOC、PPT、Pages、Keynote、Numbers、WordPerfect、ClarisWorks、Publisher、Visio。\n也能保存为 DOC、XLS、PPT、ODT、ODP、OpenDocument 模板或 EMF。",
-
   "profile.images": "图片",
   "profile.pdf": "PDF",
   "profile.office": "文档",
@@ -130,7 +122,6 @@
   "profile.data": "数据",
   "profile.models": "3D 模型",
   "profile.mixed": "混合文件",
-
   "preset.half_size": "缩小 50%",
   "preset.grayscale": "灰度",
   "preset.remove_background": "去除背景",
@@ -146,6 +137,24 @@
   "preset.flip_horizontal.short": "水平",
   "preset.flip_vertical": "垂直翻转",
   "preset.flip_vertical.short": "垂直",
+  "preset.crop": "裁剪",
+  "preset.crop.short": "裁剪",
+  "crop.title": "裁剪图片",
+  "crop.aspect": "比例",
+  "crop.size": "尺寸",
+  "crop.reset": "重置",
+  "crop.apply": "应用",
+  "crop.free": "自由",
+  "preset.redact": "涂黑",
+  "preset.redact.short": "涂黑",
+  "redact.title": "涂黑图片",
+  "redact.hint": "拖动以遮盖，点击方块可移除。方块：",
+  "redact.clear": "全部移除",
+  "redact.apply": "应用",
+  "home.capture": "截取屏幕区域",
+  "capture.title": "屏幕截图",
+  "capture.hint": "框选要保留的区域",
+  "capture.take": "截取",
   "preset.merge_pdf": "合并 PDF",
   "preset.split_pdf": "拆分 PDF",
   "preset.compress_pdf": "压缩 PDF",
@@ -158,7 +167,6 @@
   "preset.trace_line_art": "黑白描摹",
   "preset.extract_frames_png": "提取帧 (PNG)",
   "preset.extract_frames_jpg": "提取帧 (JPG)",
-
   "format.folder": "文件夹",
   "format.category.Image": "图片",
   "format.category.Pdf": "PDF",
@@ -177,7 +185,6 @@
   "format.category.Subtitle": "字幕",
   "format.category.Data": "数据",
   "format.category.Model3D": "3D 模型",
-
   "general.title": "常规",
   "general.language": "语言",
   "general.language_auto": "跟随系统",
@@ -245,7 +252,6 @@
   "general.reset_library": "恢复默认",
   "general.reset_confirm": "要将所有预设和工具栏配置恢复为默认吗？",
   "general.imported": "已导入 {0} 项",
-
   "triggers.title": "快捷操作",
   "triggers.description": "选择打开环形工具栏的方式。可以添加任意多个手势。",
   "triggers.macos_permissions": "请在系统设置 > 隐私与安全性 > 辅助功能中允许 1format。\n首次使用选择文件的快捷键时，Finder 还会请求自动化权限。",
@@ -290,7 +296,6 @@
   "triggers.excluded_none_running": "没有其他打开窗口的应用。",
   "triggers.excluded_note": "指针位于这些应用上时，手势和快捷键不起作用。",
   "triggers.paused": "快捷操作已暂停",
-
   "toolbar.title": "环形工具栏",
   "toolbar.step_profile": "1. 选择配置",
   "toolbar.step_arrange": "2. 排列预设",
@@ -345,7 +350,6 @@
   "toolbar.mixed_others": "其他混合选择会打开“{0}”。",
   "toolbar.mixed_others_self": "没有未勾选任何项的混合配置，因此其他混合选择也会使用此配置。",
   "tags.remove": "移除",
-
   "presets.title": "预设",
   "presets.add": "新建",
   "presets.duplicate": "复制",
@@ -497,7 +501,6 @@
   "presets.delete_confirm": "删除“{0}”？它也会从所有工具栏和组中移除。",
   "presets.name_required": "请输入名称",
   "presets.select": "选择要编辑的预设",
-
   "theme.title": "主题",
   "theme.mode": "外观",
   "theme.mode.System": "跟随系统",
@@ -509,7 +512,6 @@
   "theme.reduce_motion": "减少动画",
   "theme.reduce_motion_hint": "适合配置较低的电脑。关闭过渡效果和圆环的弹跳效果。",
   "theme.preview": "预览",
-
   "engines.title": "转换引擎",
   "engines.description": "1format 会为每次转换选择最合适的可用引擎。\n多个引擎能完成同一转换时，列表中靠前的优先。",
   "engines.available": "可用",
@@ -579,7 +581,6 @@
   "engines.state.unpacking": "安装中…",
   "engines.state.installed": "已安装",
   "engines.state.failed": "失败：{0}",
-
   "about.title": "关于",
   "about.updates": "更新",
   "common.search": "搜索",
@@ -604,7 +605,6 @@
   "feedback.notice_text": "在 GitHub 上点个星（⭐）能帮助更多人发现 1format。\n也欢迎反馈问题或提出想法。",
   "feedback.star": "在 GitHub 上点星",
   "feedback.issue": "报告问题 · 提出建议",
-
   "common.ok": "确定",
   "common.cancel": "取消",
   "common.save": "保存",
@@ -612,7 +612,6 @@
   "common.delete": "删除",
   "common.yes": "是",
   "common.no": "否",
-
   "setup.title": "选择转换引擎",
   "setup.description": "图片、PDF、Office 文档、HWP、电子书、压缩文件、字体、CAD 和 3D 模型现在就能转换。\n只有视频、音频或少见格式才需要下载引擎。",
   "setup.note": "可随时在“设置 → 转换引擎”中安装或删除引擎。",

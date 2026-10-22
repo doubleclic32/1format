@@ -471,10 +471,114 @@ public class RenderTests
         window.DonutControl.SetExternalHighlight(1);
         Pump();
 
-        Assert.Equal(10, vm.Items.Count); // with "Trace to SVG" and "Line art to SVG"
+        Assert.Equal(11, vm.Items.Count); // with "Trace to SVG", "Line art to SVG", "Crop" and "Redact"
         Assert.Equal("JPG 3개", vm.CenterTitle);
         Save(window, "donut-images-ko.png");
         window.Close();
+    }
+
+    /// <summary>
+    /// The crop editor on a picture, with a shape chosen: the rectangle must be the largest 16:9 that fits, centred,
+    /// and the size boxes must show the rectangle's own pixels, not the picture's.
+    /// </summary>
+    [AvaloniaFact]
+    public void Crop_window_renders_with_the_chosen_shape()
+    {
+        TestServices.EnsureInitialized("fr");
+        var picture = TestPicture(640, 400);
+        var vm = new Filee.App.ViewModels.CropToolViewModel(picture, "photo.jpg", "Libre");
+        var window = new Filee.App.Views.CropToolWindow { DataContext = vm };
+        window.Show();
+        Pump();
+
+        Assert.Null(vm.Result); // the whole picture is kept until something is chosen
+        vm.ChooseAspectCommand.Execute(vm.Aspects.Single(a => a.Label == "16:9"));
+        Pump();
+
+        Assert.Equal(640, vm.CropWidth);
+        Assert.Equal(360, vm.CropHeight);
+        var crop = Assert.IsType<Filee.Core.Presets.CropRect>(vm.Result);
+        Assert.Equal((0, 20, 640, 360), (crop.X, crop.Y, crop.Width, crop.Height));
+        Save(window, "window-crop-fr.png");
+        window.Close();
+    }
+
+    /// <summary>
+    /// The redaction editor: the boxes are painted black over the picture, and the count follows the list.
+    /// </summary>
+    [AvaloniaFact]
+    public void Redact_window_renders_its_boxes()
+    {
+        TestServices.EnsureInitialized("fr");
+        var picture = TestPicture(600, 380);
+        var vm = new Filee.App.ViewModels.RedactToolViewModel(picture, "contrat.png");
+        var window = new Filee.App.Views.RedactToolWindow { DataContext = vm };
+        window.Show();
+        Pump();
+
+        Assert.False(vm.HasAreas);
+        Assert.Empty(vm.Result);
+
+        vm.Areas.Add(new Avalonia.Rect(60, 40, 220, 60));
+        vm.Areas.Add(new Avalonia.Rect(300, 220, 180, 90));
+        vm.Refresh();
+        Pump();
+
+        Assert.Equal(2, vm.Count);
+        Assert.Equal([(60, 40, 220, 60), (300, 220, 180, 90)],
+            vm.Result.Select(r => (r.X, r.Y, r.Width, r.Height)));
+        Save(window, "window-redact-fr.png");
+        window.Close();
+    }
+
+    /// <summary>
+    /// The capture overlay: nothing is framed until the user draws, and the bar shows the size of what they draw.
+    /// </summary>
+    [AvaloniaFact]
+    public void Capture_window_renders_and_reports_the_area()
+    {
+        TestServices.EnsureInitialized("fr");
+        var picture = TestPicture(900, 560);
+        var vm = new Filee.App.ViewModels.CaptureViewModel(picture);
+        var window = new Filee.App.Views.CaptureWindow { DataContext = vm, Width = 900, Height = 560 };
+        window.Show();
+        Pump();
+
+        Assert.False(vm.HasArea);
+        Assert.Equal("", vm.SizeLabel);
+
+        vm.Selection = new Avalonia.Rect(120, 90, 400, 240);
+        Pump();
+
+        Assert.True(vm.HasArea);
+        Assert.Equal("400 × 240 px", vm.SizeLabel);
+        Save(window, "window-capture-fr.png");
+        window.Close();
+    }
+
+    /// <summary>A picture with a visible pattern, so the dimmed area and the rectangle can be told apart.</summary>
+    private static Avalonia.Media.Imaging.Bitmap TestPicture(int width, int height)
+    {
+        var pixels = new byte[width * height * 4];
+        for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
+            {
+                var i = (y * width + x) * 4;
+                pixels[i] = (byte)(40 + 200 * x / width);      // B
+                pixels[i + 1] = (byte)(90 + 120 * y / height); // G
+                pixels[i + 2] = (byte)(x / 20 % 2 == 0 ? 220 : 60); // R: vertical bands
+                pixels[i + 3] = 255;
+            }
+        var handle = System.Runtime.InteropServices.GCHandle.Alloc(pixels, System.Runtime.InteropServices.GCHandleType.Pinned);
+        try
+        {
+            return new Avalonia.Media.Imaging.Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, Avalonia.Platform.AlphaFormat.Opaque,
+                handle.AddrOfPinnedObject(), new Avalonia.PixelSize(width, height), new Avalonia.Vector(96, 96), width * 4);
+        }
+        finally
+        {
+            handle.Free();
+        }
     }
 
     [AvaloniaFact]

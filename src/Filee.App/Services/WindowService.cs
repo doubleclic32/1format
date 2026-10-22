@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Filee.App.ViewModels;
 using Filee.App.Views;
 using Filee.Core.Localization;
@@ -13,6 +14,17 @@ using Filee.Core.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Filee.App.Services;
+
+/// <summary>
+/// What the crop editor was closed with. A record rather than a plain <c>CropRect?</c>, because "applied without
+/// cutting anything" and "cancelled" both carry no rectangle and must not be confused.
+/// </summary>
+/// <param name="Rect">The rectangle to cut, or null to keep the whole picture.</param>
+public sealed record CropChoice(CropRect? Rect)
+{
+    /// <summary>Applied, nothing to cut.</summary>
+    public static CropChoice Whole { get; } = new((CropRect?)null);
+}
 
 public sealed class WindowService(ILocalizer loc, IServiceProvider services, MemoryTrimmer trimmer)
 {
@@ -207,6 +219,73 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
             return dialog.Saved;
         }
         return await dialog.ShowDialog<bool>(owner);
+    }
+
+    /// <summary>
+    /// Opens the crop editor on <paramref name="file"/> and returns the rectangle the user applied: null when they
+    /// cancelled, and <see cref="CropChoice.Whole"/> when they applied without cutting anything.
+    /// </summary>
+    public async Task<CropChoice?> CropAsync(string file, Window? owner)
+    {
+        // Not a picture this build can show: the conversion still knows how to read it, so it runs on the whole
+        // image rather than failing here.
+        if (LoadPicture(file) is not { } picture)
+            return CropChoice.Whole;
+
+        var dialog = new CropToolWindow
+        {
+            DataContext = new CropToolViewModel(picture, Path.GetFileName(file), loc["crop.free"]),
+            Topmost = owner?.Topmost ?? false,
+        };
+        await ShowToolAsync(dialog, owner);
+        return dialog.Applied ? new CropChoice(dialog.Result) : null;
+    }
+
+    /// <summary>
+    /// Opens the redaction editor on <paramref name="file"/>. Returns the boxes the user applied (an empty list when
+    /// they applied without drawing any), or null when they cancelled.
+    /// </summary>
+    public async Task<List<CropRect>?> RedactAsync(string file, Window? owner)
+    {
+        if (LoadPicture(file) is not { } picture)
+            return [];
+
+        var dialog = new RedactToolWindow
+        {
+            DataContext = new RedactToolViewModel(picture, Path.GetFileName(file)),
+            Topmost = owner?.Topmost ?? false,
+        };
+        await ShowToolAsync(dialog, owner);
+        return dialog.Result;
+    }
+
+    /// <summary>The picture a tool edits, or null when this build cannot show it (a RAW file, a broken download).</summary>
+    private static Bitmap? LoadPicture(string file)
+    {
+        try
+        {
+            using var stream = File.OpenRead(file);
+            return new Bitmap(stream);
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Shows a tool window as a dialog, or as a normal window when there is no visible owner.</summary>
+    private static async Task ShowToolAsync(Window dialog, Window? owner)
+    {
+        if (owner is { IsVisible: true } visible)
+        {
+            await dialog.ShowDialog(visible);
+            return;
+        }
+        var closed = new TaskCompletionSource();
+        dialog.Closed += (_, _) => closed.TrySetResult();
+        dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        dialog.Show();
+        await closed.Task;
     }
 
     /// <summary>

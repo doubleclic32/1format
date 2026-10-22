@@ -309,4 +309,8 @@ public sealed class WindowsPlatformServices : IPlatformServices
         catch (IOException) { }
         catch (UnauthorizedAccessException) { }
     }
+
+    public bool SupportsScreenCapture => true;
+
+    public Core.Platform.ScreenShot? CaptureScreen() => ScreenCapture.Take();
 }

@@ -1,0 +1,40 @@
+<!-- Redaction editor: opened by the "Caviarder" slice of the donut. Each drag draws a box, a click on a box takes it
+     away, and what is applied replaces the pixels rather than covering them. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:Filee.App.Controls"
+        xmlns:vm="using:Filee.App.ViewModels"
+        x:Class="Filee.App.Views.RedactToolWindow"
+        x:DataType="vm:RedactToolViewModel"
+        Title="{DynamicResource redact.title}"
+        Icon="avares://1format/Assets/Icons/1format.ico"
+        Width="760" Height="720" MinWidth="520" MinHeight="480"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="20,12" BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SubtleBorderBrush}" Background="{DynamicResource SurfaceBrush}">
+      <DockPanel>
+        <Button DockPanel.Dock="Left" Classes="ghost" Content="{DynamicResource redact.clear}"
+                Command="{Binding ClearCommand}" IsEnabled="{Binding HasAreas}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+          <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+          <Button Classes="accent" Content="{DynamicResource redact.apply}" Click="OnApply" IsDefault="True" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" Padding="20,12" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <TextBlock VerticalAlignment="Center" Text="{DynamicResource redact.hint}" />
+        <TextBlock VerticalAlignment="Center" Classes="caption" Text="{Binding Count, StringFormat={}{0}}" />
+        <TextBlock VerticalAlignment="Center" Classes="caption" Margin="10,0,0,0" Text="{Binding FileName}" />
+      </StackPanel>
+    </Border>
+
+    <Border Padding="16" Background="{DynamicResource PageBrush}">
+      <c:CropView x:Name="Areas" Source="{Binding Picture}" Redactions="{Binding Areas}" DrawsNew="True"
+                  AccentBrush="{DynamicResource AccentBrush}"
+                  HandleBrush="{DynamicResource SurfaceBrush}" />
+    </Border>
+  </DockPanel>
+</Window>

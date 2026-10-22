@@ -37,6 +37,92 @@ public class ImageToolTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.True(red.R > 200 && red.G < 60, $"{presetId}: ({x},{y}) is {red}");
     }
 
+    /// <summary>
+    /// A 10 x 6 white image with a 2 x 2 red square at (6,1): cropping to (5,0,4,3) must keep the square, move it to
+    /// (1,1) and leave a 4 x 3 image. The rectangle is drawn on the turned picture, so a preset that also turns the
+    /// image cuts what the user saw, not what the file stored.
+    /// </summary>
+    [Theory]
+    [InlineData(ImageRotation.None, 4u, 3u, 1, 1)]
+    [InlineData(ImageRotation.Right90, 3u, 4u, 1, 1)]
+    public async Task Crop_keeps_the_rectangle_the_user_drew(ImageRotation rotation, uint width, uint height, int redX, int redY)
+    {
+        var dir = fx.NewFolder();
+        var source = Path.Combine(dir, "wide.png");
+        using (var image = new MagickImage(MagickColors.White, 10, 6))
+        {
+            new Drawables().FillColor(MagickColors.Red).Rectangle(6, 1, 7, 2).Draw(image);
+            image.Write(source, MagickFormat.Png);
+        }
+
+        var preset = new Preset { TargetFormat = "png" };
+        preset.Image.Rotation = rotation;
+        // On the turned picture: the same square, seen where the rotation puts it.
+        preset.Image.Crop = rotation == ImageRotation.None
+            ? new CropRect { X = 5, Y = 0, Width = 4, Height = 3 }
+            : new CropRect { X = 3, Y = 5, Width = 3, Height = 4 };
+
+        var job = await fx.ConvertAsync([source], preset);
+
+        Assert.Equal(JobState.Completed, job.State);
+        using var result = new MagickImage(job.Outputs.Single());
+        Assert.Equal((width, height), (result.Width, result.Height));
+        var red = result.GetPixels().GetPixel(redX, redY).ToColor()!;
+        Assert.True(red.R > 200 && red.G < 60, $"({redX},{redY}) vaut {red}");
+    }
+
+    /// <summary>The negative control: without the rectangle the very same preset keeps the whole image.</summary>
+    [Fact]
+    public async Task Without_a_rectangle_the_image_keeps_its_size()
+    {
+        var dir = fx.NewFolder();
+        var source = Path.Combine(dir, "whole.png");
+        using (var image = new MagickImage(MagickColors.White, 10, 6))
+            image.Write(source, MagickFormat.Png);
+
+        var preset = new Preset { TargetFormat = "png" };
+        using var untouched = new MagickImage((await fx.ConvertAsync([source], preset)).Outputs.Single());
+        Assert.Equal((10u, 6u), (untouched.Width, untouched.Height));
+
+        // A rectangle that does not fit the picture is ignored too, instead of being clamped to something else.
+        preset.Image.Crop = new CropRect { X = 8, Y = 0, Width = 40, Height = 3 };
+        using var ignored = new MagickImage((await fx.ConvertAsync([source], preset)).Outputs.Single());
+        Assert.Equal((10u, 6u), (ignored.Width, ignored.Height));
+    }
+
+    /// <summary>
+    /// Redaction replaces the pixels: a white image with a red square is asked to hide that square, and afterwards the
+    /// square's pixels must be black. The negative control is the pixel just outside the box, still white.
+    /// </summary>
+    [Fact]
+    public async Task Redaction_replaces_the_pixels_it_hides()
+    {
+        var dir = fx.NewFolder();
+        var source = Path.Combine(dir, "secret.png");
+        using (var image = new MagickImage(MagickColors.White, 20, 10))
+        {
+            new Drawables().FillColor(MagickColors.Red).Rectangle(4, 2, 9, 6).Draw(image);
+            image.Write(source, MagickFormat.Png);
+        }
+
+        var preset = new Preset { TargetFormat = "png" };
+        preset.Image.Redactions = [new CropRect { X = 4, Y = 2, Width = 6, Height = 5 }];
+
+        var job = await fx.ConvertAsync([source], preset);
+
+        Assert.Equal(JobState.Completed, job.State);
+        using var result = new MagickImage(job.Outputs.Single());
+        Assert.Equal((20u, 10u), (result.Width, result.Height));
+        var pixels = result.GetPixels();
+        foreach (var (x, y) in new[] { (4, 2), (6, 4), (9, 6) })
+        {
+            var hidden = pixels.GetPixel(x, y).ToColor()!;
+            Assert.True(hidden.R < 30 && hidden.G < 30 && hidden.B < 30, $"({x},{y}) vaut {hidden}");
+        }
+        var outside = pixels.GetPixel(10, 4).ToColor()!;
+        Assert.True(outside.R > 200 && outside.G > 200, $"(10,4) vaut {outside}, le cache a débordé");
+    }
+
     private static Preset Tool(string id) => BuiltInData.CreatePresets().Single(p => p.Id == id);
 
     /// <summary>A 40 × 20 white image with a red 10 × 10 square in the top left corner.</summary>

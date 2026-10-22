@@ -66,6 +66,15 @@ public interface IPlatformServices
     /// window below normal ones (seen after the Photos app opened) while it still reports itself as topmost.
     /// </summary>
     void RaiseTopmost(nint windowHandle);
+
+    /// <summary>True where <see cref="CaptureScreen"/> can take a picture of the screen.</summary>
+    bool SupportsScreenCapture => false;
+
+    /// <summary>
+    /// A picture of the whole desktop, every screen included, or null where the platform cannot take one.
+    /// Coordinates are the same pixels the rest of this interface uses.
+    /// </summary>
+    ScreenShot? CaptureScreen() => null;
 }
 
 /// <summary>Whether "Convert with 1format" is in the top-level Windows 11 File Explorer menu (not just "Show more options").</summary>

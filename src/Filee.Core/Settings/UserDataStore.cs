@@ -555,6 +555,21 @@ internal static class SettingsMigrations
                 changed = true;
             }
         }
+
+        // v21: "Crop" and "Redact", the first presets that open an editor before converting. Crop goes on the images
+        //      donut after WEBP, redaction right after it.
+        if (from < 21)
+        {
+            foreach (var id in new[] { "crop", "redact" })
+            {
+                if (presets.Any(p => p.Id == id))
+                    continue;
+                presets.Add(BuiltInData.CreatePresets().Single(p => p.Id == id));
+                changed = true;
+            }
+            changed |= Offer(presets, profiles, "images", "crop", "to-webp");
+            changed |= Offer(presets, profiles, "images", "redact", "crop");
+        }
         return changed;
     }
 

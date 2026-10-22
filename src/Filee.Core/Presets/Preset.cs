@@ -5,6 +5,22 @@ using System.Text.Json.Serialization;
 
 namespace Filee.Core.Presets;
 
+/// <summary>
+/// An editor the user goes through before the conversion runs: the slice opens a window on the dropped file, and
+/// what they settle on is written into the preset the job then uses.
+/// </summary>
+public enum PresetTool
+{
+    /// <summary>No editor: the conversion starts straight away.</summary>
+    None,
+
+    /// <summary>Pick the part of the picture to keep (<see cref="ImageOptions.Crop"/>).</summary>
+    Crop,
+
+    /// <summary>Paint over the parts to hide (<see cref="ImageOptions.Redactions"/>).</summary>
+    Redact,
+}
+
 /// <summary>What a preset is: a conversion, or a group of conversions fanned out on the donut.</summary>
 public enum PresetKind
 {
@@ -100,6 +116,13 @@ public sealed class Preset
     [JsonConverter(typeof(PresetKindJsonConverter))]
     public PresetKind Kind { get; set; } = PresetKind.Convert;
 
+    /// <summary>
+    /// The editor shown before converting, if any. A tool this version doesn't know (from a newer 1format) is read as
+    /// <see cref="PresetTool.None"/>, so the preset still converts instead of failing.
+    /// </summary>
+    [JsonConverter(typeof(LenientEnumJsonConverter<PresetTool>))]
+    public PresetTool Tool { get; set; } = PresetTool.None;
+
     /// <summary>Most presets one group fans out: more slices would get too narrow to hit.</summary>
     public const int MaxSubPresets = 6;
 
@@ -148,6 +171,7 @@ public sealed class Preset
         Trace = Trace.Clone(),
         Output = Output.Clone(),
         Kind = Kind,
+        Tool = Tool,
         SubPresetIds = [.. SubPresetIds],
     };
 }
@@ -195,6 +219,21 @@ public enum TiffCompression
 }
 
 /// <summary>Raster image encoding options.</summary>
+/// <summary>A rectangle kept from an image, in pixels of the picture as the user sees it.</summary>
+public sealed class CropRect
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
+
+    /// <summary>A rectangle worth cutting: inside the picture and not the whole of it.</summary>
+    public bool Covers(int imageWidth, int imageHeight) =>
+        Width > 0 && Height > 0 && X >= 0 && Y >= 0 &&
+        X + Width <= imageWidth && Y + Height <= imageHeight &&
+        (X > 0 || Y > 0 || Width < imageWidth || Height < imageHeight);
+}
+
 public sealed class ImageOptions
 {
     /// <summary>Lossy quality 1-100 (JPG, WEBP, AVIF, HEIC).</summary>
@@ -209,6 +248,18 @@ public sealed class ImageOptions
     /// <summary>Mirrors the image (after <see cref="Rotation"/>).</summary>
     [JsonConverter(typeof(LenientEnumJsonConverter<ImageFlip>))]
     public ImageFlip Flip { get; set; }
+
+    /// <summary>
+    /// Keep only this part of the image, in pixels of the picture as the user sees it (after the EXIF orientation and
+    /// <see cref="Rotation"/> / <see cref="Flip"/> have been applied). Null keeps the whole picture.
+    /// </summary>
+    public CropRect? Crop { get; set; }
+
+    /// <summary>
+    /// Parts of the picture painted over, in the same pixels as <see cref="Crop"/>. The pixels are replaced, so what
+    /// was under them is gone from the file, not merely covered.
+    /// </summary>
+    public List<CropRect> Redactions { get; set; } = [];
 
     /// <summary>Turns or mirrors the image: only engines that do (<see cref="Conversion.IImageTransformer"/>) can run it.</summary>
     [JsonIgnore]
@@ -274,6 +325,9 @@ public sealed class ImageOptions
     {
         var copy = (ImageOptions)MemberwiseClone();
         copy.IcoSizes = [.. IcoSizes];
+        // MemberwiseClone would hand both copies the same rectangle, and a tool writes into the copy's one.
+        copy.Crop = Crop is null ? null : new CropRect { X = Crop.X, Y = Crop.Y, Width = Crop.Width, Height = Crop.Height };
+        copy.Redactions = [.. Redactions.Select(r => new CropRect { X = r.X, Y = r.Y, Width = r.Width, Height = r.Height })];
         return copy;
     }
 }

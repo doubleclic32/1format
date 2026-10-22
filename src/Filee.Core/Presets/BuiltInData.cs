@@ -43,6 +43,18 @@ public static class BuiltInData
             Id = "remove-background", NameKey = "preset.remove_background", TargetFormat = "png",
             Image = { RemoveBackground = true }, Output = { FileNamePattern = "{name}_transparent" },
         },
+        new()
+        {
+            Id = "crop", NameKey = "preset.crop", TargetFormat = SameAsSource, Tool = PresetTool.Crop,
+            Image = { Quality = 95 },
+            Output = { FileNamePattern = "{name}_cropped" },
+        },
+        new()
+        {
+            Id = "redact", NameKey = "preset.redact", TargetFormat = SameAsSource, Tool = PresetTool.Redact,
+            Image = { Quality = 95 },
+            Output = { FileNamePattern = "{name}_caviarde" },
+        },
         .. ImageToolPresets(),
         new()
         {
@@ -318,7 +330,7 @@ public static class BuiltInData
         {
             Id = "images", NameKey = "profile.images",
             Extensions = ExtensionsOf(FormatCategory.Image),
-            PresetIds = ["to-png", "to-jpg", "to-webp", "to-pdf", "trace-svg", "trace-line-art", "to-tiff", "to-bmp", "to-ico", "half-size"],
+            PresetIds = ["to-png", "to-jpg", "to-webp", "crop", "redact", "to-pdf", "trace-svg", "trace-line-art", "to-tiff", "to-bmp", "to-ico"],
         },
         new()
         {

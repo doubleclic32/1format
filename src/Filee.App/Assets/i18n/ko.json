@@ -1,7 +1,6 @@
 {
   "app.name": "1format",
   "app.tagline": "끌어서 놓으면, 변환 끝.",
-
   "nav.home": "홈",
   "nav.general": "일반",
   "nav.triggers": "단축키",
@@ -11,7 +10,6 @@
   "nav.theme": "테마",
   "nav.engines": "변환 엔진",
   "nav.about": "정보",
-
   "tray.open": "1format 열기",
   "tray.pause": "단축키 일시 중지",
   "tray.resume": "단축키 다시 사용",
@@ -23,7 +21,6 @@
   "close.tray": "트레이에 유지",
   "close.quit": "종료",
   "close.dont_ask": "다시 묻지 않기",
-
   "home.title": "홈",
   "home.drop_title": "여기에 파일을 놓으세요",
   "home.drop_hint": "또는 탐색기에서 {0} 키를 누른 채 파일을 드래그하면 커서 위치에 원형 툴바가 열려요.",
@@ -43,7 +40,6 @@
   "home.clear_history": "지우기",
   "home.files": "파일 {0}개",
   "home.failed_files": "{0}개 실패",
-
   "donut.center_drag": "파일을 이쪽으로",
   "donut.files_same": "{1} {0}개",
   "donut.files_mixed": "파일 {0}개",
@@ -57,7 +53,6 @@
   "donut.empty": "프리셋을 끌어다 놓으세요",
   "donut.same_format": "같은 형식",
   "donut.group_caption": "묶음 · {0}개",
-
   "toast.converting": "{0} → {1}",
   "toast.done": "완료",
   "toast.done_errors": "{1}개 중 {0}개 실패",
@@ -66,7 +61,6 @@
   "toast.skipped": "건너뜀 (파일이 이미 있음)",
   "toast.open_folder": "보기",
   "toast.cancel": "취소",
-
   "error.unsupported_source": "지원하지 않는 파일 형식이에요",
   "format_request.request": "이 형식 요청하기",
   "format_request.notice_title": "아직 {0} 파일은 변환할 수 없어요",
@@ -79,7 +73,6 @@
   "error.rhwp_timeout_calibre": "문서가 길어서 rhwp가 제한 시간 안에 끝내지 못했어요. 전자책이라면 설정 → 변환 엔진에서 Calibre를 HWPX writer보다 위로 옮겨 주세요. Calibre가 PDF를 훨씬 빨리 만들어요",
   "error.conversion_failed": "엔진에서 오류가 발생했어요",
   "notice.pdf_not_smaller": "더 작게 만들 수 없어서 그대로 복사했어요",
-
   "engine.reason.not_installed": "설치되지 않음",
   "engine.reason.error": "확인 중 오류",
   "engine.reason.unsupported_platform": "이 플랫폼에서는 사용할 수 없음",
@@ -111,7 +104,6 @@
   "engine.ghostscript.description": "EPS, 포스트스크립트, 예전 일러스트레이터 파일을 PDF와 이미지로, PDF를 EPS·PS로.",
   "engine.calibre.description": "드문 전자책 형식(LIT, LRF, CHM, PDB, RB…)과 킨들용 출력(MOBI, AZW3).\nHWPX writer보다 위에 두면 전자책 PDF도 만들어요(긴 책은 훨씬 빨라요).",
   "engine.libreoffice.description": "DOC, PPT, Pages, Keynote, Numbers, 워드퍼펙트, ClarisWorks, Publisher, Visio 같은 오래되었거나 드문 형식을 읽어요.\nDOC·XLS·PPT·ODT·ODP, 오픈도큐먼트 서식 파일, EMF로 저장도 해요.",
-
   "profile.images": "이미지",
   "profile.pdf": "PDF",
   "profile.office": "문서",
@@ -130,7 +122,6 @@
   "profile.data": "데이터",
   "profile.models": "3D 모델",
   "profile.mixed": "혼합 파일",
-
   "preset.half_size": "50% 축소",
   "preset.grayscale": "흑백",
   "preset.remove_background": "배경 제거",
@@ -146,6 +137,24 @@
   "preset.flip_horizontal.short": "좌우",
   "preset.flip_vertical": "상하 반전",
   "preset.flip_vertical.short": "상하",
+  "preset.crop": "자르기",
+  "preset.crop.short": "자르기",
+  "crop.title": "이미지 자르기",
+  "crop.aspect": "비율",
+  "crop.size": "크기",
+  "crop.reset": "초기화",
+  "crop.apply": "적용",
+  "crop.free": "자유",
+  "preset.redact": "가리기",
+  "preset.redact.short": "가리기",
+  "redact.title": "이미지 가리기",
+  "redact.hint": "드래그하여 가리고, 상자를 클릭하면 지워집니다. 상자:",
+  "redact.clear": "모두 지우기",
+  "redact.apply": "적용",
+  "home.capture": "화면 영역 캡처",
+  "capture.title": "화면 캡처",
+  "capture.hint": "남길 영역을 그리세요",
+  "capture.take": "캡처",
   "preset.merge_pdf": "PDF 병합",
   "preset.split_pdf": "PDF 분할",
   "preset.compress_pdf": "PDF 압축",
@@ -158,7 +167,6 @@
   "preset.trace_line_art": "흑백 선화",
   "preset.extract_frames_png": "프레임 추출 (PNG)",
   "preset.extract_frames_jpg": "프레임 추출 (JPG)",
-
   "format.folder": "폴더",
   "format.category.Image": "이미지",
   "format.category.Pdf": "PDF",
@@ -177,7 +185,6 @@
   "format.category.Subtitle": "자막",
   "format.category.Data": "데이터",
   "format.category.Model3D": "3D 모델",
-
   "general.title": "일반",
   "general.language": "언어",
   "general.language_auto": "시스템 기본값",
@@ -245,7 +252,6 @@
   "general.reset_library": "기본값으로 초기화",
   "general.reset_confirm": "모든 프리셋과 툴바 프로필을 기본값으로 바꿀까요?",
   "general.imported": "{0}개 항목을 가져왔어요",
-
   "triggers.title": "단축키",
   "triggers.description": "원형 툴바를 여는 방법을 정하세요. 제스처는 원하는 만큼 추가할 수 있어요.",
   "triggers.macos_permissions": "시스템 설정 > 개인정보 보호 및 보안 > 손쉬운 사용에서 1format를 허용해 주세요.\n선택 파일 단축키를 처음 쓸 때 Finder 자동화 권한도 요청해요.",
@@ -290,7 +296,6 @@
   "triggers.excluded_none_running": "창이 열린 다른 앱이 없어요.",
   "triggers.excluded_note": "마우스가 이 앱 위에 있으면 제스처와 단축키가 동작하지 않아요.",
   "triggers.paused": "단축키가 일시 중지되었어요",
-
   "toolbar.title": "원형 툴바",
   "toolbar.step_profile": "1. 프로필 선택",
   "toolbar.step_arrange": "2. 프리셋 배치",
@@ -345,7 +350,6 @@
   "toolbar.mixed_others": "그 밖의 혼합 선택에는 “{0}”이(가) 열려요.",
   "toolbar.mixed_others_self": "아무것도 체크하지 않은 혼합 프로필이 없어서 그 밖의 혼합 선택에도 이 프로필이 쓰여요.",
   "tags.remove": "빼기",
-
   "presets.title": "프리셋",
   "presets.add": "새로 만들기",
   "presets.duplicate": "복제",
@@ -497,7 +501,6 @@
   "presets.delete_confirm": "“{0}”을(를) 삭제할까요? 모든 툴바와 묶음에서도 빠져요.",
   "presets.name_required": "이름을 입력하세요",
   "presets.select": "편집할 프리셋을 선택하세요",
-
   "theme.title": "테마",
   "theme.mode": "모드",
   "theme.mode.System": "시스템",
@@ -509,7 +512,6 @@
   "theme.reduce_motion": "애니메이션 줄이기",
   "theme.reduce_motion_hint": "저사양 PC에 권장해요. 전환 효과와 도넛의 튕김 효과를 꺼요.",
   "theme.preview": "미리보기",
-
   "engines.title": "변환 엔진",
   "engines.description": "1format는 변환마다 쓸 수 있는 엔진 중 가장 좋은 것을 골라요.\n여러 엔진이 같은 변환을 할 수 있으면 목록 위쪽이 우선이에요.",
   "engines.available": "사용 가능",
@@ -579,7 +581,6 @@
   "engines.state.unpacking": "설치하는 중…",
   "engines.state.installed": "설치됨",
   "engines.state.failed": "실패: {0}",
-
   "about.title": "정보",
   "about.updates": "업데이트",
   "common.search": "검색",
@@ -604,7 +605,6 @@
   "feedback.notice_text": "GitHub 별(⭐)은 다른 분들이 1format를 찾는 데 큰 도움이 돼요.\n불편한 점이나 원하는 기능도 알려 주세요.",
   "feedback.star": "GitHub에서 별 주기",
   "feedback.issue": "문제 신고 · 기능 제안",
-
   "common.ok": "확인",
   "common.cancel": "취소",
   "common.save": "저장",
@@ -612,7 +612,6 @@
   "common.delete": "삭제",
   "common.yes": "예",
   "common.no": "아니요",
-
   "setup.title": "변환 엔진 선택",
   "setup.description": "이미지, PDF, 오피스 문서, HWP, 전자책, 압축 파일, 글꼴, CAD, 3D 모델은 지금 바로 변환돼요.\n동영상·오디오나 드문 형식이 필요할 때만 엔진을 받으세요.",
   "setup.note": "엔진은 언제든 설정 → 변환 엔진에서 설치하거나 제거할 수 있어요.",

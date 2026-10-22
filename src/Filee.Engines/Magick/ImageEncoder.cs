@@ -4,6 +4,7 @@
 using Filee.Core.Conversion;
 using Filee.Core.Presets;
 using ImageMagick;
+using ImageMagick.Drawing;
 
 namespace Filee.Engines.Magick;
 
@@ -219,6 +220,45 @@ internal static class ImageEncoder
             image.Flip();
     }
 
+    /// <summary>
+    /// Paints over <see cref="ImageOptions.Redactions"/> (part of <see cref="ApplyOptions"/>). The pixels are replaced
+    /// with opaque black, so what was there is gone from the file: a box drawn on top would still be a box on top.
+    /// </summary>
+    public static void Redact(IMagickImage<byte> image, ImageOptions options)
+    {
+        if (options.Redactions.Count == 0)
+            return;
+        var drawables = new Drawables().FillColor(MagickColors.Black).StrokeColor(MagickColors.Black);
+        var any = false;
+        foreach (var area in options.Redactions)
+        {
+            // Clamped, not ignored: unlike a crop rectangle, a box that runs off the edge still means "hide this".
+            var x = Math.Clamp(area.X, 0, (int)image.Width - 1);
+            var y = Math.Clamp(area.Y, 0, (int)image.Height - 1);
+            var right = Math.Clamp(area.X + area.Width, x + 1, (int)image.Width);
+            var bottom = Math.Clamp(area.Y + area.Height, y + 1, (int)image.Height);
+            if (area.Width <= 0 || area.Height <= 0)
+                continue;
+            drawables.Rectangle(x, y, right - 1, bottom - 1);
+            any = true;
+        }
+        if (any)
+            drawables.Draw(image);
+    }
+
+    /// <summary>
+    /// Keeps only <see cref="ImageOptions.Crop"/> of the image (part of <see cref="ApplyOptions"/>). A rectangle that
+    /// does not fit the picture is ignored rather than clamped: it was drawn on a different image.
+    /// </summary>
+    public static void Cut(IMagickImage<byte> image, ImageOptions options)
+    {
+        if (options.Crop is not { } crop || !crop.Covers((int)image.Width, (int)image.Height))
+            return;
+        image.Crop(new MagickGeometry(crop.X, crop.Y, (uint)crop.Width, (uint)crop.Height));
+        // Crop leaves the piece at its old offset inside a canvas of the old size; every writer must see a plain image.
+        image.ResetPage();
+    }
+
     /// <summary>Applies resize / colour / metadata options to one frame.</summary>
     public static void ApplyOptions(IMagickImage<byte> image, ImageOptions options, string targetFormat)
     {
@@ -234,6 +274,13 @@ internal static class ImageEncoder
             exif.RemoveThumbnail();
             image.SetProfile(exif);
         }
+
+        // Before Cut, so both are expressed on the whole picture as the editor showed it.
+        Redact(image, options);
+
+        // After Turn, because the rectangle was drawn on the picture the way the user saw it, and before Resize,
+        // so a resize still applies to what is left.
+        Cut(image, options);
 
         switch (options.Resize)
         {

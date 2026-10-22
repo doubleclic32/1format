@@ -19,6 +19,7 @@ using Filee.App.ViewModels;
 using Filee.App.Views;
 using Filee.Core.Conversion;
 using Filee.Core.Platform;
+using Filee.Core.Presets;
 using Filee.Core.Profiles;
 using Filee.Core.Settings;
 using Microsoft.Extensions.Logging;
@@ -232,12 +233,24 @@ public sealed class RadialController(
     }
 
     /// <summary>Converts with slice <paramref name="index"/>, or with slice <paramref name="sub"/> of that group's ring.</summary>
-    private void Convert(int index, int sub, IReadOnlyList<string> files)
+    private async void Convert(int index, int sub, IReadOnlyList<string> files)
     {
         if (viewModel.PresetAt(index, sub) is not { } preset || files.Count == 0)
         {
             Close();
             return;
+        }
+
+        // A preset with an editor asks the user first, and converts with what they settled on. The preset in the
+        // library is never touched: the rectangle belongs to this one drop, not to the slice.
+        if (preset.Tool != PresetTool.None)
+        {
+            if (await RunToolAsync(preset, files) is not { } prepared)
+            {
+                Close();
+                return;
+            }
+            preset = prepared;
         }
 
         log.LogInformation("Converting {Count} file(s) with preset {Preset}", files.Count, preset.Id);
@@ -325,6 +338,40 @@ public sealed class RadialController(
     }
 
     /// <summary>Edits the preset of slice <paramref name="index"/>, or of slice <paramref name="sub"/> of its group's ring.</summary>
+    /// <summary>
+    /// Runs the preset's editor on the first file and returns a copy of the preset carrying the result, or null when
+    /// the user cancelled. Every dropped file is converted with that same answer: the editor shows one picture, and
+    /// asking again for each of twenty would be worse than converting them alike.
+    /// </summary>
+    private async Task<Preset?> RunToolAsync(Preset preset, IReadOnlyList<string> files)
+    {
+        _editing = true;
+        try
+        {
+            switch (preset.Tool)
+            {
+                case PresetTool.Crop:
+                    if (await windows.CropAsync(files[0], _window) is not { } choice)
+                        return null;
+                    var cropped = preset.Clone();
+                    cropped.Image.Crop = choice.Rect;
+                    return cropped;
+                case PresetTool.Redact:
+                    if (await windows.RedactAsync(files[0], _window) is not { } boxes)
+                        return null;
+                    var redacted = preset.Clone();
+                    redacted.Image.Redactions = boxes;
+                    return redacted;
+                default:
+                    return preset;
+            }
+        }
+        finally
+        {
+            _editing = false;
+        }
+    }
+
     private async Task EditPresetAsync(int index, int sub = -1)
     {
         if (_window is null || viewModel.PresetShownAt(index, sub) is not { } preset)

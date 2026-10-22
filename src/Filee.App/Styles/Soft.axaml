@@ -115,6 +115,23 @@
     <Setter Property="RenderTransform" Value="scale(1.05)" />
   </Style>
 
+  <!-- Pill-shaped choice, one of a row (the crop editor's shapes). The selected one carries the accent. -->
+  <Style Selector="Button.chip">
+    <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Padding" Value="12,5" />
+    <Setter Property="MinWidth" Value="0" />
+  </Style>
+  <Style Selector="Button.chip:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+  </Style>
+  <Style Selector="Button.chip.selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentStrongBrush}" />
+    <Setter Property="TextElement.Foreground" Value="{DynamicResource OnAccentBrush}" />
+  </Style>
+
   <!-- Badge for engine status etc. -->
   <Style Selector="Border.badge">
     <Setter Property="CornerRadius" Value="999" />

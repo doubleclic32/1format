@@ -126,6 +126,12 @@ public sealed partial class HomePageViewModel : ObservableObject, IDisposable
     /// </summary>
     public bool IsElevated => _elevation?.ShellCannotReachFilee == true;
 
+    /// <summary>
+    /// The screen capture button is only shown where the platform can take a picture of the screen (Windows today);
+    /// elsewhere the button would be there and do nothing.
+    /// </summary>
+    public bool CanCapture => _platform.SupportsScreenCapture;
+
     /// <summary>The restart button didn't work: the warning says what to do instead.</summary>
     public bool ElevationRestartFailed => _elevation?.RestartFailed == true;
 

@@ -1,0 +1,65 @@
+<!-- Crop editor: opened by the "Recadrer" slice of the donut on the picture that was dropped. The rectangle is drawn
+     by CropView; this window only carries the shape chips, the size boxes and the two buttons. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:Filee.App.Controls"
+        xmlns:vm="using:Filee.App.ViewModels"
+        x:Class="Filee.App.Views.CropToolWindow"
+        x:DataType="vm:CropToolViewModel"
+        Title="{DynamicResource crop.title}"
+        Icon="avares://1format/Assets/Icons/1format.ico"
+        Width="760" Height="720" MinWidth="520" MinHeight="480"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="20,12" BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SubtleBorderBrush}" Background="{DynamicResource SurfaceBrush}">
+      <DockPanel>
+        <Button DockPanel.Dock="Left" Classes="ghost" Content="{DynamicResource crop.reset}" Command="{Binding ResetCommand}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+          <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+          <Button Classes="accent" Content="{DynamicResource crop.apply}" Click="OnApply" IsDefault="True" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" Padding="20,12" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Classes="label" VerticalAlignment="Center" Text="{DynamicResource crop.aspect}" Margin="0,0,4,0" />
+          <ItemsControl ItemsSource="{Binding Aspects}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="6" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:AspectChoice">
+                <Button Classes="chip" Classes.selected="{Binding IsSelected}" Content="{Binding Label}"
+                        Command="{Binding $parent[Window].((vm:CropToolViewModel)DataContext).ChooseAspectCommand}"
+                        CommandParameter="{Binding}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <TextBlock Classes="label" VerticalAlignment="Center" Text="{DynamicResource crop.size}" Margin="0,0,4,0" />
+          <NumericUpDown Width="160" Minimum="8" Increment="1" FormatString="0"
+                         Value="{Binding CropWidth}" />
+          <TextBlock VerticalAlignment="Center" Text="×" />
+          <NumericUpDown Width="160" Minimum="8" Increment="1" FormatString="0"
+                         Value="{Binding CropHeight}" />
+          <TextBlock VerticalAlignment="Center" Classes="caption" Text="px" />
+          <TextBlock VerticalAlignment="Center" Classes="caption" Margin="10,0,0,0" Text="{Binding FileName}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Padding="16" Background="{DynamicResource PageBrush}">
+      <c:CropView x:Name="Crop" Source="{Binding Picture}" Selection="{Binding Selection, Mode=TwoWay}"
+                  AspectRatio="{Binding AspectRatio}"
+                  AccentBrush="{DynamicResource AccentBrush}"
+                  HandleBrush="{DynamicResource SurfaceBrush}" />
+    </Border>
+  </DockPanel>
+</Window>

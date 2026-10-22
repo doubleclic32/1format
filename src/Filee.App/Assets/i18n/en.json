@@ -1,7 +1,6 @@
 {
   "app.name": "1format",
   "app.tagline": "Drag, drop, converted.",
-
   "nav.home": "Home",
   "nav.general": "General",
   "nav.triggers": "Shortcuts",
@@ -11,7 +10,6 @@
   "nav.theme": "Theme",
   "nav.engines": "Engines",
   "nav.about": "About",
-
   "tray.open": "Open 1format",
   "tray.pause": "Pause shortcuts",
   "tray.resume": "Resume shortcuts",
@@ -23,7 +21,6 @@
   "close.tray": "Keep in tray",
   "close.quit": "Quit",
   "close.dont_ask": "Don't ask again",
-
   "home.title": "Home",
   "home.drop_title": "Drop files here",
   "home.drop_hint": "Or hold {0} while dragging files in Explorer. The donut toolbar opens at your cursor.",
@@ -43,7 +40,6 @@
   "home.clear_history": "Clear",
   "home.files": "{0} files",
   "home.failed_files": "{0} failed",
-
   "donut.center_drag": "Bring files here",
   "donut.files_same": "{0} × {1}",
   "donut.files_mixed": "{0} files",
@@ -57,7 +53,6 @@
   "donut.empty": "Drag presets here",
   "donut.same_format": "Same format",
   "donut.group_caption": "Group of {0}",
-
   "toast.converting": "{0} → {1}",
   "toast.done": "Done",
   "toast.done_errors": "{0} of {1} failed",
@@ -66,7 +61,6 @@
   "toast.skipped": "Skipped (file exists)",
   "toast.open_folder": "Show",
   "toast.cancel": "Cancel",
-
   "error.unsupported_source": "This file type isn't supported",
   "format_request.request": "Request this format",
   "format_request.notice_title": "1format can't convert {0} files yet",
@@ -79,7 +73,6 @@
   "error.rhwp_timeout_calibre": "rhwp couldn't finish this long document in time. For an e-book, move Calibre above the HWPX writer in Settings → Engines, and Calibre makes the PDF much faster",
   "error.conversion_failed": "The engine reported an error",
   "notice.pdf_not_smaller": "Couldn't make it smaller, so it was copied as it is",
-
   "engine.reason.not_installed": "Not installed",
   "engine.reason.error": "Error while checking",
   "engine.reason.unsupported_platform": "Not available on this platform",
@@ -111,7 +104,6 @@
   "engine.ghostscript.description": "EPS, PostScript and older Illustrator files to PDF and images; PDF to EPS and PS.",
   "engine.calibre.description": "Rare e-book formats (LIT, LRF, CHM, PDB, RB…) and Kindle output (MOBI, AZW3).\nAbove the HWPX writer, it also makes the PDFs of e-books (much faster for long books).",
   "engine.libreoffice.description": "Reads older and less common formats: DOC, PPT, Pages, Keynote, Numbers, WordPerfect, ClarisWorks, Publisher, Visio…\nAlso saves as DOC, XLS, PPT, ODT, ODP, OpenDocument templates and EMF.",
-
   "profile.images": "Images",
   "profile.pdf": "PDF",
   "profile.office": "Documents",
@@ -130,7 +122,6 @@
   "profile.data": "Data",
   "profile.models": "3D models",
   "profile.mixed": "Mixed files",
-
   "preset.half_size": "Half size",
   "preset.grayscale": "Grayscale",
   "preset.remove_background": "Remove background",
@@ -146,6 +137,24 @@
   "preset.flip_horizontal.short": "Horizontal",
   "preset.flip_vertical": "Flip vertical",
   "preset.flip_vertical.short": "Vertical",
+  "preset.crop": "Crop",
+  "preset.crop.short": "Crop",
+  "crop.title": "Crop the picture",
+  "crop.aspect": "Shape",
+  "crop.size": "Size",
+  "crop.reset": "Reset",
+  "crop.apply": "Apply",
+  "crop.free": "Free",
+  "preset.redact": "Redact",
+  "preset.redact.short": "Redact",
+  "redact.title": "Redact the picture",
+  "redact.hint": "Drag to hide an area, click a box to take it away. Boxes:",
+  "redact.clear": "Remove all",
+  "redact.apply": "Apply",
+  "home.capture": "Capture an area of the screen",
+  "capture.title": "Screen capture",
+  "capture.hint": "Draw the area to keep",
+  "capture.take": "Capture",
   "preset.merge_pdf": "Merge PDF",
   "preset.split_pdf": "Split PDF",
   "preset.compress_pdf": "Compress PDF",
@@ -158,7 +167,6 @@
   "preset.trace_line_art": "Line art to SVG",
   "preset.extract_frames_png": "Extract frames (PNG)",
   "preset.extract_frames_jpg": "Extract frames (JPG)",
-
   "format.folder": "Folder",
   "format.category.Image": "Image",
   "format.category.Pdf": "PDF",
@@ -177,7 +185,6 @@
   "format.category.Subtitle": "Subtitle",
   "format.category.Data": "Data",
   "format.category.Model3D": "3D model",
-
   "general.title": "General",
   "general.language": "Language",
   "general.language_auto": "System default",
@@ -245,7 +252,6 @@
   "general.reset_library": "Reset to defaults",
   "general.reset_confirm": "Replace all presets and toolbar profiles with the defaults?",
   "general.imported": "Imported {0} items",
-
   "triggers.title": "Shortcuts",
   "triggers.description": "Choose how the donut toolbar opens. You can add as many gestures as you like.",
   "triggers.macos_permissions": "Allow 1format in System Settings > Privacy & Security > Accessibility.\nFinder also asks for Automation permission the first time you use a selection shortcut.",
@@ -290,7 +296,6 @@
   "triggers.excluded_none_running": "No other app has a window open.",
   "triggers.excluded_note": "Gestures and shortcuts do nothing while the pointer is over these apps.",
   "triggers.paused": "Shortcuts are paused",
-
   "toolbar.title": "Donut toolbar",
   "toolbar.step_profile": "1. Choose a profile",
   "toolbar.step_arrange": "2. Arrange presets",
@@ -345,7 +350,6 @@
   "toolbar.mixed_others": "Other mixes of files open “{0}”.",
   "toolbar.mixed_others_self": "No mixed profile is left with nothing checked, so this one is also used for every other mix.",
   "tags.remove": "Remove",
-
   "presets.title": "Presets",
   "presets.add": "New",
   "presets.duplicate": "Duplicate",
@@ -497,7 +501,6 @@
   "presets.delete_confirm": "Delete “{0}”? It will also be removed from every toolbar and group.",
   "presets.name_required": "Enter a name",
   "presets.select": "Select a preset to edit it",
-
   "theme.title": "Theme",
   "theme.mode": "Appearance",
   "theme.mode.System": "System",
@@ -509,7 +512,6 @@
   "theme.reduce_motion": "Reduce animations",
   "theme.reduce_motion_hint": "Recommended for older PCs. Turns off transitions and the donut's bounce.",
   "theme.preview": "Preview",
-
   "engines.title": "Conversion engines",
   "engines.description": "1format picks the best available engine for each conversion.\nWhen several can do the same job, the higher one wins.",
   "engines.available": "Ready",
@@ -579,7 +581,6 @@
   "engines.state.unpacking": "Installing…",
   "engines.state.installed": "Installed",
   "engines.state.failed": "Failed: {0}",
-
   "about.title": "About",
   "about.updates": "Updates",
   "common.search": "Search",
@@ -604,7 +605,6 @@
   "feedback.notice_text": "A star on GitHub helps other people find 1format.\nProblems and ideas are welcome too.",
   "feedback.star": "Star on GitHub",
   "feedback.issue": "Report a problem or idea",
-
   "common.ok": "OK",
   "common.cancel": "Cancel",
   "common.save": "Save",
@@ -612,7 +612,6 @@
   "common.delete": "Delete",
   "common.yes": "Yes",
   "common.no": "No",
-
   "setup.title": "Choose conversion engines",
   "setup.description": "Images, PDF, Office documents, HWP, e-books, archives, fonts, CAD and 3D models already convert.\nDownload engines only for video and audio or rare formats.",
   "setup.note": "You can install or remove engines at any time in Settings → Engines.",

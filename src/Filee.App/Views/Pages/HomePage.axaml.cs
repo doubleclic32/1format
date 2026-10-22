@@ -34,6 +34,18 @@ public partial class HomePage : UserControl
         DragDrop.AddDropHandler(DropZone, OnDrop);
     }
 
+    private async void OnCapture(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var owner = TopLevel.GetTopLevel(this) as Window;
+        if (await AppHost.Get<ScreenCaptureService>().CaptureAsync(owner) is not { } file)
+            return;
+        // The capture reaches the donut exactly like a dropped file, so the user picks the format the same way.
+        var at = owner?.Screens.ScreenFromWindow(owner)?.WorkingArea.Center
+                 ?? owner?.Screens.Primary?.WorkingArea.Center
+                 ?? new PixelPoint(400, 400);
+        AppHost.Get<RadialController>().ShowForFiles(at.X, at.Y, [file]);
+    }
+
     private void OnDrop(object? sender, DragEventArgs e)
     {
         DropZone.Classes.Remove("over");

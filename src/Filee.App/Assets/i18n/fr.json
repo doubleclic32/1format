@@ -1,7 +1,6 @@
 {
   "app.name": "1format",
   "app.tagline": "Glissez, déposez, converti.",
-
   "nav.home": "Accueil",
   "nav.general": "Général",
   "nav.triggers": "Raccourcis",
@@ -11,7 +10,6 @@
   "nav.theme": "Thème",
   "nav.engines": "Moteurs",
   "nav.about": "À propos",
-
   "tray.open": "Ouvrir 1format",
   "tray.pause": "Suspendre les raccourcis",
   "tray.resume": "Reprendre les raccourcis",
@@ -23,7 +21,6 @@
   "close.tray": "Laisser dans la zone de notification",
   "close.quit": "Quitter",
   "close.dont_ask": "Ne plus demander",
-
   "home.title": "Accueil",
   "home.drop_title": "Déposez vos fichiers ici",
   "home.drop_hint": "Ou maintenez {0} en faisant glisser des fichiers dans l'Explorateur. La roue s'ouvre sous le curseur.",
@@ -43,7 +40,6 @@
   "home.clear_history": "Effacer",
   "home.files": "{0} fichiers",
   "home.failed_files": "{0} en échec",
-
   "donut.center_drag": "Amenez les fichiers ici",
   "donut.files_same": "{0} × {1}",
   "donut.files_mixed": "{0} fichiers",
@@ -57,7 +53,6 @@
   "donut.empty": "Faites glisser des préréglages ici",
   "donut.same_format": "Même format",
   "donut.group_caption": "Groupe de {0}",
-
   "toast.converting": "{0} → {1}",
   "toast.done": "Terminé",
   "toast.done_errors": "{0} sur {1} en échec",
@@ -66,7 +61,6 @@
   "toast.skipped": "Ignoré (le fichier existe déjà)",
   "toast.open_folder": "Afficher",
   "toast.cancel": "Annuler",
-
   "error.unsupported_source": "Ce type de fichier n'est pas pris en charge",
   "format_request.request": "Demander ce format",
   "format_request.notice_title": "1format ne sait pas encore convertir les fichiers {0}",
@@ -79,7 +73,6 @@
   "error.rhwp_timeout_calibre": "rhwp n'a pas pu terminer ce long document dans le temps imparti. Pour un livre numérique, placez Calibre au-dessus du générateur HWPX dans Réglages → Moteurs : il produit le PDF bien plus vite",
   "error.conversion_failed": "Le moteur a signalé une erreur",
   "notice.pdf_not_smaller": "Impossible de le réduire : il a été copié tel quel",
-
   "engine.reason.not_installed": "Non installé",
   "engine.reason.error": "Erreur pendant la vérification",
   "engine.reason.unsupported_platform": "Indisponible sur cette plateforme",
@@ -111,7 +104,6 @@
   "engine.ghostscript.description": "EPS, PostScript et anciens fichiers Illustrator vers PDF et images ; PDF vers EPS et PS.",
   "engine.calibre.description": "Formats de livres numériques rares (LIT, LRF, CHM, PDB, RB…) et sortie Kindle (MOBI, AZW3).\nPlacé au-dessus du générateur HWPX, il produit aussi les PDF des livres numériques (bien plus vite pour les longs ouvrages).",
   "engine.libreoffice.description": "Lit les formats anciens ou peu courants : DOC, PPT, Pages, Keynote, Numbers, WordPerfect, ClarisWorks, Publisher, Visio…\nIl enregistre aussi en DOC, XLS, PPT, ODT, ODP, modèles OpenDocument et EMF.",
-
   "profile.images": "Images",
   "profile.pdf": "PDF",
   "profile.office": "Documents",
@@ -130,7 +122,6 @@
   "profile.data": "Données",
   "profile.models": "Modèles 3D",
   "profile.mixed": "Fichiers mélangés",
-
   "preset.half_size": "Moitié de la taille",
   "preset.grayscale": "Nuances de gris",
   "preset.remove_background": "Retirer le fond",
@@ -146,6 +137,24 @@
   "preset.flip_horizontal.short": "Horizontal",
   "preset.flip_vertical": "Miroir vertical",
   "preset.flip_vertical.short": "Vertical",
+  "preset.crop": "Recadrer",
+  "preset.crop.short": "Recadrer",
+  "crop.title": "Recadrer l'image",
+  "crop.aspect": "Forme",
+  "crop.size": "Taille",
+  "crop.reset": "Réinitialiser",
+  "crop.apply": "Appliquer",
+  "crop.free": "Libre",
+  "preset.redact": "Caviarder",
+  "preset.redact.short": "Caviarder",
+  "redact.title": "Caviarder l'image",
+  "redact.hint": "Tracez pour masquer, cliquez un cache pour l'enlever. Caches :",
+  "redact.clear": "Tout enlever",
+  "redact.apply": "Appliquer",
+  "home.capture": "Capturer une zone de l'écran",
+  "capture.title": "Capture d'écran",
+  "capture.hint": "Tracez la zone à garder",
+  "capture.take": "Capturer",
   "preset.merge_pdf": "Fusionner en PDF",
   "preset.split_pdf": "Scinder le PDF",
   "preset.compress_pdf": "Alléger le PDF",
@@ -158,7 +167,6 @@
   "preset.trace_line_art": "Trait vectorisé en SVG",
   "preset.extract_frames_png": "Extraire les images (PNG)",
   "preset.extract_frames_jpg": "Extraire les images (JPG)",
-
   "format.folder": "Dossier",
   "format.category.Image": "Image",
   "format.category.Pdf": "PDF",
@@ -177,7 +185,6 @@
   "format.category.Subtitle": "Sous-titre",
   "format.category.Data": "Données",
   "format.category.Model3D": "Modèle 3D",
-
   "general.title": "Général",
   "general.language": "Langue",
   "general.language_auto": "Celle du système",
@@ -245,7 +252,6 @@
   "general.reset_library": "Rétablir les valeurs par défaut",
   "general.reset_confirm": "Remplacer tous les préréglages et tous les profils de roue par ceux d'origine ?",
   "general.imported": "{0} éléments importés",
-
   "triggers.title": "Raccourcis",
   "triggers.description": "Choisissez comment la roue s'ouvre. Vous pouvez ajouter autant de gestes que vous voulez.",
   "triggers.macos_permissions": "Autorisez 1format dans Réglages Système > Confidentialité et sécurité > Accessibilité.\nLe Finder demande aussi l'autorisation d'automatisation la première fois que vous utilisez un raccourci sur une sélection.",
@@ -290,7 +296,6 @@
   "triggers.excluded_none_running": "Aucune autre application n'a de fenêtre ouverte.",
   "triggers.excluded_note": "Les gestes et les raccourcis ne font rien tant que le pointeur est au-dessus de ces applications.",
   "triggers.paused": "Les raccourcis sont suspendus",
-
   "toolbar.title": "Roue de conversion",
   "toolbar.step_profile": "1. Choisissez un profil",
   "toolbar.step_arrange": "2. Disposez les préréglages",
@@ -345,7 +350,6 @@
   "toolbar.mixed_others": "Les autres mélanges de fichiers ouvrent « {0} ».",
   "toolbar.mixed_others_self": "Plus aucun profil mélangé n'est sans case cochée : celui-ci sert donc aussi pour tous les autres mélanges.",
   "tags.remove": "Retirer",
-
   "presets.title": "Préréglages",
   "presets.add": "Nouveau",
   "presets.duplicate": "Dupliquer",
@@ -497,7 +501,6 @@
   "presets.delete_confirm": "Supprimer « {0} » ? Il sera aussi retiré de toutes les roues et de tous les groupes.",
   "presets.name_required": "Saisissez un nom",
   "presets.select": "Choisissez un préréglage pour le modifier",
-
   "theme.title": "Thème",
   "theme.mode": "Apparence",
   "theme.mode.System": "Système",
@@ -509,7 +512,6 @@
   "theme.reduce_motion": "Réduire les animations",
   "theme.reduce_motion_hint": "Recommandé sur les PC anciens. Désactive les transitions et le rebond de la roue.",
   "theme.preview": "Aperçu",
-
   "engines.title": "Moteurs de conversion",
   "engines.description": "1format choisit le meilleur moteur disponible pour chaque conversion.\nQuand plusieurs savent faire le même travail, celui du haut l'emporte.",
   "engines.available": "Prêt",
@@ -579,7 +581,6 @@
   "engines.state.unpacking": "Installation…",
   "engines.state.installed": "Installé",
   "engines.state.failed": "Échec : {0}",
-
   "about.title": "À propos",
   "about.updates": "Mises à jour",
   "common.search": "Rechercher",
@@ -604,7 +605,6 @@
   "feedback.notice_text": "Une étoile sur GitHub aide les autres à le découvrir.\nLes problèmes et les idées sont les bienvenus aussi.",
   "feedback.star": "Mettre une étoile sur GitHub",
   "feedback.issue": "Signaler un problème ou une idée",
-
   "common.ok": "OK",
   "common.cancel": "Annuler",
   "common.save": "Enregistrer",
@@ -612,7 +612,6 @@
   "common.delete": "Supprimer",
   "common.yes": "Oui",
   "common.no": "Non",
-
   "setup.title": "Choisissez les moteurs de conversion",
   "setup.description": "Les images, les PDF, les documents Office, les HWP, les livres numériques, les archives, les polices, la CAO et les modèles 3D se convertissent déjà.\nNe téléchargez des moteurs que pour la vidéo, l'audio ou les formats rares.",
   "setup.note": "Vous pouvez installer ou retirer des moteurs à tout moment dans Réglages → Moteurs.",

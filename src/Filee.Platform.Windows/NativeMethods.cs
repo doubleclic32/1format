@@ -123,6 +123,61 @@ internal static partial class NativeMethods
     [LibraryImport("user32.dll", EntryPoint = "MessageBoxW", StringMarshalling = StringMarshalling.Utf16)]
     public static partial int MessageBox(nint owner, string text, string caption, uint type);
 
+    // ───────── Screen capture (GDI) ─────────
+
+    public const int SM_XVIRTUALSCREEN = 76, SM_YVIRTUALSCREEN = 77, SM_CXVIRTUALSCREEN = 78, SM_CYVIRTUALSCREEN = 79;
+    public const uint SRCCOPY = 0x00CC0020, CAPTUREBLT = 0x40000000;
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct BITMAPINFOHEADER
+    {
+        public uint biSize;
+        public int biWidth;
+        public int biHeight;
+        public ushort biPlanes;
+        public ushort biBitCount;
+        public uint biCompression;
+        public uint biSizeImage;
+        public int biXPelsPerMeter;
+        public int biYPelsPerMeter;
+        public uint biClrUsed;
+        public uint biClrImportant;
+        // A BITMAPINFO is this header followed by its colour table; 32-bit BI_RGB uses none, but GetDIBits still
+        // reads one RGBQUAD past the header, so the room is reserved here.
+        public uint rgbQuad;
+    }
+
+    [LibraryImport("user32.dll")]
+    public static partial nint GetDC(nint hwnd);
+
+    [LibraryImport("user32.dll")]
+    public static partial int ReleaseDC(nint hwnd, nint dc);
+
+    [LibraryImport("gdi32.dll")]
+    public static partial nint CreateCompatibleDC(nint dc);
+
+    [LibraryImport("gdi32.dll")]
+    public static partial nint CreateCompatibleBitmap(nint dc, int width, int height);
+
+    [LibraryImport("gdi32.dll")]
+    public static partial nint SelectObject(nint dc, nint obj);
+
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool BitBlt(nint destination, int x, int y, int width, int height, nint source, int sourceX, int sourceY, uint rop);
+
+    [LibraryImport("gdi32.dll")]
+    public static partial int GetDIBits(nint dc, nint bitmap, uint start, uint lines, [Out] byte[] pixels,
+        ref BITMAPINFOHEADER info, uint usage);
+
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool DeleteObject(nint obj);
+
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool DeleteDC(nint dc);
+
     /// <summary>Returns the Win32 class name of a window ("CabinetWClass" for Explorer, ...).</summary>
     public static string ClassNameOf(nint hwnd)
     {

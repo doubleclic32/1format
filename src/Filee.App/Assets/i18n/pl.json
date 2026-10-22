@@ -1,7 +1,6 @@
 {
   "app.name": "1format",
   "app.tagline": "Przeciągnij, upuść, gotowe.",
-
   "nav.home": "Start",
   "nav.general": "Ogólne",
   "nav.triggers": "Skróty",
@@ -11,7 +10,6 @@
   "nav.theme": "Motyw",
   "nav.engines": "Silniki",
   "nav.about": "O programie",
-
   "tray.open": "Otwórz 1format",
   "tray.pause": "Wstrzymaj skróty",
   "tray.resume": "Wznów skróty",
@@ -23,7 +21,6 @@
   "close.tray": "Zostaw w zasobniku",
   "close.quit": "Zakończ",
   "close.dont_ask": "Nie pytaj ponownie",
-
   "home.title": "Start",
   "home.drop_title": "Upuść pliki tutaj",
   "home.drop_hint": "Albo przytrzymaj {0}, przeciągając pliki w Eksploratorze. Pasek-pierścień otworzy się przy kursorze.",
@@ -43,7 +40,6 @@
   "home.clear_history": "Wyczyść",
   "home.files": "Pliki: {0}",
   "home.failed_files": "Błędy: {0}",
-
   "donut.center_drag": "Przenieś pliki tutaj",
   "donut.files_same": "{0} × {1}",
   "donut.files_mixed": "Pliki: {0}",
@@ -57,7 +53,6 @@
   "donut.empty": "Przeciągnij tu ustawienia",
   "donut.same_format": "Ten sam format",
   "donut.group_caption": "Grupa: {0}",
-
   "toast.converting": "{0} → {1}",
   "toast.done": "Gotowe",
   "toast.done_errors": "Nieudane: {0} z {1}",
@@ -66,7 +61,6 @@
   "toast.skipped": "Pominięto (plik istnieje)",
   "toast.open_folder": "Pokaż",
   "toast.cancel": "Anuluj",
-
   "error.unsupported_source": "Ten typ pliku nie jest obsługiwany",
   "format_request.request": "Poproś o ten format",
   "format_request.notice_title": "1format nie potrafi jeszcze konwertować plików {0}",
@@ -79,7 +73,6 @@
   "error.rhwp_timeout_calibre": "rhwp nie zdążył przetworzyć tego długiego dokumentu. Dla e-booka przenieś Calibre nad HWPX writer w Ustawienia → Silniki, a Calibre zrobi PDF znacznie szybciej",
   "error.conversion_failed": "Silnik zgłosił błąd",
   "notice.pdf_not_smaller": "Nie udało się zmniejszyć pliku, więc skopiowano go bez zmian",
-
   "engine.reason.not_installed": "Nie zainstalowano",
   "engine.reason.error": "Błąd podczas sprawdzania",
   "engine.reason.unsupported_platform": "Niedostępne na tej platformie",
@@ -111,7 +104,6 @@
   "engine.ghostscript.description": "EPS, PostScript i starsze pliki Illustratora do PDF i obrazów; PDF do EPS i PS.",
   "engine.calibre.description": "Rzadkie formaty e-booków (LIT, LRF, CHM, PDB, RB…) i zapis dla Kindle (MOBI, AZW3).\nUmieszczony nad HWPX writer tworzy też PDF-y e-booków (znacznie szybciej przy długich książkach).",
   "engine.libreoffice.description": "Odczytuje starsze i rzadsze formaty: DOC, PPT, Pages, Keynote, Numbers, WordPerfect, ClarisWorks, Publisher, Visio…\nZapisuje też jako DOC, XLS, PPT, ODT, ODP, szablony OpenDocument i EMF.",
-
   "profile.images": "Obrazy",
   "profile.pdf": "PDF",
   "profile.office": "Dokumenty",
@@ -130,7 +122,6 @@
   "profile.data": "Dane",
   "profile.models": "Modele 3D",
   "profile.mixed": "Różne pliki",
-
   "preset.half_size": "Połowa rozmiaru",
   "preset.grayscale": "Skala szarości",
   "preset.remove_background": "Usuń tło",
@@ -146,6 +137,24 @@
   "preset.flip_horizontal.short": "Poziomo",
   "preset.flip_vertical": "Odbij w pionie",
   "preset.flip_vertical.short": "Pionowo",
+  "preset.crop": "Przytnij",
+  "preset.crop.short": "Przytnij",
+  "crop.title": "Przytnij obraz",
+  "crop.aspect": "Kształt",
+  "crop.size": "Rozmiar",
+  "crop.reset": "Resetuj",
+  "crop.apply": "Zastosuj",
+  "crop.free": "Dowolny",
+  "preset.redact": "Zamaluj",
+  "preset.redact.short": "Zamaluj",
+  "redact.title": "Zamaluj obraz",
+  "redact.hint": "Przeciągnij, aby zasłonić, kliknij pole, aby je usunąć. Pola:",
+  "redact.clear": "Usuń wszystkie",
+  "redact.apply": "Zastosuj",
+  "home.capture": "Przechwyć obszar ekranu",
+  "capture.title": "Zrzut ekranu",
+  "capture.hint": "Zaznacz obszar do zachowania",
+  "capture.take": "Przechwyć",
   "preset.merge_pdf": "Połącz PDF",
   "preset.split_pdf": "Podziel PDF",
   "preset.compress_pdf": "Kompresuj PDF",
@@ -158,7 +167,6 @@
   "preset.trace_line_art": "Rysunek do SVG",
   "preset.extract_frames_png": "Wyodrębnij klatki (PNG)",
   "preset.extract_frames_jpg": "Wyodrębnij klatki (JPG)",
-
   "format.folder": "Folder",
   "format.category.Image": "Obraz",
   "format.category.Pdf": "PDF",
@@ -177,7 +185,6 @@
   "format.category.Subtitle": "Napisy",
   "format.category.Data": "Dane",
   "format.category.Model3D": "Model 3D",
-
   "general.title": "Ogólne",
   "general.language": "Język",
   "general.language_auto": "Domyślny systemu",
@@ -245,7 +252,6 @@
   "general.reset_library": "Przywróć domyślne",
   "general.reset_confirm": "Zastąpić wszystkie ustawienia wstępne i profile pasków domyślnymi?",
   "general.imported": "Zaimportowano elementów: {0}",
-
   "triggers.title": "Skróty",
   "triggers.description": "Wybierz, jak otwiera się pasek-pierścień. Możesz dodać dowolnie wiele gestów.",
   "triggers.macos_permissions": "Zezwól 1format w Ustawienia systemowe > Prywatność i ochrona > Dostępność.\nFinder poprosi też o uprawnienie Automatyzacji przy pierwszym użyciu skrótu zaznaczenia.",
@@ -290,7 +296,6 @@
   "triggers.excluded_none_running": "Żadna inna aplikacja nie ma otwartego okna.",
   "triggers.excluded_note": "Gesty i skróty nic nie robią, gdy wskaźnik jest nad tymi aplikacjami.",
   "triggers.paused": "Skróty są wstrzymane",
-
   "toolbar.title": "Pasek-pierścień",
   "toolbar.step_profile": "1. Wybierz profil",
   "toolbar.step_arrange": "2. Ułóż ustawienia",
@@ -345,7 +350,6 @@
   "toolbar.mixed_others": "Inne mieszanki plików otwierają „{0}”.",
   "toolbar.mixed_others_self": "Nie został żaden mieszany profil bez zaznaczeń, więc ten jest używany także dla każdej innej mieszanki.",
   "tags.remove": "Usuń",
-
   "presets.title": "Ustawienia wstępne",
   "presets.add": "Nowe",
   "presets.duplicate": "Duplikuj",
@@ -497,7 +501,6 @@
   "presets.delete_confirm": "Usunąć „{0}”? Zostanie też usunięte z każdego paska i grupy.",
   "presets.name_required": "Podaj nazwę",
   "presets.select": "Wybierz ustawienie, aby je edytować",
-
   "theme.title": "Motyw",
   "theme.mode": "Wygląd",
   "theme.mode.System": "Systemowy",
@@ -509,7 +512,6 @@
   "theme.reduce_motion": "Ogranicz animacje",
   "theme.reduce_motion_hint": "Zalecane na starszych komputerach. Wyłącza przejścia i odbijanie pierścienia.",
   "theme.preview": "Podgląd",
-
   "engines.title": "Silniki konwersji",
   "engines.description": "1format wybiera najlepszy dostępny silnik dla każdej konwersji.\nGdy kilka potrafi to samo, wygrywa wyższy.",
   "engines.available": "Gotowy",
@@ -579,7 +581,6 @@
   "engines.state.unpacking": "Instalowanie…",
   "engines.state.installed": "Zainstalowano",
   "engines.state.failed": "Błąd: {0}",
-
   "about.title": "O programie",
   "about.updates": "Aktualizacje",
   "common.search": "Szukaj",
@@ -604,7 +605,6 @@
   "feedback.notice_text": "Gwiazdka na GitHubie pomaga innym znaleźć 1format.\nProblemy i pomysły też są mile widziane.",
   "feedback.star": "Gwiazdka na GitHubie",
   "feedback.issue": "Zgłoś problem lub pomysł",
-
   "common.ok": "OK",
   "common.cancel": "Anuluj",
   "common.save": "Zapisz",
@@ -612,7 +612,6 @@
   "common.delete": "Usuń",
   "common.yes": "Tak",
   "common.no": "Nie",
-
   "setup.title": "Wybierz silniki konwersji",
   "setup.description": "Obrazy, PDF, dokumenty Office, HWP, e-booki, archiwa, czcionki, CAD i modele 3D już się konwertują.\nPobieraj silniki tylko dla wideo i audio lub rzadkich formatów.",
   "setup.note": "Silniki możesz w każdej chwili zainstalować lub usunąć w Ustawienia → Silniki.",

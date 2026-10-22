@@ -68,6 +68,15 @@
       </StackPanel>
     </Border>
 
+    <!-- Screen capture: the area drawn goes straight into the donut, like a dropped file. -->
+    <Button x:Name="CaptureButton" HorizontalAlignment="Left" Click="OnCapture"
+            IsVisible="{Binding CanCapture}">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <PathIcon Width="14" Height="14" Data="{StaticResource Icon.Crop}" />
+        <TextBlock Text="{DynamicResource home.capture}" />
+      </StackPanel>
+    </Button>
+
     <!-- Recent conversions -->
     <StackPanel Spacing="10">
       <DockPanel>

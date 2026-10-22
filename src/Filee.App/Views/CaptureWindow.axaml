@@ -1,0 +1,33 @@
+<!-- Screen capture: a borderless window laid over the whole desktop, showing the picture that was just taken. The
+     user draws the area to keep with the same control as the crop editor, then Enter or the button. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:Filee.App.Controls"
+        xmlns:vm="using:Filee.App.ViewModels"
+        x:Class="Filee.App.Views.CaptureWindow"
+        x:DataType="vm:CaptureViewModel"
+        Title="{DynamicResource capture.title}"
+        SystemDecorations="None"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        CanResize="False">
+  <Grid>
+    <c:CropView x:Name="Area" Source="{Binding Picture}" Selection="{Binding Selection, Mode=TwoWay}"
+                DrawsNew="True"
+                AccentBrush="{DynamicResource AccentBrush}"
+                HandleBrush="{DynamicResource SurfaceBrush}" />
+
+    <!-- The bar follows the bottom of the screen, far enough from the middle not to sit over what is being framed. -->
+    <Border VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40"
+            Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource SoftRadius}"
+            Padding="18,12" BoxShadow="{DynamicResource CardShadow}">
+      <StackPanel Orientation="Horizontal" Spacing="14">
+        <TextBlock VerticalAlignment="Center" Text="{DynamicResource capture.hint}" />
+        <TextBlock VerticalAlignment="Center" Classes="caption" Text="{Binding SizeLabel}" />
+        <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+        <Button Classes="accent" Content="{DynamicResource capture.take}" Click="OnTake" IsDefault="True" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</Window>
