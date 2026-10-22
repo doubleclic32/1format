@@ -573,6 +573,48 @@ public class RenderTests
         return Assert.IsType<long>(preview.Length);
     }
 
+    /// <summary>
+    /// Decides a claim from the review: does the picture an editor shows have the same shape as the one the engine
+    /// cuts? A phone photo is stored sideways with an orientation tag; the engine calls AutoOrient before cropping,
+    /// so if Avalonia does not, every rectangle the user draws is against the wrong picture.
+    /// The fixture is a JPEG carrying orientation 6, and the test refuses to conclude without that tag.
+    /// </summary>
+    [AvaloniaFact]
+    public void A_turned_photo_is_the_same_shape_in_the_editor_and_in_the_engine()
+    {
+        var file = Path.Combine(Path.GetTempPath(), "1format-tests", "phone-orientation-6.jpg");
+        Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+        File.WriteAllBytes(file, Convert.FromBase64String(TurnedPhotoJpeg));
+
+        using (var written = new ImageMagick.MagickImage(file))
+            Assert.Equal(ImageMagick.OrientationType.RightTop, written.Orientation);
+
+        using var engine = new ImageMagick.MagickImage(file);
+        engine.AutoOrient();
+        Assert.Equal((200u, 300u), (engine.Width, engine.Height));
+
+        // The negative control: opened straight from the file, as the editors used to, the picture is still lying
+        // on its side. Avalonia does not read the orientation tag.
+        using (var raw = File.OpenRead(file))
+            Assert.Equal(new Avalonia.PixelSize(300, 200), new Avalonia.Media.Imaging.Bitmap(raw).PixelSize);
+
+        // Loaded the way the editors load it now, it matches the engine.
+        var png = Filee.Engines.Magick.EditablePicture.Load(file, new Filee.Core.Presets.ImageOptions());
+        Assert.NotNull(png);
+        using var stream = new MemoryStream(png);
+        Assert.Equal(new Avalonia.PixelSize(200, 300), new Avalonia.Media.Imaging.Bitmap(stream).PixelSize);
+
+        // And the preset's own turn is in there too: a quarter turn on top swaps the sides back.
+        var turned = Filee.Engines.Magick.EditablePicture.Load(file,
+            new Filee.Core.Presets.ImageOptions { Rotation = Filee.Core.Presets.ImageRotation.Right90 });
+        Assert.NotNull(turned);
+        using var turnedStream = new MemoryStream(turned);
+        Assert.Equal(new Avalonia.PixelSize(300, 200), new Avalonia.Media.Imaging.Bitmap(turnedStream).PixelSize);
+    }
+
+    /// <summary>A 300 x 200 JPEG carrying EXIF orientation 6, so it is shown as 200 x 300.</summary>
+    private const string TurnedPhotoJpeg = "/9j/4AAQSkZJRgABAQAAAQABAAD/4QAiRXhpZgAATU0AKgAAAAgAAQESAAMAAAABAAYAAAAAAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCADIASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwClRRRX0x88FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf//Z";
+
     /// <summary>A JPG on disk, needed because the preview reads through the engine rather than through Avalonia.</summary>
     private static string WriteTestJpg(int width, int height)
     {

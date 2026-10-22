@@ -63,10 +63,14 @@ public sealed class ScreenCaptureService(IPlatformServices platform, ILogger<Scr
         using var picture = FromShot(shot);
         var vm = new CaptureViewModel(picture);
         var window = new CaptureWindow { DataContext = vm };
-        // Over the whole virtual desktop, in the same pixels the picture was taken in.
+        // Over the whole virtual desktop. Position is in physical pixels, Width and Height are not: they are
+        // device-independent, so on a laptop at 150 per cent the window would be half as large again as the screen
+        // and the bottom right corner would be out of reach.
         window.Position = new PixelPoint(shot.Left, shot.Top);
-        window.Width = shot.Width;
-        window.Height = shot.Height;
+        var scaling = window.Screens.ScreenFromPoint(window.Position)?.Scaling
+                      ?? window.Screens.Primary?.Scaling ?? 1;
+        window.Width = shot.Width / scaling;
+        window.Height = shot.Height / scaling;
 
         var closed = new TaskCompletionSource();
         window.Closed += (_, _) => closed.TrySetResult();
@@ -85,19 +89,17 @@ public sealed class ScreenCaptureService(IPlatformServices platform, ILogger<Scr
         return file;
     }
 
-    /// <summary>The whole picture as a bitmap the overlay can show.</summary>
+    /// <summary>
+    /// The whole picture as a bitmap the overlay can show. It is written out and read back rather than handed a
+    /// pointer: a bitmap built on a pinned array keeps using that memory, and the array is no longer pinned once
+    /// this method returns.
+    /// </summary>
     private static Bitmap FromShot(ScreenShot shot)
     {
-        var handle = System.Runtime.InteropServices.GCHandle.Alloc(shot.Pixels, System.Runtime.InteropServices.GCHandleType.Pinned);
-        try
-        {
-            return new Bitmap(PixelFormat.Bgra8888, AlphaFormat.Opaque, handle.AddrOfPinnedObject(),
-                new PixelSize(shot.Width, shot.Height), new Vector(96, 96), shot.Stride);
-        }
-        finally
-        {
-            handle.Free();
-        }
+        using var stream = new MemoryStream();
+        Encode(shot.Pixels, shot.Width, shot.Height, stream);
+        stream.Position = 0;
+        return new Bitmap(stream);
     }
 
     /// <summary>Writes <paramref name="area"/> of the picture as a PNG, copying it out row by row.</summary>
@@ -107,12 +109,19 @@ public sealed class ScreenCaptureService(IPlatformServices platform, ILogger<Scr
         for (var y = 0; y < area.Height; y++)
             Array.Copy(shot.Pixels, (area.Y + y) * shot.Stride + area.X * 4, rows, y * area.Width * 4, area.Width * 4);
 
-        var handle = System.Runtime.InteropServices.GCHandle.Alloc(rows, System.Runtime.InteropServices.GCHandleType.Pinned);
+        using var stream = File.Create(file);
+        Encode(rows, area.Width, area.Height, stream);
+    }
+
+    /// <summary>Writes BGRA pixels as a PNG, the array held pinned for as long as the bitmap reads from it.</summary>
+    private static void Encode(byte[] pixels, int width, int height, Stream into)
+    {
+        var handle = System.Runtime.InteropServices.GCHandle.Alloc(pixels, System.Runtime.InteropServices.GCHandleType.Pinned);
         try
         {
             using var bitmap = new Bitmap(PixelFormat.Bgra8888, AlphaFormat.Opaque, handle.AddrOfPinnedObject(),
-                new PixelSize(area.Width, area.Height), new Vector(96, 96), area.Width * 4);
-            bitmap.Save(file);
+                new PixelSize(width, height), new Vector(96, 96), width * 4);
+            bitmap.Save(into);
         }
         finally
         {

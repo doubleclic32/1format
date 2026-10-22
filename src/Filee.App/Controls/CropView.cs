@@ -367,8 +367,10 @@ public sealed class CropView : Control
     /// <summary>Keeps the rectangle inside the picture and at least <see cref="MinSide"/> on each side.</summary>
     public static Rect Clamp(Rect rect, Size picture)
     {
-        var width = Math.Clamp(Math.Round(rect.Width), MinSide, picture.Width);
-        var height = Math.Clamp(Math.Round(rect.Height), MinSide, picture.Height);
+        // The floor gives way to the picture: Math.Clamp throws when its minimum is above its maximum, and an icon
+        // or a stamp of a few pixels would have closed the tool on the first move of the mouse.
+        var width = Math.Clamp(Math.Round(rect.Width), Math.Min(MinSide, picture.Width), picture.Width);
+        var height = Math.Clamp(Math.Round(rect.Height), Math.Min(MinSide, picture.Height), picture.Height);
         var x = Math.Clamp(Math.Round(rect.X), 0, picture.Width - width);
         var y = Math.Clamp(Math.Round(rect.Y), 0, picture.Height - height);
         return new Rect(x, y, width, height);

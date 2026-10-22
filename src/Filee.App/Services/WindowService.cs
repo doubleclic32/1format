@@ -234,13 +234,13 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
         switch (tool)
         {
             case PresetTool.Crop:
-                if (await CropAsync(file, owner) is not { } choice)
+                if (await CropAsync(file, target.Image, owner) is not { } choice)
                     return false;
                 target.Image.Crop = choice.Rect;
                 return true;
 
             case PresetTool.Redact:
-                if (await RedactAsync(file, owner) is not { } boxes)
+                if (await RedactAsync(file, target.Image, owner) is not { } boxes)
                     return false;
                 target.Image.Redactions = boxes;
                 return true;
@@ -261,8 +261,10 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
 
             case PresetTool.Annotate:
             {
-                if (LoadPicture(file) is not { } picture)
-                    return true;
+                // Refused rather than converted plain: the whole point of the slice is the marks, and handing back a
+                // copy without them would look like it worked.
+                if (LoadPicture(file, target.Image) is not { } picture)
+                    return false;
                 var labels = new[] { loc["annotate.rectangle"], loc["annotate.ellipse"], loc["annotate.arrow"], loc["annotate.text_kind"] };
                 var dialog = new AnnotateToolWindow
                 {
@@ -323,11 +325,11 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
     /// Opens the crop editor on <paramref name="file"/> and returns the rectangle the user applied: null when they
     /// cancelled, and <see cref="CropChoice.Whole"/> when they applied without cutting anything.
     /// </summary>
-    private async Task<CropChoice?> CropAsync(string file, Window? owner)
+    private async Task<CropChoice?> CropAsync(string file, ImageOptions options, Window? owner)
     {
         // Not a picture this build can show: the conversion still knows how to read it, so it runs on the whole
         // image rather than failing here.
-        if (LoadPicture(file) is not { } picture)
+        if (LoadPicture(file, options) is not { } picture)
             return CropChoice.Whole;
 
         var dialog = new CropToolWindow
@@ -343,10 +345,12 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
     /// Opens the redaction editor on <paramref name="file"/>. Returns the boxes the user applied (an empty list when
     /// they applied without drawing any), or null when they cancelled.
     /// </summary>
-    private async Task<List<CropRect>?> RedactAsync(string file, Window? owner)
+    private async Task<List<CropRect>?> RedactAsync(string file, ImageOptions options, Window? owner)
     {
-        if (LoadPicture(file) is not { } picture)
-            return [];
+        // Refused rather than converted plain. Redaction is the one tool where doing nothing quietly is dangerous:
+        // the user would send out a file they believe is masked. Null cancels the whole conversion.
+        if (LoadPicture(file, options) is not { } picture)
+            return null;
 
         var dialog = new RedactToolWindow
         {
@@ -357,15 +361,21 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
         return dialog.Result;
     }
 
-    /// <summary>The picture a tool edits, or null when this build cannot show it (a RAW file, a broken download).</summary>
-    private static Bitmap? LoadPicture(string file)
+    /// <summary>
+    /// The picture a tool edits: straightened and turned exactly as the engine will have it when it applies the
+    /// rectangle (see <see cref="EditablePicture"/>). Loading the file directly would show a phone photo lying on
+    /// its side, and every rectangle drawn on it would miss. Null when it cannot be read at all.
+    /// </summary>
+    private static Bitmap? LoadPicture(string file, ImageOptions options)
     {
+        if (EditablePicture.Load(file, options) is not { } png)
+            return null;
         try
         {
-            using var stream = File.OpenRead(file);
+            using var stream = new MemoryStream(png);
             return new Bitmap(stream);
         }
-        catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+        catch (ArgumentException)
         {
             return null;
         }

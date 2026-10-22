@@ -19,6 +19,12 @@ public sealed partial class ToolPreview(ImagePreview source, string targetFormat
     private int _generation;
     private bool _disposed;
 
+    /// <summary>
+    /// Held around every use of the source picture. ImageMagick refuses to be used from two threads at once, and a
+    /// window closed mid-encode would otherwise free the picture under a clone that is still running.
+    /// </summary>
+    private readonly Lock _gate = new();
+
     /// <summary>The picture as it would be written with the current settings; the source until the first result.</summary>
     [ObservableProperty]
     private Bitmap? _image;
@@ -62,7 +68,14 @@ public sealed partial class ToolPreview(ImagePreview source, string targetFormat
         var frozen = options.Clone();
         Task.Run(() =>
         {
-            var encoded = source.Encode(frozen, targetFormat);
+            EncodedImage? encoded;
+            lock (_gate)
+            {
+                // Overtaken while waiting for the picture: ten notches on a slider must not pay for ten encodes.
+                if (_disposed || generation != Volatile.Read(ref _generation))
+                    return;
+                encoded = source.Encode(frozen, targetFormat);
+            }
             Dispatcher.UIThread.Post(() => Publish(generation, encoded));
         });
     }
@@ -95,7 +108,9 @@ public sealed partial class ToolPreview(ImagePreview source, string targetFormat
     {
         _disposed = true;
         Image?.Dispose();
-        source.Dispose();
+        // Under the gate: an encode may still hold the picture.
+        lock (_gate)
+            source.Dispose();
     }
 
     /// <summary>A byte count as the window shows it: "1,4 Mo", "812 ko".</summary>

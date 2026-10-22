@@ -12,9 +12,13 @@ public sealed partial class CompressToolViewModel : ObservableObject, IDisposabl
 {
     private readonly ImageOptions _options;
 
+    /// <summary>The preset as it came in, so an untouched scale can be handed back exactly as it was.</summary>
+    private readonly ImageOptions _original;
+
     public CompressToolViewModel(ImagePreview source, ImageOptions options, string targetFormat, string fileName)
     {
         _options = options.Clone();
+        _original = options.Clone();
         FileName = fileName;
         Preview = new ToolPreview(source, targetFormat);
         _quality = Math.Clamp(options.Quality, 1, 100);
@@ -49,10 +53,20 @@ public sealed partial class CompressToolViewModel : ObservableObject, IDisposabl
     private void Apply()
     {
         _options.Quality = Math.Clamp(Quality, 1, 100);
-        // Percent resizing is the only mode here: "half the size" is what the user is after, and it is the one mode
-        // that means something for a picture of any shape.
-        _options.Resize = Scale >= 100 ? ResizeMode.None : ResizeMode.Percent;
-        _options.ResizePercent = Math.Clamp(Scale, 1, 100);
+        if (Scale >= 100)
+        {
+            // Left where the preset had it. Forcing None here threw away a preset's own "1600 px wide" for anyone
+            // who opened the tool only to move the quality.
+            _options.Resize = _original.Resize;
+            _options.ResizePercent = _original.ResizePercent;
+        }
+        else
+        {
+            // Percent is the one mode that means something for a picture of any shape, and "half the size" is what
+            // the user is after here.
+            _options.Resize = ResizeMode.Percent;
+            _options.ResizePercent = Math.Clamp(Scale, 1, 100);
+        }
         Preview.Refresh(_options);
     }
 
