@@ -504,6 +504,149 @@ public class RenderTests
     }
 
     /// <summary>
+    /// The compression editor really encodes the picture: the weight it shows comes from the engine, so lowering the
+    /// quality and the scale has to produce a smaller file than leaving both alone. The first measurement is the
+    /// control — without it, "smaller" could mean "nothing ran".
+    /// </summary>
+    [AvaloniaFact]
+    public void Compress_window_measures_the_real_weight()
+    {
+        TestServices.EnsureInitialized("fr");
+        var file = WriteTestJpg(640, 400);
+        var preview = Filee.Engines.Magick.ImagePreview.Open(file, "jpg");
+        Assert.NotNull(preview);
+
+        var vm = new Filee.App.ViewModels.CompressToolViewModel(preview, new Filee.Core.Presets.ImageOptions(), "jpg", "photo.jpg");
+        var window = new Filee.App.Views.CompressToolWindow { DataContext = vm };
+        window.Show();
+        var full = Settle(vm.Preview);
+        Assert.Equal("640 × 400", vm.Preview.Size);
+
+        vm.Quality = 35;
+        vm.Scale = 50;
+        var smaller = Settle(vm.Preview);
+        Assert.True(smaller < full, $"{smaller} octets n'est pas sous {full}");
+        Assert.Equal("320 × 200", vm.Preview.Size);
+        Assert.True(vm.Preview.Saved > 0, $"gain annoncé : {vm.Preview.Saved}");
+
+        Save(window, "window-compress-fr.png");
+        window.Close();
+    }
+
+    /// <summary>The retouching editor shows the picture through the engine, and the knobs move it.</summary>
+    [AvaloniaFact]
+    public void Retouch_window_shows_the_picture_through_the_engine()
+    {
+        TestServices.EnsureInitialized("fr");
+        var file = WriteTestJpg(520, 340);
+        var preview = Filee.Engines.Magick.ImagePreview.Open(file, "jpg");
+        Assert.NotNull(preview);
+
+        var vm = new Filee.App.ViewModels.RetouchToolViewModel(preview, new Filee.Core.Presets.ImageOptions(), "jpg", "photo.jpg");
+        var window = new Filee.App.Views.RetouchToolWindow { DataContext = vm };
+        window.Show();
+        Settle(vm.Preview);
+        Assert.True(vm.IsUntouched);
+
+        vm.Brightness = 30;
+        vm.Saturation = 45;
+        vm.Contrast = 15;
+        Settle(vm.Preview);
+        Assert.False(vm.IsUntouched);
+        Assert.NotNull(vm.Preview.Image);
+
+        Save(window, "window-retouch-fr.png");
+        window.Close();
+    }
+
+    /// <summary>Waits for the preview's background encode to land on the UI thread, and returns its weight.</summary>
+    private static long Settle(Filee.App.ViewModels.ToolPreview preview)
+    {
+        for (var i = 0; i < 200 && (preview.IsWorking || preview.Length is null); i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Thread.Sleep(10);
+        }
+        Pump();
+        Assert.False(preview.IsWorking, "l'encodage n'a pas abouti");
+        return Assert.IsType<long>(preview.Length);
+    }
+
+    /// <summary>A JPG on disk, needed because the preview reads through the engine rather than through Avalonia.</summary>
+    private static string WriteTestJpg(int width, int height)
+    {
+        var dir = Path.Combine(Path.GetTempPath(), "1format-tests", Guid.NewGuid().ToString("N")[..8]);
+        Directory.CreateDirectory(dir);
+        var file = Path.Combine(dir, "photo.jpg");
+        using var image = new ImageMagick.MagickImage(new ImageMagick.MagickColor("#3F7FBF"), (uint)width, (uint)height);
+        // A gradient and some noise, so the quality setting has something to lose.
+        image.AddNoise(ImageMagick.NoiseType.Gaussian);
+        image.Write(file, ImageMagick.MagickFormat.Jpeg);
+        return file;
+    }
+
+    /// <summary>
+    /// The annotation editor: a mark of each kind, drawn on the picture, and the count following the list.
+    /// </summary>
+    [AvaloniaFact]
+    public void Annotate_window_renders_its_marks()
+    {
+        TestServices.EnsureInitialized("fr");
+        var picture = TestPicture(640, 420);
+        var vm = new Filee.App.ViewModels.AnnotateToolViewModel(picture, "capture.png",
+            ["Cadre", "Ellipse", "Flèche", "Texte"]);
+        var window = new Filee.App.Views.AnnotateToolWindow { DataContext = vm };
+        window.Show();
+        Pump();
+
+        Assert.False(vm.HasMarks);
+        vm.Marks.Add(new Filee.Core.Presets.Annotation
+        { Kind = Filee.Core.Presets.AnnotationKind.Rectangle, X = 40, Y = 40, X2 = 260, Y2 = 170, Color = "#E53935", Thickness = 5 });
+        vm.Marks.Add(new Filee.Core.Presets.Annotation
+        { Kind = Filee.Core.Presets.AnnotationKind.Arrow, X = 300, Y = 320, X2 = 520, Y2 = 150, Color = "#2563EB", Thickness = 5 });
+        vm.Marks.Add(new Filee.Core.Presets.Annotation
+        { Kind = Filee.Core.Presets.AnnotationKind.Text, X = 60, Y = 320, Color = "#1F1E1D", Thickness = 5, Text = "à corriger", FontSize = 34 });
+        vm.Refresh();
+        Pump();
+
+        Assert.Equal(3, vm.Count);
+        Save(window, "window-annotate-fr.png");
+        window.Close();
+    }
+
+    /// <summary>The metadata editor lists what the file carries; with nothing to list it says so.</summary>
+    [AvaloniaFact]
+    public void Metadata_window_lists_what_the_file_carries()
+    {
+        TestServices.EnsureInitialized("fr");
+        var entries = new[]
+        {
+            new Filee.Engines.Magick.MetadataEntry("EXIF", "DateTimeOriginal", "2026:10:22 09:14:03"),
+            new Filee.Engines.Magick.MetadataEntry("EXIF", "GPSLatitude", "43/1, 42/1, 1133/100"),
+            new Filee.Engines.Magick.MetadataEntry("EXIF", "Model", "Pixel 9 Pro"),
+            new Filee.Engines.Magick.MetadataEntry("ICC", "Display P3", "548 o"),
+        };
+        var options = new Filee.Core.Presets.ImageOptions { KeepMetadata = false, KeepColorProfile = true };
+        var vm = new Filee.App.ViewModels.MetadataToolViewModel(entries, options, "IMG_4821.jpg");
+        var window = new Filee.App.Views.MetadataToolWindow { DataContext = vm };
+        window.Show();
+        Pump();
+
+        Assert.True(vm.HasEntries);
+        Assert.Equal(4, vm.Count);
+        // The colour profile is only a question of its own while the rest is being dropped.
+        Assert.True(vm.CanChooseColorProfile);
+        vm.KeepMetadata = true;
+        Assert.False(vm.CanChooseColorProfile);
+        vm.KeepMetadata = false;
+        Pump();
+
+        Save(window, "window-metadata-fr.png");
+        window.Close();
+    }
+
+    /// <summary>
     /// The redaction editor: the boxes are painted black over the picture, and the count follows the list.
     /// </summary>
     [AvaloniaFact]

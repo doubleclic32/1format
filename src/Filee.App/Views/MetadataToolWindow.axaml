@@ -1,0 +1,57 @@
+<!-- Metadata editor: what the file carries, listed by name, and the choice of what survives. The list is the point:
+     a checkbox alone asks the user to trust a word. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Filee.App.ViewModels"
+        xmlns:eng="using:Filee.Engines.Magick"
+        x:Class="Filee.App.Views.MetadataToolWindow"
+        x:DataType="vm:MetadataToolViewModel"
+        Title="{DynamicResource metadata.title}"
+        Icon="avares://1format/Assets/Icons/1format.ico"
+        Width="720" Height="640" MinWidth="480" MinHeight="420"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="20,12" BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SubtleBorderBrush}" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+        <Button Classes="accent" Content="{DynamicResource crop.apply}" Click="OnApply" IsDefault="True" />
+      </StackPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" Padding="20,14" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Spacing="8">
+        <CheckBox Content="{DynamicResource metadata.keep}" IsChecked="{Binding KeepMetadata}" />
+        <CheckBox Content="{DynamicResource presets.keep_color_profile}" IsChecked="{Binding KeepColorProfile}"
+                  IsEnabled="{Binding CanChooseColorProfile}" Margin="22,0,0,0" />
+      </StackPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Top" Padding="20,14,20,8">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <TextBlock Classes="h2" Text="{Binding FileName}" />
+        <TextBlock VerticalAlignment="Center" Classes="caption" Text="{Binding Count, StringFormat={}{0}}" />
+      </StackPanel>
+    </Border>
+
+    <Border Padding="20,0,20,12">
+      <Grid>
+        <TextBlock Classes="muted" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Text="{DynamicResource metadata.empty}" IsVisible="{Binding !HasEntries}" />
+        <ScrollViewer IsVisible="{Binding HasEntries}">
+          <ItemsControl ItemsSource="{Binding Entries}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="eng:MetadataEntry">
+                <Grid ColumnDefinitions="64,200,*" Margin="0,3">
+                  <TextBlock Grid.Column="0" Classes="caption" Text="{Binding Group}" />
+                  <TextBlock Grid.Column="1" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
+                  <TextBlock Grid.Column="2" Classes="caption" TextTrimming="CharacterEllipsis" Text="{Binding Value}" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+  </DockPanel>
+</Window>

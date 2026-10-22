@@ -247,6 +247,63 @@ internal static class ImageEncoder
     }
 
     /// <summary>
+    /// Draws <see cref="ImageOptions.Annotations"/> on the picture (part of <see cref="ApplyOptions"/>). Everything is
+    /// burnt into the pixels: there is no layer to switch off afterwards.
+    /// </summary>
+    public static void Annotate(IMagickImage<byte> image, ImageOptions options)
+    {
+        if (options.Annotations.Count == 0)
+            return;
+        foreach (var mark in options.Annotations)
+        {
+            var color = ParseColor(mark.Color);
+            var thickness = Math.Clamp(mark.Thickness, 1, 100);
+            var drawables = new Drawables().StrokeColor(color).StrokeWidth(thickness).FillColor(MagickColors.Transparent);
+            switch (mark.Kind)
+            {
+                case AnnotationKind.Rectangle:
+                    drawables.Rectangle(Math.Min(mark.X, mark.X2), Math.Min(mark.Y, mark.Y2),
+                        Math.Max(mark.X, mark.X2), Math.Max(mark.Y, mark.Y2));
+                    break;
+                case AnnotationKind.Ellipse:
+                    var cx = (mark.X + mark.X2) / 2.0;
+                    var cy = (mark.Y + mark.Y2) / 2.0;
+                    drawables.Ellipse(cx, cy, Math.Abs(mark.X2 - mark.X) / 2.0, Math.Abs(mark.Y2 - mark.Y) / 2.0, 0, 360);
+                    break;
+                case AnnotationKind.Arrow:
+                    drawables.Line(mark.X, mark.Y, mark.X2, mark.Y2);
+                    foreach (var (hx, hy) in ArrowHead(mark, thickness))
+                        drawables.Line(mark.X2, mark.Y2, hx, hy);
+                    break;
+                case AnnotationKind.Text:
+                    if (string.IsNullOrWhiteSpace(mark.Text))
+                        continue;
+                    var size = Math.Clamp(mark.FontSize, 6, 2000);
+                    drawables = new Drawables().FillColor(color).StrokeColor(MagickColors.Transparent)
+                        .FontPointSize(size)
+                        .TextAlignment(TextAlignment.Left)
+                        // The baseline sits at Y, but the user placed the top left corner of the text.
+                        .Text(mark.X, mark.Y + size, mark.Text);
+                    break;
+            }
+            drawables.Draw(image);
+        }
+    }
+
+    /// <summary>
+    /// The two points at the back of an arrow head, each at 25 degrees from the shaft. The head grows with the line
+    /// so a thick arrow does not end in a pinhead.
+    /// </summary>
+    private static IEnumerable<(double X, double Y)> ArrowHead(Annotation mark, int thickness)
+    {
+        var angle = Math.Atan2(mark.Y - mark.Y2, mark.X - mark.X2);
+        var length = Math.Max(10, thickness * 4);
+        const double Spread = 25 * Math.PI / 180;
+        yield return (mark.X2 + length * Math.Cos(angle - Spread), mark.Y2 + length * Math.Sin(angle - Spread));
+        yield return (mark.X2 + length * Math.Cos(angle + Spread), mark.Y2 + length * Math.Sin(angle + Spread));
+    }
+
+    /// <summary>
     /// Keeps only <see cref="ImageOptions.Crop"/> of the image (part of <see cref="ApplyOptions"/>). A rectangle that
     /// does not fit the picture is ignored rather than clamped: it was drawn on a different image.
     /// </summary>
@@ -257,6 +314,32 @@ internal static class ImageEncoder
         image.Crop(new MagickGeometry(crop.X, crop.Y, (uint)crop.Width, (uint)crop.Height));
         // Crop leaves the piece at its old offset inside a canvas of the old size; every writer must see a plain image.
         image.ResetPage();
+    }
+
+    /// <summary>
+    /// Light, contrast, colour and sharpness (part of <see cref="ApplyOptions"/>). Each knob rests at 0 and is left
+    /// out entirely then, so a picture nobody retouched is never re-sampled for nothing.
+    /// </summary>
+    public static void Retouch(IMagickImage<byte> image, ImageOptions options)
+    {
+        if (!options.Retouches)
+            return;
+        if (options.Brightness != 0 || options.Contrast != 0)
+            image.BrightnessContrast(new Percentage(Math.Clamp(options.Brightness, -100, 100)),
+                new Percentage(Math.Clamp(options.Contrast, -100, 100)));
+        if (options.Saturation != 0)
+        {
+            // Modulate takes 100 as "unchanged", so the knob's -100..100 maps onto 0..200.
+            var saturation = 100 + Math.Clamp(options.Saturation, -100, 100);
+            image.Modulate(new Percentage(100), new Percentage(saturation), new Percentage(100));
+        }
+        if (options.Sharpen > 0)
+        {
+            // Sigma, not radius: ImageMagick works out the radius itself, and a radius picked by hand either does
+            // nothing on a large photo or eats a small one.
+            var sigma = Math.Clamp(options.Sharpen, 1, 100) / 100.0 * 2.5;
+            image.Sharpen(0, sigma);
+        }
     }
 
     /// <summary>Applies resize / colour / metadata options to one frame.</summary>
@@ -275,8 +358,10 @@ internal static class ImageEncoder
             image.SetProfile(exif);
         }
 
-        // Before Cut, so both are expressed on the whole picture as the editor showed it.
+        // Before Cut, so all three are expressed on the whole picture as the editor showed it. Annotations go on
+        // top of the black boxes: an arrow pointing at what was hidden is a thing people draw.
         Redact(image, options);
+        Annotate(image, options);
 
         // After Turn, because the rectangle was drawn on the picture the way the user saw it, and before Resize,
         // so a resize still applies to what is left.
@@ -300,6 +385,10 @@ internal static class ImageEncoder
         // Before grayscale (a blue signature stays blue until then) and before alpha is flattened for JPG and co.
         if (options.RemoveBackground)
             BackgroundRemover.Apply(image, options.BackgroundTolerance, options.KeepEnclosedBackground);
+
+        // After the resize, so sharpening works on the pixels that will be written, and before grayscale, so a
+        // saturation setting still has colours to work on.
+        Retouch(image, options);
 
         if (options.Grayscale)
             image.Grayscale();

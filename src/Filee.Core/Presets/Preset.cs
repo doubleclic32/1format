@@ -19,6 +19,18 @@ public enum PresetTool
 
     /// <summary>Paint over the parts to hide (<see cref="ImageOptions.Redactions"/>).</summary>
     Redact,
+
+    /// <summary>Set the quality and the scale, with the weight of the result shown as it changes.</summary>
+    Compress,
+
+    /// <summary>Choose what of the file's metadata is kept (<see cref="ImageOptions.KeepMetadata"/>).</summary>
+    Metadata,
+
+    /// <summary>Light, contrast, colour and sharpness (<see cref="ImageOptions.Brightness"/> and the rest).</summary>
+    Retouch,
+
+    /// <summary>Draw boxes, arrows and text on the picture (<see cref="ImageOptions.Annotations"/>).</summary>
+    Annotate,
 }
 
 /// <summary>What a preset is: a conversion, or a group of conversions fanned out on the donut.</summary>
@@ -219,6 +231,51 @@ public enum TiffCompression
 }
 
 /// <summary>Raster image encoding options.</summary>
+/// <summary>What an annotation draws.</summary>
+public enum AnnotationKind
+{
+    /// <summary>An outlined box around something.</summary>
+    Rectangle,
+
+    /// <summary>An outlined ellipse around something.</summary>
+    Ellipse,
+
+    /// <summary>A line from the first point to the second, with a head at the second.</summary>
+    Arrow,
+
+    /// <summary>Text, with the first point at its top left corner.</summary>
+    Text,
+}
+
+/// <summary>
+/// One mark drawn on a picture, in pixels of the picture as the user sees it (the same space as
+/// <see cref="ImageOptions.Crop"/>). It is burnt into the pixels: a picture that was annotated cannot be un-annotated.
+/// </summary>
+public sealed class Annotation
+{
+    [JsonConverter(typeof(LenientEnumJsonConverter<AnnotationKind>))]
+    public AnnotationKind Kind { get; set; }
+
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    /// <summary>The other corner, or the point an arrow points at. Unused by <see cref="AnnotationKind.Text"/>.</summary>
+    public int X2 { get; set; }
+    public int Y2 { get; set; }
+
+    /// <summary>Colour as <c>#RRGGBB</c>.</summary>
+    public string Color { get; set; } = "#E53935";
+
+    /// <summary>Line width in pixels of the picture.</summary>
+    public int Thickness { get; set; } = 4;
+
+    /// <summary>What <see cref="AnnotationKind.Text"/> writes.</summary>
+    public string? Text { get; set; }
+
+    /// <summary>Text height in pixels of the picture.</summary>
+    public int FontSize { get; set; } = 28;
+}
+
 /// <summary>A rectangle kept from an image, in pixels of the picture as the user sees it.</summary>
 public sealed class CropRect
 {
@@ -261,6 +318,9 @@ public sealed class ImageOptions
     /// </summary>
     public List<CropRect> Redactions { get; set; } = [];
 
+    /// <summary>Marks drawn on the picture, burnt into the pixels.</summary>
+    public List<Annotation> Annotations { get; set; } = [];
+
     /// <summary>Turns or mirrors the image: only engines that do (<see cref="Conversion.IImageTransformer"/>) can run it.</summary>
     [JsonIgnore]
     public bool TurnsOrMirrors => Rotation != ImageRotation.None || Flip != ImageFlip.None;
@@ -285,6 +345,22 @@ public sealed class ImageOptions
     /// phones) look washed out. Has no effect while <see cref="KeepMetadata"/> is on (everything is kept then).
     /// </summary>
     public bool KeepColorProfile { get; set; } = true;
+
+    /// <summary>Lightens (positive) or darkens (negative) the picture, in percent, 0 leaving it alone.</summary>
+    public int Brightness { get; set; }
+
+    /// <summary>Raises (positive) or flattens (negative) the contrast, in percent, 0 leaving it alone.</summary>
+    public int Contrast { get; set; }
+
+    /// <summary>Makes the colours stronger (positive) or paler (negative), in percent; -100 is grey.</summary>
+    public int Saturation { get; set; }
+
+    /// <summary>Sharpening, 0 to 100, 0 leaving the picture alone.</summary>
+    public int Sharpen { get; set; }
+
+    /// <summary>Any of the four retouching knobs is off its resting value.</summary>
+    [JsonIgnore]
+    public bool Retouches => Brightness != 0 || Contrast != 0 || Saturation != 0 || Sharpen > 0;
 
     /// <summary>Convert to grayscale.</summary>
     public bool Grayscale { get; set; }
@@ -328,6 +404,11 @@ public sealed class ImageOptions
         // MemberwiseClone would hand both copies the same rectangle, and a tool writes into the copy's one.
         copy.Crop = Crop is null ? null : new CropRect { X = Crop.X, Y = Crop.Y, Width = Crop.Width, Height = Crop.Height };
         copy.Redactions = [.. Redactions.Select(r => new CropRect { X = r.X, Y = r.Y, Width = r.Width, Height = r.Height })];
+        copy.Annotations = [.. Annotations.Select(a => new Annotation
+        {
+            Kind = a.Kind, X = a.X, Y = a.Y, X2 = a.X2, Y2 = a.Y2,
+            Color = a.Color, Thickness = a.Thickness, Text = a.Text, FontSize = a.FontSize,
+        })];
         return copy;
     }
 }

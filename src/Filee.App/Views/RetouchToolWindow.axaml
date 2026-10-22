@@ -1,0 +1,53 @@
+<!-- Retouching editor: four knobs, shown on the real picture as they move. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Filee.App.ViewModels"
+        x:Class="Filee.App.Views.RetouchToolWindow"
+        x:DataType="vm:RetouchToolViewModel"
+        Title="{DynamicResource retouch.title}"
+        Icon="avares://1format/Assets/Icons/1format.ico"
+        Width="760" Height="760" MinWidth="520" MinHeight="520"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="20,12" BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SubtleBorderBrush}" Background="{DynamicResource SurfaceBrush}">
+      <DockPanel>
+        <Button DockPanel.Dock="Left" Classes="ghost" Content="{DynamicResource crop.reset}" Command="{Binding ResetCommand}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+          <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+          <Button Classes="accent" Content="{DynamicResource crop.apply}" Click="OnApply" IsDefault="True" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" Padding="20,14" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Spacing="8">
+        <Grid ColumnDefinitions="110,*,60" RowDefinitions="Auto,Auto,Auto,Auto">
+          <TextBlock Grid.Row="0" Grid.Column="0" Classes="label" VerticalAlignment="Center" Text="{DynamicResource retouch.brightness}" />
+          <Slider Grid.Row="0" Grid.Column="1" Minimum="-100" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding Brightness}" />
+          <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding Brightness}" />
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Classes="label" VerticalAlignment="Center" Text="{DynamicResource retouch.contrast}" />
+          <Slider Grid.Row="1" Grid.Column="1" Minimum="-100" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding Contrast}" />
+          <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding Contrast}" />
+
+          <TextBlock Grid.Row="2" Grid.Column="0" Classes="label" VerticalAlignment="Center" Text="{DynamicResource retouch.saturation}" />
+          <Slider Grid.Row="2" Grid.Column="1" Minimum="-100" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding Saturation}" />
+          <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding Saturation}" />
+
+          <TextBlock Grid.Row="3" Grid.Column="0" Classes="label" VerticalAlignment="Center" Text="{DynamicResource retouch.sharpen}" />
+          <Slider Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding Sharpen}" />
+          <TextBlock Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding Sharpen}" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" Spacing="14">
+          <TextBlock Classes="caption" Text="{Binding Preview.Size}" />
+          <TextBlock Classes="caption" Text="{Binding FileName}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Padding="16" Background="{DynamicResource PageBrush}">
+      <Image Source="{Binding Preview.Image}" Stretch="Uniform" />
+    </Border>
+  </DockPanel>
+</Window>

@@ -556,11 +556,12 @@ internal static class SettingsMigrations
             }
         }
 
-        // v21: "Crop" and "Redact", the first presets that open an editor before converting. Crop goes on the images
-        //      donut after WEBP, redaction right after it.
+        // v21: the first presets that open an editor before converting. Crop and redaction go on the images donut
+        //      after WEBP; the other four are added to the library on no donut, like "Remove background", because a
+        //      donut of eleven slices is already as many as can be hit comfortably.
         if (from < 21)
         {
-            foreach (var id in new[] { "crop", "redact" })
+            foreach (var id in new[] { "crop", "redact", "compress", "metadata", "retouch", "annotate" })
             {
                 if (presets.Any(p => p.Id == id))
                     continue;

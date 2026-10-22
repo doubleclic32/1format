@@ -348,23 +348,8 @@ public sealed class RadialController(
         _editing = true;
         try
         {
-            switch (preset.Tool)
-            {
-                case PresetTool.Crop:
-                    if (await windows.CropAsync(files[0], _window) is not { } choice)
-                        return null;
-                    var cropped = preset.Clone();
-                    cropped.Image.Crop = choice.Rect;
-                    return cropped;
-                case PresetTool.Redact:
-                    if (await windows.RedactAsync(files[0], _window) is not { } boxes)
-                        return null;
-                    var redacted = preset.Clone();
-                    redacted.Image.Redactions = boxes;
-                    return redacted;
-                default:
-                    return preset;
-            }
+            var copy = preset.Clone();
+            return await windows.RunImageToolAsync(preset.Tool, copy, files[0], _window) ? copy : null;
         }
         finally
         {

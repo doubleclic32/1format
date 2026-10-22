@@ -1,0 +1,89 @@
+<!-- Annotation editor: pick a shape and a colour, drag on the picture to place a mark, click a mark to take it away.
+     Text is placed with one click, using whatever is in the text box. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:Filee.App.Controls"
+        xmlns:vm="using:Filee.App.ViewModels"
+        x:Class="Filee.App.Views.AnnotateToolWindow"
+        x:DataType="vm:AnnotateToolViewModel"
+        Title="{DynamicResource annotate.title}"
+        Icon="avares://1format/Assets/Icons/1format.ico"
+        Width="820" Height="760" MinWidth="560" MinHeight="520"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="20,12" BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SubtleBorderBrush}" Background="{DynamicResource SurfaceBrush}">
+      <DockPanel>
+        <Button DockPanel.Dock="Left" Classes="ghost" Content="{DynamicResource redact.clear}"
+                Command="{Binding ClearCommand}" IsEnabled="{Binding HasMarks}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+          <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+          <Button Classes="accent" Content="{DynamicResource crop.apply}" Click="OnApply" IsDefault="True" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Top" Padding="20,14,20,10" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Classes="label" VerticalAlignment="Center" Text="{DynamicResource annotate.shape}" Margin="0,0,4,0" />
+          <ItemsControl ItemsSource="{Binding Kinds}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:KindChoice">
+                <Button Classes="chip" Classes.selected="{Binding IsSelected}" Content="{Binding Label}"
+                        Command="{Binding $parent[Window].((vm:AnnotateToolViewModel)DataContext).ChooseKindCommand}"
+                        CommandParameter="{Binding}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Classes="label" VerticalAlignment="Center" Text="{DynamicResource annotate.color}" Margin="0,0,4,0" />
+          <ItemsControl ItemsSource="{Binding Colors}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:ColorChoice">
+                <!-- A ring marks the chosen one; the thin grey outline is there always, or the white swatch
+                     disappears into the bar behind it. -->
+                <Button Width="28" Height="28" Padding="0" CornerRadius="999"
+                        Background="{Binding Hex}"
+                        BorderBrush="{DynamicResource AccentStrongBrush}"
+                        BorderThickness="{Binding IsSelected, Converter={x:Static vm:SelectedBorderConverter.Instance}}"
+                        Classes="swatch"
+                        Command="{Binding $parent[Window].((vm:AnnotateToolViewModel)DataContext).ChooseColorCommand}"
+                        CommandParameter="{Binding}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <TextBlock Classes="label" VerticalAlignment="Center" Margin="12,0,4,0" Text="{DynamicResource annotate.thickness}" />
+          <Slider Width="130" Minimum="1" Maximum="20" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding Thickness}" />
+          <TextBlock VerticalAlignment="Center" Text="{Binding Thickness}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsText}">
+          <TextBlock Classes="label" VerticalAlignment="Center" Text="{DynamicResource annotate.text}" Margin="0,0,4,0" />
+          <TextBox Width="320" Text="{Binding Text}" Watermark="{DynamicResource annotate.text_hint}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <TextBlock Classes="caption" Text="{DynamicResource annotate.hint}" />
+          <TextBlock Classes="caption" Text="{Binding Count, StringFormat={}{0}}" />
+          <TextBlock Classes="caption" Text="{Binding FileName}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Padding="16" Background="{DynamicResource PageBrush}">
+      <c:AnnotateView x:Name="Canvas" Source="{Binding Picture}" Marks="{Binding Marks}"
+                      Kind="{Binding Kind}" Color="{Binding Color}" Thickness="{Binding Thickness}"
+                      Text="{Binding Text}" />
+    </Border>
+  </DockPanel>
+</Window>

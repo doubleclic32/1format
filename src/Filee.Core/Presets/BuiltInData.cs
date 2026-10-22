@@ -55,6 +55,30 @@ public static class BuiltInData
             Image = { Quality = 95 },
             Output = { FileNamePattern = "{name}_caviarde" },
         },
+        new()
+        {
+            Id = "compress", NameKey = "preset.compress", TargetFormat = SameAsSource, Tool = PresetTool.Compress,
+            Image = { Quality = 80 },
+            Output = { FileNamePattern = "{name}_compresse" },
+        },
+        new()
+        {
+            Id = "metadata", NameKey = "preset.metadata", TargetFormat = SameAsSource, Tool = PresetTool.Metadata,
+            Image = { Quality = 95, KeepMetadata = false },
+            Output = { FileNamePattern = "{name}_sans_donnees" },
+        },
+        new()
+        {
+            Id = "retouch", NameKey = "preset.retouch", TargetFormat = SameAsSource, Tool = PresetTool.Retouch,
+            Image = { Quality = 95 },
+            Output = { FileNamePattern = "{name}_retouche" },
+        },
+        new()
+        {
+            Id = "annotate", NameKey = "preset.annotate", TargetFormat = SameAsSource, Tool = PresetTool.Annotate,
+            Image = { Quality = 95 },
+            Output = { FileNamePattern = "{name}_annote" },
+        },
         .. ImageToolPresets(),
         new()
         {

@@ -132,6 +132,11 @@
     <Setter Property="TextElement.Foreground" Value="{DynamicResource OnAccentBrush}" />
   </Style>
 
+  <!-- Colour swatch: its own colour is the content, so it keeps a hairline of its own to stay visible on any bar. -->
+  <Style Selector="Button.swatch /template/ ContentPresenter">
+    <Setter Property="BoxShadow" Value="0 0 0 1 #28000000" />
+  </Style>
+
   <!-- Badge for engine status etc. -->
   <Style Selector="Border.badge">
     <Setter Property="CornerRadius" Value="999" />

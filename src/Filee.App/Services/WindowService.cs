@@ -9,7 +9,9 @@ using Avalonia.Media.Imaging;
 using Filee.App.ViewModels;
 using Filee.App.Views;
 using Filee.Core.Localization;
+using Filee.Core.Formats;
 using Filee.Core.Presets;
+using Filee.Engines.Magick;
 using Filee.Core.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -222,10 +224,106 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
     }
 
     /// <summary>
+    /// Opens the editor <paramref name="tool"/> asks for on <paramref name="file"/> and writes what the user settled
+    /// on into <paramref name="target"/>. False when they cancelled: nothing is converted then.
+    /// A file this build cannot show returns true without asking, so the conversion still runs on it untouched.
+    /// </summary>
+    public async Task<bool> RunImageToolAsync(PresetTool tool, Preset target, string file, Window? owner)
+    {
+        var name = Path.GetFileName(file);
+        switch (tool)
+        {
+            case PresetTool.Crop:
+                if (await CropAsync(file, owner) is not { } choice)
+                    return false;
+                target.Image.Crop = choice.Rect;
+                return true;
+
+            case PresetTool.Redact:
+                if (await RedactAsync(file, owner) is not { } boxes)
+                    return false;
+                target.Image.Redactions = boxes;
+                return true;
+
+            case PresetTool.Metadata:
+            {
+                var dialog = new MetadataToolWindow
+                {
+                    DataContext = new MetadataToolViewModel(ImageMetadata.Read(file), target.Image, name),
+                    Topmost = owner?.Topmost ?? false,
+                };
+                await ShowToolAsync(dialog, owner);
+                if (!dialog.Applied)
+                    return false;
+                dialog.WriteInto(target);
+                return true;
+            }
+
+            case PresetTool.Annotate:
+            {
+                if (LoadPicture(file) is not { } picture)
+                    return true;
+                var labels = new[] { loc["annotate.rectangle"], loc["annotate.ellipse"], loc["annotate.arrow"], loc["annotate.text_kind"] };
+                var dialog = new AnnotateToolWindow
+                {
+                    DataContext = new AnnotateToolViewModel(picture, name, labels),
+                    Topmost = owner?.Topmost ?? false,
+                };
+                await ShowToolAsync(dialog, owner);
+                if (!dialog.Applied)
+                    return false;
+                dialog.WriteInto(target);
+                return true;
+            }
+
+            case PresetTool.Compress:
+            case PresetTool.Retouch:
+            {
+                // These two show the picture as it would be written, so they read it through the engine rather than
+                // through Avalonia: the weight on screen has to come from the code that writes the file.
+                var format = FormatRegistry.ExtensionOf(file) ?? "";
+                if (ImagePreview.Open(file, format) is not { } preview)
+                    return true;
+                var targetFormat = string.Equals(target.TargetFormat, BuiltInData.SameAsSource, StringComparison.OrdinalIgnoreCase)
+                    ? format
+                    : target.TargetFormat;
+                if (tool == PresetTool.Compress)
+                {
+                    var dialog = new CompressToolWindow
+                    {
+                        DataContext = new CompressToolViewModel(preview, target.Image, targetFormat, name),
+                        Topmost = owner?.Topmost ?? false,
+                    };
+                    await ShowToolAsync(dialog, owner);
+                    if (!dialog.Applied)
+                        return false;
+                    dialog.WriteInto(target);
+                }
+                else
+                {
+                    var dialog = new RetouchToolWindow
+                    {
+                        DataContext = new RetouchToolViewModel(preview, target.Image, targetFormat, name),
+                        Topmost = owner?.Topmost ?? false,
+                    };
+                    await ShowToolAsync(dialog, owner);
+                    if (!dialog.Applied)
+                        return false;
+                    dialog.WriteInto(target);
+                }
+                return true;
+            }
+
+            default:
+                return true;
+        }
+    }
+
+    /// <summary>
     /// Opens the crop editor on <paramref name="file"/> and returns the rectangle the user applied: null when they
     /// cancelled, and <see cref="CropChoice.Whole"/> when they applied without cutting anything.
     /// </summary>
-    public async Task<CropChoice?> CropAsync(string file, Window? owner)
+    private async Task<CropChoice?> CropAsync(string file, Window? owner)
     {
         // Not a picture this build can show: the conversion still knows how to read it, so it runs on the whole
         // image rather than failing here.
@@ -245,7 +343,7 @@ public sealed class WindowService(ILocalizer loc, IServiceProvider services, Mem
     /// Opens the redaction editor on <paramref name="file"/>. Returns the boxes the user applied (an empty list when
     /// they applied without drawing any), or null when they cancelled.
     /// </summary>
-    public async Task<List<CropRect>?> RedactAsync(string file, Window? owner)
+    private async Task<List<CropRect>?> RedactAsync(string file, Window? owner)
     {
         if (LoadPicture(file) is not { } picture)
             return [];

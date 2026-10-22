@@ -1,0 +1,57 @@
+<!-- Compression editor: the quality and the scale, with the weight of the result measured by really encoding the
+     picture, not guessed from a formula. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Filee.App.ViewModels"
+        x:Class="Filee.App.Views.CompressToolWindow"
+        x:DataType="vm:CompressToolViewModel"
+        Title="{DynamicResource compress.title}"
+        Icon="avares://1format/Assets/Icons/1format.ico"
+        Width="760" Height="720" MinWidth="520" MinHeight="480"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="20,12" BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SubtleBorderBrush}" Background="{DynamicResource SurfaceBrush}">
+      <DockPanel>
+        <Button DockPanel.Dock="Left" Classes="ghost" Content="{DynamicResource crop.reset}" Command="{Binding ResetCommand}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+          <Button Content="{DynamicResource common.cancel}" Click="OnCancel" IsCancel="True" />
+          <Button Classes="accent" Content="{DynamicResource crop.apply}" Click="OnApply" IsDefault="True" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" Padding="20,14" Background="{DynamicResource SurfaceBrush}">
+      <StackPanel Spacing="12">
+        <Grid ColumnDefinitions="110,*,70" RowDefinitions="Auto,Auto" >
+          <TextBlock Grid.Row="0" Grid.Column="0" Classes="label" VerticalAlignment="Center" Text="{DynamicResource compress.quality}" />
+          <Slider Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True"
+                  Value="{Binding Quality}" />
+          <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"
+                     Text="{Binding Quality}" />
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Classes="label" VerticalAlignment="Center" Text="{DynamicResource compress.scale}" />
+          <Slider Grid.Row="1" Grid.Column="1" Minimum="10" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True"
+                  Value="{Binding Scale}" />
+          <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"
+                     Text="{Binding Scale, StringFormat={}{0} %}" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Spacing="16">
+          <TextBlock Classes="caption" Text="{Binding OriginalSize, StringFormat={}{0}}" />
+          <TextBlock Text="→" Classes="caption" />
+          <TextBlock FontWeight="SemiBold" Text="{Binding Preview.Length, Converter={x:Static vm:ByteSizeConverter.Instance}}" />
+          <TextBlock Classes="caption" Text="{Binding Preview.Size}" />
+          <TextBlock Classes="caption" Foreground="{DynamicResource SuccessBrush}"
+                     Text="{Binding Preview.Saved, StringFormat={}-{0} %}"
+                     IsVisible="{Binding Preview.Saved, Converter={x:Static ObjectConverters.IsNotNull}}" />
+          <TextBlock Classes="caption" Text="{Binding FileName}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Padding="16" Background="{DynamicResource PageBrush}">
+      <Image Source="{Binding Preview.Image}" Stretch="Uniform" />
+    </Border>
+  </DockPanel>
+</Window>

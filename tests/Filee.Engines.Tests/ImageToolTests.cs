@@ -123,6 +123,102 @@ public class ImageToolTests(EngineFixture fx) : IClassFixture<EngineFixture>
         Assert.True(outside.R > 200 && outside.G > 200, $"(10,4) vaut {outside}, le cache a débordé");
     }
 
+    /// <summary>
+    /// Each retouching knob moves the picture the way its name says, and a preset with every knob at rest leaves the
+    /// pixels exactly as they were — the negative control that tells "it works" from "nothing ran".
+    /// </summary>
+    [Fact]
+    public async Task Retouching_moves_the_picture_and_resting_knobs_leave_it_alone()
+    {
+        var dir = fx.NewFolder();
+        var source = Path.Combine(dir, "photo.png");
+        using (var image = new MagickImage(new MagickColor("#4080C0"), 8, 8))
+            image.Write(source, MagickFormat.Png);
+
+        async Task<IMagickColor<byte>> ConvertWith(Action<ImageOptions> set)
+        {
+            var preset = new Preset { TargetFormat = "png" };
+            set(preset.Image);
+            var job = await fx.ConvertAsync([source], preset);
+            Assert.Equal(JobState.Completed, job.State);
+            using var result = new MagickImage(job.Outputs.Single());
+            return result.GetPixels().GetPixel(4, 4).ToColor()!;
+        }
+
+        var untouched = await ConvertWith(_ => { });
+        Assert.Equal((0x40, 0x80, 0xC0), (untouched.R, untouched.G, untouched.B));
+
+        var brighter = await ConvertWith(i => i.Brightness = 40);
+        Assert.True(brighter.R > untouched.R && brighter.G > untouched.G, $"éclairci : {brighter}");
+
+        var darker = await ConvertWith(i => i.Brightness = -40);
+        Assert.True(darker.R < untouched.R && darker.G < untouched.G, $"assombri : {darker}");
+
+        // Saturation at its floor turns the colour grey: the three channels end up within a hair of each other.
+        var grey = await ConvertWith(i => i.Saturation = -100);
+        Assert.True(Math.Abs(grey.R - grey.G) < 8 && Math.Abs(grey.G - grey.B) < 8, $"désaturé : {grey}");
+
+        var stronger = await ConvertWith(i => i.Saturation = 60);
+        Assert.True(stronger.B - stronger.R > untouched.B - untouched.R, $"saturé : {stronger}");
+    }
+
+    /// <summary>
+    /// Each kind of mark leaves its colour where it is drawn and nowhere else. The pixel in the middle of a box or an
+    /// ellipse is the negative control: these are outlines, so the inside must stay the picture.
+    /// </summary>
+    [Theory]
+    [InlineData(AnnotationKind.Rectangle)]
+    [InlineData(AnnotationKind.Ellipse)]
+    [InlineData(AnnotationKind.Arrow)]
+    public async Task An_annotation_is_drawn_where_it_was_placed(AnnotationKind kind)
+    {
+        var dir = fx.NewFolder();
+        var source = Path.Combine(dir, "capture.png");
+        using (var image = new MagickImage(MagickColors.White, 100, 100))
+            image.Write(source, MagickFormat.Png);
+
+        var preset = new Preset { TargetFormat = "png" };
+        preset.Image.Annotations =
+            [new Annotation { Kind = kind, X = 20, Y = 20, X2 = 80, Y2 = 80, Color = "#E53935", Thickness = 4 }];
+
+        var job = await fx.ConvertAsync([source], preset);
+
+        Assert.Equal(JobState.Completed, job.State);
+        using var result = new MagickImage(job.Outputs.Single());
+        var pixels = result.GetPixels();
+        var red = Enumerable.Range(0, 100)
+            .SelectMany(y => Enumerable.Range(0, 100).Select(x => pixels.GetPixel(x, y).ToColor()!))
+            .Count(c => c.R > 150 && c.G < 120 && c.B < 120);
+        Assert.True(red > 40, $"{kind} : seulement {red} pixels de la couleur");
+
+        // The middle of a box or an ellipse stays the picture: these draw an outline, not a filled shape.
+        if (kind != AnnotationKind.Arrow)
+        {
+            var middle = pixels.GetPixel(50, 50).ToColor()!;
+            Assert.True(middle.R > 240 && middle.G > 240, $"{kind} : le centre vaut {middle}, la forme est remplie");
+        }
+    }
+
+    /// <summary>The negative control for annotations: an empty list leaves the picture untouched.</summary>
+    [Fact]
+    public async Task Without_annotations_the_picture_keeps_its_colours()
+    {
+        var dir = fx.NewFolder();
+        var source = Path.Combine(dir, "plain.png");
+        using (var image = new MagickImage(MagickColors.White, 40, 40))
+            image.Write(source, MagickFormat.Png);
+
+        var job = await fx.ConvertAsync([source], new Preset { TargetFormat = "png" });
+
+        using var result = new MagickImage(job.Outputs.Single());
+        var pixels = result.GetPixels();
+        Assert.All(new[] { (5, 5), (20, 20), (35, 35) }, at =>
+        {
+            var c = pixels.GetPixel(at.Item1, at.Item2).ToColor()!;
+            Assert.True(c.R > 240 && c.G > 240 && c.B > 240, $"{at} vaut {c}");
+        });
+    }
+
     private static Preset Tool(string id) => BuiltInData.CreatePresets().Single(p => p.Id == id);
 
     /// <summary>A 40 × 20 white image with a red 10 × 10 square in the top left corner.</summary>
