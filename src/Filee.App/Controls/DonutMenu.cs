@@ -72,6 +72,9 @@ public sealed partial class DonutMenu : Control
         AvaloniaProperty.Register<DonutMenu, IBrush?>(nameof(SliceBrush), Brushes.White);
     public static readonly StyledProperty<IBrush?> SliceBorderBrushProperty =
         AvaloniaProperty.Register<DonutMenu, IBrush?>(nameof(SliceBorderBrush));
+    /// <summary>Fill of the slice under the pointer. Darker than the accent so the white label stays readable.</summary>
+    public static readonly StyledProperty<IBrush?> AccentStrongBrushProperty =
+        AvaloniaProperty.Register<DonutMenu, IBrush?>(nameof(AccentStrongBrush));
     public static readonly StyledProperty<IBrush?> CenterBrushProperty =
         AvaloniaProperty.Register<DonutMenu, IBrush?>(nameof(CenterBrush), Brushes.White);
     public static readonly StyledProperty<IBrush?> AccentBrushProperty =
@@ -85,9 +88,16 @@ public sealed partial class DonutMenu : Control
     public static readonly StyledProperty<IBrush?> DangerBrushProperty =
         AvaloniaProperty.Register<DonutMenu, IBrush?>(nameof(DangerBrush), Brushes.IndianRed);
 
-    /// <summary>Gap between slices in pixels (keeps the donut "full" while separating slices).</summary>
-    private const double GapPixels = 3;
-    private const double PopOut = 7;
+    /// <summary>
+    /// Gap between slices in pixels. The donut is painted on a transparent window, so a wide gap shows the desktop
+    /// through the ring and reads as a thick black outline: a backing ring is painted first (see <see cref="Render"/>)
+    /// and the gap only has to separate two surfaces of the same colour.
+    /// </summary>
+    private const double GapPixels = 1.25;
+
+    /// <summary>Width of the tinted band between the hub and the slices (part of the backing ring, not a hole).</summary>
+    private const double HubBand = 7;
+    private const double PopOut = 10;
     private const double OpenDuration = 0.42;
     private const double OpenStagger = 0.028;
     private const double DragStartDistance = 5;
@@ -127,6 +137,7 @@ public sealed partial class DonutMenu : Control
         AffectsMeasure<DonutMenu>(OuterRadiusProperty, ReserveSubRingProperty);
         AffectsRender<DonutMenu>(HoleRatioProperty, SliceOpacityProperty, CenterTitleProperty, CenterSubtitleProperty,
             IsEditModeProperty, SliceBrushProperty, SliceBorderBrushProperty, CenterBrushProperty, AccentBrushProperty,
+            AccentStrongBrushProperty,
             OnAccentBrushProperty, ForegroundProperty, SecondaryForegroundProperty, SuccessBrushProperty);
         ItemsProperty.Changed.AddClassHandler<DonutMenu>((d, _) => d.OnItemsChanged());
     }
@@ -158,6 +169,7 @@ public sealed partial class DonutMenu : Control
 
     public IBrush? SliceBrush { get => GetValue(SliceBrushProperty); set => SetValue(SliceBrushProperty, value); }
     public IBrush? SliceBorderBrush { get => GetValue(SliceBorderBrushProperty); set => SetValue(SliceBorderBrushProperty, value); }
+    public IBrush? AccentStrongBrush { get => GetValue(AccentStrongBrushProperty); set => SetValue(AccentStrongBrushProperty, value); }
     public IBrush? CenterBrush { get => GetValue(CenterBrushProperty); set => SetValue(CenterBrushProperty, value); }
     public IBrush? AccentBrush { get => GetValue(AccentBrushProperty); set => SetValue(AccentBrushProperty, value); }
     public IBrush? OnAccentBrush { get => GetValue(OnAccentBrushProperty); set => SetValue(OnAccentBrushProperty, value); }
@@ -773,9 +785,30 @@ public sealed partial class DonutMenu : Control
         callback?.Invoke();
     }
 
+    /// <summary>
+    /// The opening transform: scale up from the centre with a small twist, plus the hover push-out.
+    /// Shared with the backing ring so it grows with its slices instead of appearing under them full size.
+    /// </summary>
+    private static Matrix OpenTransform(Point center, double scale, double open = 1, Point offset = default) =>
+        Matrix.CreateTranslation(-center.X, -center.Y) *
+        Matrix.CreateRotation((1 - Math.Min(open, 1)) * -0.16) *
+        Matrix.CreateScale(scale, scale) *
+        Matrix.CreateTranslation(center.X + offset.X, center.Y + offset.Y);
+
+    /// <summary>
+    /// Usable label width: the chord of the slice at the label's radius, not the arc. The arc overstates how much
+    /// straight text fits, which is what broke "Rotate" into "Rotat" / "e".
+    /// </summary>
+    private static double ChordWidth(double r1, double r2, double span)
+    {
+        var radius = (r1 + r2) / 2;
+        return 2 * radius * Math.Sin(Math.Clamp(span, 0.001, Math.PI) / 2) - 8;
+    }
+
     private static double EaseOutBack(double t)
     {
-        const double c1 = 1.55;
+        // The donut opens dozens of times a day: a big overshoot turns a tool into a toy.
+        const double c1 = 1.2;
         const double c3 = c1 + 1;
         return 1 + c3 * Math.Pow(t - 1, 3) + c1 * Math.Pow(t - 1, 2);
     }
@@ -804,9 +837,26 @@ public sealed partial class DonutMenu : Control
         if (n == 0)
         {
             var ring = CreateRing(center, r1, r2);
-            context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity), BorderPen(), ring);
+            context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity), null, ring);
             if (_dropTargetIndex >= 0)
                 context.DrawGeometry(WithOpacity(AccentBrush, 0.35), null, ring);
+        }
+
+        // Painted under the slices so the gaps between them show this surface instead of whatever is behind the
+        // transparent window, and tinted one notch away from the slices so those gaps read as hairlines rather than
+        // disappearing. It reaches past the inner edge so the band around the hub is a surface too, not a hole.
+        // It follows the opening so it does not appear before the slices do.
+        if (n > 0)
+        {
+            var opening = Math.Clamp(_open.Average(), 0, 1);
+            var backing = CreateRing(center, Math.Max(1, r1 - HubBand), r2);
+            using (context.PushOpacity(opening))
+            using (context.PushTransform(OpenTransform(center, 0.55 + 0.45 * opening)))
+            {
+                context.DrawGeometry(SliceBrush, null, backing);
+                if (SliceBorderBrush is not null)
+                    context.DrawGeometry(SliceBorderBrush, null, backing);
+            }
         }
 
         for (var i = 0; i < n; i++)
@@ -826,27 +876,32 @@ public sealed partial class DonutMenu : Control
 
             // Open animation: scale up from the centre with a small twist.
             var scale = 0.55 + 0.45 * open;
-            var rotate = (1 - Math.Min(open, 1)) * -0.35;
-            var transform =
-                Matrix.CreateTranslation(-center.X, -center.Y) *
-                Matrix.CreateRotation(rotate) *
-                Matrix.CreateScale(scale * (1 + hover * 0.025), scale * (1 + hover * 0.025)) *
-                Matrix.CreateTranslation(center.X + offset.X, center.Y + offset.Y);
+            var transform = OpenTransform(center, scale * (1 + hover * 0.04), open, offset);
 
             using (context.PushTransform(transform))
             using (context.PushOpacity(Math.Clamp(open, 0, 1) * (i == _dimmedIndex ? 0.3 : 1)))
             {
                 var wedge = CreateWedge(center, r1, r2, mid, span);
-                context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity * (item.IsEnabled ? 1 : 0.55)), BorderPen(), wedge);
+                context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity * (item.IsEnabled ? 1 : 0.55)), null, wedge);
 
                 // The accent fades in and out with the highlight (no floor: a floor made it vanish with a jump).
-                var emphasis = i == _dropTargetIndex ? 1.0 : hover;
+                // Painted opaque: blended at 0.82 over white it landed on #968FE3, where the white label was at
+                // 2.86:1 — below the 4.5:1 the label needs, exactly when the user is choosing.
+                var emphasis = Math.Clamp(i == _dropTargetIndex ? 1.0 : hover, 0, 1);
                 if (emphasis > 0.01 && item.IsEnabled)
-                    context.DrawGeometry(WithOpacity(AccentBrush, 0.82 * Math.Clamp(emphasis, 0, 1)), null, wedge);
+                {
+                    using (context.PushOpacity(emphasis))
+                    {
+                        context.DrawGeometry(AccentStrongBrush ?? AccentBrush, null, wedge);
+                        context.DrawGeometry(null, new Pen(WithOpacity(OnAccentBrush, 0.35), 2), wedge);
+                    }
+                }
 
                 var hot = (i == ActiveIndex || i == _dropTargetIndex) && item.IsEnabled;
-                DrawLabel(context, item, center, (r1 + r2) / 2, mid, span * (r1 + r2) / 2 - 10,
-                    r2 - r1 - 16, typeface, typefaceRegular, hot);
+                // The label only appears once the slice is nearly full size: scaled down from 0.55 it was unreadable.
+                using (context.PushOpacity(Math.Clamp((open - 0.75) / 0.25, 0, 1)))
+                    DrawLabel(context, item, center, (r1 + r2) / 2, mid, ChordWidth(r1, r2, span),
+                        r2 - r1 - 16, typeface, typefaceRegular, hot);
             }
         }
 
@@ -868,20 +923,22 @@ public sealed partial class DonutMenu : Control
     private void DrawSoftShadow(DrawingContext context, Point center, double r2)
     {
         // A radial gradient ring fakes a soft drop shadow without blur effects (cheap on any GPU).
-        var shadowRadius = r2 + 14;
+        // Entirely outside the ring: its old peak sat 2 px inside the outer edge, so the shadow darkened the slices
+        // themselves and added to the look of a thick outline.
+        var shadowRadius = r2 + 18;
         var brush = new RadialGradientBrush
         {
             GradientStops =
             {
                 new GradientStop(Color.FromArgb(0, 0, 0, 0), 0),
-                new GradientStop(Color.FromArgb(0, 0, 0, 0), (r2 - 18) / shadowRadius),
-                new GradientStop(Color.FromArgb(46, 0, 0, 0), (r2 - 2) / shadowRadius),
+                new GradientStop(Color.FromArgb(0, 0, 0, 0), r2 / shadowRadius),
+                new GradientStop(Color.FromArgb(36, 0, 0, 0), (r2 + 5) / shadowRadius),
                 new GradientStop(Color.FromArgb(0, 0, 0, 0), 1),
             },
         };
         var opening = _open.Length == 0 ? 1 : Math.Clamp(_open.Average(), 0, 1);
         using (context.PushOpacity(opening))
-            context.DrawEllipse(brush, null, new Point(center.X, center.Y + 4), shadowRadius, shadowRadius);
+            context.DrawEllipse(brush, null, new Point(center.X, center.Y + 6), shadowRadius, shadowRadius);
     }
 
     private void DrawCenter(DrawingContext context, Point center, double r1, Typeface bold, Typeface regular)
@@ -889,7 +946,7 @@ public sealed partial class DonutMenu : Control
         var pulse = 1 + _centerPulse.Value * 0.06;
         var radius = (r1 - 6) * pulse;
         var cancelHot = _externalCenterHot;
-        context.DrawEllipse(CenterBrush, BorderPen(), center, radius, radius);
+        context.DrawEllipse(CenterBrush, null, center, radius, radius);
         if (cancelHot)
             context.DrawEllipse(WithOpacity(DangerBrush, 0.18), null, center, radius, radius);
 
@@ -907,8 +964,8 @@ public sealed partial class DonutMenu : Control
         double maxWidth, double maxHeight, Typeface bold, Typeface regular, bool hot)
     {
         var foreground = hot ? OnAccentBrush : item.IsEnabled ? Foreground : SecondaryForeground;
-        var width = Math.Clamp(maxWidth, 30, 120);
-        var label = MakeText(item.Label, bold, 13, foreground, width, maxLines: 2);
+        var width = Math.Clamp(maxWidth, 34, 150);
+        var label = FitText(item.Label, bold, 13, foreground, width);
         var showCaption = !string.IsNullOrEmpty(item.Caption) &&
                           !string.Equals(item.Caption, item.Label, StringComparison.OrdinalIgnoreCase) &&
                           label.Height + 14 < maxHeight;
@@ -958,6 +1015,36 @@ public sealed partial class DonutMenu : Control
             TextAlignment = TextAlignment.Center,
         };
 
+    /// <summary>Font sizes a slice label may shrink through before a word has to be cut.</summary>
+    private static readonly double[] LabelSizes = [13, 12, 11, 10];
+
+    /// <summary>
+    /// A slice label over at most two lines, shrunk until its longest word fits on one line and trimmed on a word
+    /// boundary. Character trimming inside a box narrower than the word produced "Rotat" / "e" and "Trace to S...".
+    /// </summary>
+    private static FormattedText FitText(string text, Typeface typeface, double size, IBrush? brush, double maxWidth)
+    {
+        var longest = text.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .OrderByDescending(w => w.Length).FirstOrDefault() ?? text;
+        var chosen = size;
+        foreach (var candidate in LabelSizes)
+        {
+            if (candidate > size)
+                continue;
+            chosen = candidate;
+            var word = new FormattedText(longest, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeface, candidate, brush);
+            if (word.Width <= maxWidth)
+                break;
+        }
+        return new FormattedText(text, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeface, chosen, brush)
+        {
+            MaxTextWidth = Math.Max(10, maxWidth),
+            MaxLineCount = 2,
+            Trimming = TextTrimming.WordEllipsis,
+            TextAlignment = TextAlignment.Center,
+        };
+    }
+
     private static IBrush? WithOpacity(IBrush? brush, double opacity) => brush switch
     {
         ISolidColorBrush solid => new SolidColorBrush(solid.Color, solid.Opacity * opacity),
@@ -979,7 +1066,7 @@ public sealed partial class DonutMenu : Control
             return;
         using (context.PushOpacity(Math.Clamp((span - 0.25) / 0.3, 0, 1) * 0.9))
             DrawLabel(context, new DonutItem { Id = "", Label = _previewLabel }, center, (r1 + r2) / 2, mid,
-                span * (r1 + r2) / 2 - 10, r2 - r1 - 16, bold, regular, hot: false);
+                ChordWidth(r1, r2, span), r2 - r1 - 16, bold, regular, hot: false);
     }
 
     private static StreamGeometry CreateWedge(Point c, double r1, double r2, int index, int count) =>

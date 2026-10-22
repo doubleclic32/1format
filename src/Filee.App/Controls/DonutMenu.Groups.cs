@@ -396,8 +396,11 @@ public sealed partial class DonutMenu
                 context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity * (item.IsEnabled ? 1 : 0.55)), BorderPen(), wedge);
                 var hot = k == _subHover && group == _expanded && item.IsEnabled;
                 if (hot)
-                    context.DrawGeometry(WithOpacity(AccentBrush, 0.82), null, wedge);
-                DrawLabel(context, item, center, (inner + outer) / 2, mid, subSpan * (inner + outer) / 2 - 8,
+                {
+                    context.DrawGeometry(AccentStrongBrush ?? AccentBrush, null, wedge);
+                    context.DrawGeometry(null, new Pen(WithOpacity(OnAccentBrush, 0.35), 2), wedge);
+                }
+                DrawLabel(context, item, center, (inner + outer) / 2, mid, ChordWidth(inner, outer, subSpan),
                     SubBand - 8, bold, regular, hot);
             }
         }

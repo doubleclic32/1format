@@ -606,9 +606,13 @@ public class DonutGroupTests
     {
         var (donut, window) = Open();
         var c = Center(donut);
-        // The see-through ring between the hole and the slices, on the way from the hole to the group.
+        // The ring between the hole and the slices, on the way from the hole to the group. It used to be see-through
+        // while DonutGeometry.HitTest already counted it as the hole (anything closer than the inner radius is
+        // Center), so the window let a click through a band the donut was answering for. It is painted now, by the
+        // backing ring, and the two agree.
         var seam = OnGroup(donut, donut.OuterRadius * donut.HoleRatio - 3);
-        Assert.Equal(0, AlphaAt(donut, seam)); // closed: clicks there go through, as without groups
+        Assert.True(AlphaAt(donut, seam) > 0);
+        Assert.Equal(DonutHitKind.Center, donut.HitTest(seam).Kind);
 
         donut.HandleKey(Key.Right);
         donut.HandleKey(Key.Right);

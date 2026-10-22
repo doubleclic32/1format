@@ -318,6 +318,12 @@ internal static class SettingsMigrations
                 InsertBefore(settings.EnginePriority, "pdf-slides", "pandoc");
         }
 
+        // v21: the rebrand's blue replaces the accent inherited from upstream. Only the old default is moved, so an
+        // accent the user picked themselves is left alone.
+        if (settings.SchemaVersion < 21 &&
+            string.Equals(settings.Theme.Accent, ThemeSettings.LegacyAccent, StringComparison.OrdinalIgnoreCase))
+            settings.Theme.Accent = ThemeSettings.DefaultAccent;
+
         if (settings.Triggers.Count == 0)
             settings.Triggers = TriggerGesture.Defaults();
 

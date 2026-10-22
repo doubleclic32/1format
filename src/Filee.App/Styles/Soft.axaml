@@ -37,10 +37,10 @@
       </ResourceDictionary.ThemeDictionaries>
 
       <!-- Defaults; ThemeService overwrites these at startup. -->
-      <SolidColorBrush x:Key="AccentBrush" Color="#7F77DD" />
-      <SolidColorBrush x:Key="AccentSoftBrush" Color="#2E7F77DD" />
-      <SolidColorBrush x:Key="AccentFaintBrush" Color="#177F77DD" />
-      <SolidColorBrush x:Key="AccentStrongBrush" Color="#5F59A6" />
+      <SolidColorBrush x:Key="AccentBrush" Color="#2563EB" />
+      <SolidColorBrush x:Key="AccentSoftBrush" Color="#2E2563EB" />
+      <SolidColorBrush x:Key="AccentFaintBrush" Color="#172563EB" />
+      <SolidColorBrush x:Key="AccentStrongBrush" Color="#1D4ED8" />
       <SolidColorBrush x:Key="OnAccentBrush" Color="#FFFFFF" />
       <CornerRadius x:Key="SoftRadius">16</CornerRadius>
       <CornerRadius x:Key="SoftRadiusSmall">9</CornerRadius>
@@ -208,7 +208,9 @@
   <!-- ───────── Donut control colours ───────── -->
   <Style Selector="c|DonutMenu">
     <Setter Property="SliceBrush" Value="{DynamicResource SurfaceBrush}" />
+    <!-- Only the fanned-out sub-ring uses this: the main slices sit on a backing ring and pass no pen. -->
     <Setter Property="SliceBorderBrush" Value="{DynamicResource SubtleBorderBrush}" />
+    <Setter Property="AccentStrongBrush" Value="{DynamicResource AccentStrongBrush}" />
     <Setter Property="CenterBrush" Value="{DynamicResource SurfaceBrush}" />
     <Setter Property="AccentBrush" Value="{DynamicResource AccentBrush}" />
     <Setter Property="OnAccentBrush" Value="{DynamicResource OnAccentBrush}" />

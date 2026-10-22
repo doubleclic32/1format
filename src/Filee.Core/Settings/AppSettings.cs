@@ -30,8 +30,14 @@ public sealed class ThemeSettings
 {
     public ThemeMode Mode { get; set; } = ThemeMode.System;
 
+    /// <summary>1format's blue. <see cref="LegacyAccent"/> is the colour it replaced.</summary>
+    public const string DefaultAccent = "#2563EB";
+
+    /// <summary>The accent inherited from upstream; rewritten to <see cref="DefaultAccent"/> on upgrade (schema 21).</summary>
+    public const string LegacyAccent = "#7F77DD";
+
     /// <summary>Accent colour as <c>#RRGGBB</c>.</summary>
-    public string Accent { get; set; } = "#7F77DD";
+    public string Accent { get; set; } = DefaultAccent;
 
     /// <summary>Base corner radius in pixels. Larger = "softer" UI.</summary>
     public double CornerRadius { get; set; } = 16;
@@ -64,7 +70,7 @@ public sealed class DonutSettings
 public sealed class AppSettings
 {
     /// <summary>Current schema version. Increase when the format changes and add a migration.</summary>
-    public const int CurrentSchemaVersion = 20;
+    public const int CurrentSchemaVersion = 21;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 

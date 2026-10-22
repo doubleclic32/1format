@@ -14,7 +14,10 @@ public sealed class ThemeService(IPlatformServices platform)
 {
     /// <summary>Accent swatches offered in the Theme page.</summary>
     public static readonly IReadOnlyList<string> Swatches =
-        ["#7F77DD", "#1D9E75", "#D85A30", "#378ADD", "#D4537E", "#BA7517", "#639922", "#5F5E5A"];
+        [Brand, "#1D9E75", "#D85A30", "#7F77DD", "#D4537E", "#BA7517", "#639922", "#5F5E5A"];
+
+    /// <summary>1format's own blue, the colour of its icon. White text on it is at 5.2:1, above the 4.5:1 of AA.</summary>
+    public const string Brand = "#2563EB";
 
     /// <summary>Embedded Noto fonts (see build/fetch-fonts.ps1). Missing files fall back to system fonts.</summary>
     private const string Latin = "fonts:1format#Noto Sans";
@@ -35,13 +38,21 @@ public sealed class ThemeService(IPlatformServices platform)
         };
 
         // Accent colour + derived shades. Fluent controls read the System* keys.
-        var accent = Color.TryParse(theme.Accent, out var parsed) ? parsed : Color.Parse("#7F77DD");
+        var accent = Color.TryParse(theme.Accent, out var parsed) ? parsed : Color.Parse(Brand);
         res["AccentColor"] = accent;
         res["AccentBrush"] = new SolidColorBrush(accent);
         res["AccentSoftBrush"] = new SolidColorBrush(accent, 0.18);
         res["AccentFaintBrush"] = new SolidColorBrush(accent, 0.09);
-        res["AccentStrongBrush"] = new SolidColorBrush(Shade(accent, -0.25));
-        res["OnAccentBrush"] = new SolidColorBrush(Luminance(accent) > 0.6 ? Color.Parse("#1F1E1D") : Colors.White);
+        // Dark enough to carry white text: the donut paints a label straight onto it. Shaded further while it is
+        // still too light, instead of trusting one fixed step.
+        var strong = Shade(accent, -0.25);
+        for (var step = 0; step < 6 && Contrast(strong, Colors.White) < 4.5; step++)
+            strong = Shade(strong, -0.12);
+        res["AccentStrongBrush"] = new SolidColorBrush(strong);
+        // Measured contrast, not a luminance threshold: #7F77DD sits at 0.50 on a simple luminance scale, so it was
+        // classed as "white text" while the real ratio was 3.8:1.
+        res["OnAccentBrush"] = new SolidColorBrush(
+            Contrast(accent, Colors.White) >= Contrast(accent, Color.Parse("#1F1E1D")) ? Colors.White : Color.Parse("#1F1E1D"));
         res["SystemAccentColor"] = accent;
         res["SystemAccentColorLight1"] = Shade(accent, 0.15);
         res["SystemAccentColorLight2"] = Shade(accent, 0.30);
@@ -78,4 +89,23 @@ public sealed class ThemeService(IPlatformServices platform)
 
     /// <summary>Relative luminance 0..1 (sRGB approximation).</summary>
     public static double Luminance(Color c) => (0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B) / 255.0;
+
+    /// <summary>WCAG contrast ratio between two opaque colours, from 1 (identical) to 21 (black on white).</summary>
+    public static double Contrast(Color a, Color b)
+    {
+        var la = RelativeLuminance(a);
+        var lb = RelativeLuminance(b);
+        return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+    }
+
+    /// <summary>WCAG relative luminance: the sRGB channels are linearised first, unlike <see cref="Luminance"/>.</summary>
+    private static double RelativeLuminance(Color c)
+    {
+        static double Channel(byte v)
+        {
+            var x = v / 255.0;
+            return x <= 0.04045 ? x / 12.92 : Math.Pow((x + 0.055) / 1.055, 2.4);
+        }
+        return 0.2126 * Channel(c.R) + 0.7152 * Channel(c.G) + 0.0722 * Channel(c.B);
+    }
 }
